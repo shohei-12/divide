@@ -1,9 +1,27 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 import { PrimaryButton, TextInput } from "../components/UIkit";
 import { signUp } from "../re-ducks/users/operations";
 
+type Inputs = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 const SignUp: React.FC = () => {
+  const { register, handleSubmit, errors } = useForm<Inputs>({
+    mode: "onChange",
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
@@ -39,6 +57,10 @@ const SignUp: React.FC = () => {
     [setConfirmPassword]
   );
 
+  const dispatchSignUp = () => {
+    dispatch(signUp(username, email, password, confirmPassword));
+  };
+
   return (
     <div className="c-mw700">
       <h2>新規ユーザー登録</h2>
@@ -48,8 +70,17 @@ const SignUp: React.FC = () => {
         multiline={false}
         required={true}
         rows="1"
-        value={username}
         type="text"
+        name="username"
+        inputRef={register({
+          required: "必ず入力してください。",
+          maxLength: {
+            value: 30,
+            message: "30文字以内で入力してください。",
+          },
+        })}
+        error={Boolean(errors.username)}
+        helperText={errors.username && errors.username.message}
         onChange={inputUsername}
       />
       <TextInput
@@ -58,8 +89,17 @@ const SignUp: React.FC = () => {
         multiline={false}
         required={true}
         rows="1"
-        value={email}
         type="email"
+        name="email"
+        inputRef={register({
+          required: "必ず入力してください。",
+          pattern: {
+            value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
+            message: "正しいメールアドレスを入力してください。",
+          },
+        })}
+        error={Boolean(errors.email)}
+        helperText={errors.email && errors.email.message}
         onChange={inputEmail}
       />
       <TextInput
@@ -68,8 +108,17 @@ const SignUp: React.FC = () => {
         multiline={false}
         required={true}
         rows="1"
-        value={password}
         type="password"
+        name="password"
+        inputRef={register({
+          required: "必ず入力してください。",
+          minLength: {
+            value: 6,
+            message: "6文字以上で入力してください。",
+          },
+        })}
+        error={Boolean(errors.password)}
+        helperText={errors.password && errors.password.message}
         onChange={inputPassword}
       />
       <TextInput
@@ -78,16 +127,26 @@ const SignUp: React.FC = () => {
         multiline={false}
         required={true}
         rows="1"
-        value={confirmPassword}
         type="password"
+        name="confirmPassword"
+        inputRef={register({
+          required: "必ず入力してください。",
+          minLength: {
+            value: 6,
+            message: "6文字以上で入力してください。",
+          },
+        })}
+        error={Boolean(errors.confirmPassword)}
+        helperText={errors.confirmPassword && errors.confirmPassword.message}
         onChange={inputConfirmPassword}
       />
       <div className="space-m"></div>
       <PrimaryButton
         text="登録する"
-        onClick={() =>
-          dispatch(signUp(username, email, password, confirmPassword))
+        disabled={
+          username && email && password && confirmPassword ? false : true
         }
+        onClick={handleSubmit(() => dispatchSignUp())}
       />
     </div>
   );

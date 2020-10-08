@@ -14,13 +14,19 @@ const useStyles = makeStyles({
 
 type Props = {
   text: string;
+  disabled: boolean;
   onClick: () => any;
 };
 const PrimaryButton: React.FC<Props> = (props) => {
   const classes = useStyles();
 
   return (
-    <Button className={classes.btn} variant="contained" onClick={props.onClick}>
+    <Button
+      className={classes.btn}
+      variant="contained"
+      disabled={props.disabled}
+      onClick={props.onClick}
+    >
       {props.text}
     </Button>
   );

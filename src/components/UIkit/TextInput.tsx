@@ -7,8 +7,11 @@ type Props = {
   multiline: boolean;
   required: boolean;
   rows: string;
-  value: string;
   type: string;
+  name: string;
+  inputRef: any;
+  error: boolean;
+  helperText: string | undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const TextInput: React.FC<Props> = (props) => {
@@ -20,8 +23,11 @@ const TextInput: React.FC<Props> = (props) => {
       multiline={props.multiline}
       required={props.required}
       rows={props.rows}
-      value={props.value}
       type={props.type}
+      name={props.name}
+      inputRef={props.inputRef}
+      error={props.error}
+      helperText={props.helperText}
       onChange={props.onChange}
     />
   );

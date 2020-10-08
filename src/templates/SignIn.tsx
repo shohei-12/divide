@@ -1,9 +1,23 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 import { PrimaryButton, TextInput } from "../components/UIkit";
 import { signIn } from "../re-ducks/users/operations";
 
+type Inputs = {
+  email: string;
+  password: string;
+};
+
 const SignIn: React.FC = () => {
+  const { register, handleSubmit, errors } = useForm<Inputs>({
+    mode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
@@ -22,6 +36,11 @@ const SignIn: React.FC = () => {
     },
     [setPassword]
   );
+
+  const dispatchSignIn = () => {
+    dispatch(signIn(email, password));
+  };
+
   return (
     <div className="c-mw700">
       <h2>ログイン</h2>
@@ -31,8 +50,17 @@ const SignIn: React.FC = () => {
         multiline={false}
         required={true}
         rows="1"
-        value={email}
         type="email"
+        name="email"
+        inputRef={register({
+          required: "必ず入力してください。",
+          pattern: {
+            value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
+            message: "正しいメールアドレスを入力してください。",
+          },
+        })}
+        error={Boolean(errors.email)}
+        helperText={errors.email && errors.email.message}
         onChange={inputEmail}
       />
       <TextInput
@@ -41,14 +69,24 @@ const SignIn: React.FC = () => {
         multiline={false}
         required={true}
         rows="1"
-        value={password}
         type="password"
+        name="password"
+        inputRef={register({
+          required: "必ず入力してください。",
+          minLength: {
+            value: 6,
+            message: "6文字以上で入力してください。",
+          },
+        })}
+        error={Boolean(errors.password)}
+        helperText={errors.password && errors.password.message}
         onChange={inputPassword}
       />
       <div className="space-m"></div>
       <PrimaryButton
         text="ログインする"
-        onClick={() => dispatch(signIn(email, password))}
+        disabled={email && password ? false : true}
+        onClick={handleSubmit(() => dispatchSignIn())}
       />
     </div>
   );
