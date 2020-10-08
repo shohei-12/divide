@@ -41,7 +41,7 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="c-m700">
-      <h2 className="title">新規ユーザー登録</h2>
+      <h2>新規ユーザー登録</h2>
       <TextInput
         fullWidth={true}
         label="ユーザー名"
