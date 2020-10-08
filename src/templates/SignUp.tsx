@@ -1,7 +1,11 @@
 import React, { useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { PrimaryButton, TextInput } from "../components/UIkit";
+import { signUp } from "../re-ducks/users/operations";
 
 const SignUp: React.FC = () => {
+  const dispatch = useDispatch();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,7 +83,12 @@ const SignUp: React.FC = () => {
         onChange={inputConfirmPassword}
       />
       <div className="space-m"></div>
-      <PrimaryButton text="登録する" />
+      <PrimaryButton
+        text="登録する"
+        onClick={() =>
+          dispatch(signUp(username, email, password, confirmPassword))
+        }
+      />
     </div>
   );
 };
