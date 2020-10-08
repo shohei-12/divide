@@ -8,6 +8,7 @@ export const signInAction = (userState: UserState) => {
       isSignedIn: true,
       uid: userState.uid,
       username: userState.username,
+      email: userState.email,
     },
   };
 };

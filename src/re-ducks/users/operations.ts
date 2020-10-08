@@ -20,6 +20,7 @@ export const signIn = (email: string, password: string) => {
               signInAction({
                 uid,
                 username: data.username,
+                email: data.email,
               })
             );
 
@@ -59,6 +60,7 @@ export const signUp = (
               signInAction({
                 uid,
                 username,
+                email,
               })
             );
           });

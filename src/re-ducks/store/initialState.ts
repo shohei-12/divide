@@ -3,5 +3,6 @@ export const initialState = {
     isSignedIn: false,
     uid: "",
     username: "",
+    email: "",
   },
 };

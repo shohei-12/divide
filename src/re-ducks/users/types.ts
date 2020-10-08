@@ -1,6 +1,7 @@
 export interface UserState {
   uid: string;
   username: string;
+  email: string;
 }
 
 export interface UserAction {
@@ -9,5 +10,6 @@ export interface UserAction {
     isSignedIn: boolean;
     uid: string;
     username: string;
+    email: string;
   };
 }
