@@ -40,7 +40,7 @@ const SignUp: React.FC = () => {
   );
 
   return (
-    <div className="c-m700">
+    <div className="c-mw700">
       <h2>新規ユーザー登録</h2>
       <TextInput
         fullWidth={true}

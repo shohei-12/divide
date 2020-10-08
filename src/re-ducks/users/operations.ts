@@ -1,5 +1,34 @@
-import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { push } from "connected-react-router";
+import { signInAction } from "./actions";
+import { auth, db, FirebaseTimestamp } from "../../firebase";
+
+export const signIn = (email: string, password: string) => {
+  return async (dispatch: any) => {
+    auth.signInWithEmailAndPassword(email, password).then((result) => {
+      const user = result.user;
+
+      if (user) {
+        const uid = user.uid;
+
+        db.collection("users")
+          .doc(uid)
+          .get()
+          .then((snapshot) => {
+            const data = snapshot.data()!;
+
+            dispatch(
+              signInAction({
+                uid,
+                username: data.username,
+              })
+            );
+
+            dispatch(push("/"));
+          });
+      }
+    });
+  };
+};
 
 export const signUp = (
   username: string,
@@ -25,7 +54,16 @@ export const signUp = (
         db.collection("users")
           .doc(uid)
           .set(userInitialData)
-          .then(() => dispatch(push("/")));
+          .then(() => {
+            dispatch(
+              signInAction({
+                uid,
+                username,
+              })
+            );
+          });
+
+        dispatch(push("/"));
       }
     });
   };

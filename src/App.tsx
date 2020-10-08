@@ -1,14 +1,15 @@
 import React from "react";
+import Router from "./Router";
 import "./assets/style.css";
-import { SignUp } from "./templates";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
-      <h1>Hello!</h1>
-      <SignUp />
-    </div>
+    <>
+      <main>
+        <Router />
+      </main>
+    </>
   );
-}
+};
 
 export default App;
