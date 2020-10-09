@@ -2,32 +2,42 @@ import { push } from "connected-react-router";
 import { signInAction } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 
+const usersRef = db.collection("users");
+
 export const signIn = (email: string, password: string) => {
   return async (dispatch: any) => {
-    auth.signInWithEmailAndPassword(email, password).then((result) => {
-      const user = result.user;
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        const user = result.user;
 
-      if (user) {
-        const uid = user.uid;
+        if (user) {
+          const uid = user.uid;
 
-        db.collection("users")
-          .doc(uid)
-          .get()
-          .then((snapshot) => {
-            const data = snapshot.data()!;
+          usersRef
+            .doc(uid)
+            .get()
+            .then((snapshot) => {
+              const data = snapshot.data()!;
 
-            dispatch(
-              signInAction({
-                uid,
-                username: data.username,
-                email: data.email,
-              })
-            );
+              dispatch(
+                signInAction({
+                  uid,
+                  username: data.username,
+                  email: data.email,
+                })
+              );
 
-            dispatch(push("/"));
-          });
-      }
-    });
+              dispatch(push("/"));
+            })
+            .catch((error) => {
+              throw new Error(error);
+            });
+        }
+      })
+      .catch(() => {
+        alert("入力されたメールアドレスまたはパスワードに誤りがあります。");
+      });
   };
 };
 
@@ -38,23 +48,63 @@ export const signUp = (
   confirmPassword: string
 ) => {
   return async (dispatch: any) => {
-    auth.createUserWithEmailAndPassword(email, password).then((result) => {
-      const user = result.user;
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((result) => {
+        const user = result.user;
 
-      if (user) {
-        const uid = user.uid;
-        const timestamp = FirebaseTimestamp.now();
-        const userInitialData = {
-          uid,
+        if (user) {
+          const uid = user.uid;
+          const timestamp = FirebaseTimestamp.now();
+          const userInitialData = {
+            uid,
+            username,
+            email,
+            created_at: timestamp,
+            updated_at: timestamp,
+          };
+
+          usersRef
+            .doc(uid)
+            .set(userInitialData)
+            .then(() => {
+              dispatch(
+                signInAction({
+                  uid,
+                  username,
+                  email,
+                })
+              );
+            })
+            .catch((error) => {
+              throw new Error(error);
+            });
+
+          dispatch(push("/"));
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const userUpdate = (uid: string, username: string, email: string) => {
+  return async (dispatch: any) => {
+    const timestamp = FirebaseTimestamp.now();
+
+    auth
+      .currentUser!.updateEmail(email)
+      .then(() => {
+        const data = {
           username,
           email,
-          created_at: timestamp,
           updated_at: timestamp,
         };
 
-        db.collection("users")
+        usersRef
           .doc(uid)
-          .set(userInitialData)
+          .set(data, { merge: true })
           .then(() => {
             dispatch(
               signInAction({
@@ -63,10 +113,14 @@ export const signUp = (
                 email,
               })
             );
+            dispatch(push("/"));
+          })
+          .catch((error) => {
+            throw new Error(error);
           });
-
-        dispatch(push("/"));
-      }
-    });
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 };

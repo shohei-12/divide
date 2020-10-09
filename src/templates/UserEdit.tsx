@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { PrimaryButton, TextInput } from "../components/UIkit";
-import { db } from "../firebase";
-import { getUsername, getEmail } from "../re-ducks/users/selectors";
+import { getUserId, getUsername, getEmail } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
+import { userUpdate } from "../re-ducks/users/operations";
 
 type Inputs = {
   username: string;
@@ -14,6 +14,7 @@ type Inputs = {
 const UserEdit: React.FC = () => {
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
+  const uid = getUserId(selector);
   const uname = getUsername(selector);
   const uemail = getEmail(selector);
 
@@ -41,6 +42,10 @@ const UserEdit: React.FC = () => {
     },
     [setEmail]
   );
+
+  const dispatchUserUpdate = () => {
+    dispatch(userUpdate(uid, username, email));
+  };
 
   return (
     <div className="c-mw700">
@@ -84,11 +89,11 @@ const UserEdit: React.FC = () => {
         onChange={inputEmail}
       />
       <div className="space-m"></div>
-      {/* <PrimaryButton
-        text="登録する"
+      <PrimaryButton
+        text="更新する"
         disabled={username && email ? false : true}
-        onClick={handleSubmit(() => dispatchSignUp())}
-      /> */}
+        onClick={handleSubmit(() => dispatchUserUpdate())}
+      />
     </div>
   );
 };
