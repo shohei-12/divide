@@ -1,5 +1,5 @@
 import { push } from "connected-react-router";
-import { signInAction } from "./actions";
+import { signInAction, signOutAction } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 
 const usersRef = db.collection("users");
@@ -66,6 +66,15 @@ export const signIn = (email: string, password: string) => {
       .catch(() => {
         alert("入力されたメールアドレスまたはパスワードに誤りがあります。");
       });
+  };
+};
+
+export const signOut = () => {
+  return async (dispatch: any) => {
+    auth.signOut().then(() => {
+      dispatch(signOutAction());
+      dispatch(push("/signin"));
+    });
   };
 };
 
