@@ -13,7 +13,6 @@ type Inputs = {
 
 const SignUp: React.FC = () => {
   const { register, handleSubmit, errors } = useForm<Inputs>({
-    mode: "onChange",
     defaultValues: {
       username: "",
       email: "",
@@ -28,6 +27,7 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [validation, setValidation] = useState("");
 
   const inputUsername = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +46,7 @@ const SignUp: React.FC = () => {
   const inputPassword = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(event.target.value);
+      setValidation(event.target.value)
     },
     [setPassword]
   );
@@ -73,7 +74,7 @@ const SignUp: React.FC = () => {
         type="text"
         name="username"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           maxLength: {
             value: 30,
             message: "30文字以内で入力してください。",
@@ -92,7 +93,7 @@ const SignUp: React.FC = () => {
         type="email"
         name="email"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
             message: "正しいメールアドレスを入力してください。",
@@ -111,7 +112,7 @@ const SignUp: React.FC = () => {
         type="password"
         name="password"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           minLength: {
             value: 6,
             message: "6文字以上で入力してください。",
@@ -130,10 +131,14 @@ const SignUp: React.FC = () => {
         type="password"
         name="confirmPassword"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           minLength: {
             value: 6,
             message: "6文字以上で入力してください。",
+          },
+          pattern: {
+            value: new RegExp("^" + validation + "$"),
+            message: "パスワードが一致しません。",
           },
         })}
         error={Boolean(errors.confirmPassword)}

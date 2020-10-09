@@ -11,7 +11,6 @@ type Inputs = {
 
 const SignIn: React.FC = () => {
   const { register, handleSubmit, errors } = useForm<Inputs>({
-    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
@@ -53,7 +52,7 @@ const SignIn: React.FC = () => {
         type="email"
         name="email"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
             message: "正しいメールアドレスを入力してください。",
@@ -72,7 +71,7 @@ const SignIn: React.FC = () => {
         type="password"
         name="password"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           minLength: {
             value: 6,
             message: "6文字以上で入力してください。",

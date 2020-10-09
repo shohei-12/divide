@@ -22,7 +22,6 @@ const UserEdit: React.FC = () => {
   const [email, setEmail] = useState(uemail);
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
-    mode: "onChange",
     defaultValues: {
       username: username,
       email: email,
@@ -59,7 +58,7 @@ const UserEdit: React.FC = () => {
         type="text"
         name="username"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           maxLength: {
             value: 30,
             message: "30文字以内で入力してください。",
@@ -78,7 +77,7 @@ const UserEdit: React.FC = () => {
         type="email"
         name="email"
         inputRef={register({
-          required: "必ず入力してください。",
+          required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
             message: "正しいメールアドレスを入力してください。",
