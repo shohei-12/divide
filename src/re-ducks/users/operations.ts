@@ -4,6 +4,35 @@ import { auth, db, FirebaseTimestamp } from "../../firebase";
 
 const usersRef = db.collection("users");
 
+export const listenAuthState = () => {
+  return async (dispatch: any) => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const uid = user.uid;
+        usersRef
+          .doc(uid)
+          .get()
+          .then((snapshot) => {
+            const data = snapshot.data()!;
+
+            dispatch(
+              signInAction({
+                uid,
+                username: data.username,
+                email: data.email,
+              })
+            );
+          })
+          .catch((error) => {
+            throw new Error(error);
+          });
+      } else {
+        dispatch(push("/signin"));
+      }
+    });
+  };
+};
+
 export const signIn = (email: string, password: string) => {
   return async (dispatch: any) => {
     auth
@@ -13,7 +42,6 @@ export const signIn = (email: string, password: string) => {
 
         if (user) {
           const uid = user.uid;
-
           usersRef
             .doc(uid)
             .get()
@@ -27,12 +55,12 @@ export const signIn = (email: string, password: string) => {
                   email: data.email,
                 })
               );
-
-              dispatch(push("/"));
             })
             .catch((error) => {
               throw new Error(error);
             });
+
+          dispatch(push("/"));
         }
       })
       .catch(() => {
@@ -113,11 +141,12 @@ export const userUpdate = (uid: string, username: string, email: string) => {
                 email,
               })
             );
-            dispatch(push("/"));
           })
           .catch((error) => {
             throw new Error(error);
           });
+
+        dispatch(push("/"));
       })
       .catch((error) => {
         throw new Error(error);
