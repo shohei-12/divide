@@ -97,7 +97,7 @@ const SignUp: React.FC = () => {
           required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
-            message: "正しいメールアドレスを入力してください。",
+            message: "メールアドレスの形式が正しくありません。",
           },
         })}
         error={Boolean(errors.email)}
@@ -117,6 +117,11 @@ const SignUp: React.FC = () => {
           minLength: {
             value: 6,
             message: "6文字以上で入力してください。",
+          },
+          pattern: {
+            value: /^[a-zA-Z0-9_-]+$/,
+            message:
+              "半角英数字、ハイフン(-)、アンダーバー(_)のみ利用可能です。",
           },
         })}
         error={Boolean(errors.password)}

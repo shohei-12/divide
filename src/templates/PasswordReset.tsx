@@ -59,7 +59,7 @@ const PasswordReset: React.FC = () => {
           required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
-            message: "正しいメールアドレスを入力してください。",
+            message: "メールアドレスの形式が正しくありません。",
           },
         })}
         error={Boolean(errors.email)}
