@@ -23,8 +23,10 @@ export const listenAuthState = () => {
               })
             );
           })
-          .catch((error) => {
-            throw new Error(error);
+          .catch(() => {
+            alert(
+              "ユーザー情報を取得することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+            );
           });
       } else {
         dispatch(push("/signin"));
@@ -56,8 +58,10 @@ export const signIn = (email: string, password: string) => {
                 })
               );
             })
-            .catch((error) => {
-              throw new Error(error);
+            .catch(() => {
+              alert(
+                "ユーザー情報を取得することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+              );
             });
 
           dispatch(push("/"));
@@ -113,15 +117,19 @@ export const signUp = (
                 })
               );
             })
-            .catch((error) => {
-              throw new Error(error);
+            .catch(() => {
+              alert(
+                "ユーザー情報を保存することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+              );
             });
 
           dispatch(push("/"));
         }
       })
-      .catch((error) => {
-        throw new Error(error);
+      .catch(() => {
+        alert(
+          "ユーザー登録ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+        );
       });
   };
 };
@@ -151,14 +159,18 @@ export const userUpdate = (uid: string, username: string, email: string) => {
               })
             );
           })
-          .catch((error) => {
-            throw new Error(error);
+          .catch(() => {
+            alert(
+              "ユーザー情報の更新ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+            );
           });
 
         dispatch(push("/"));
       })
-      .catch((error) => {
-        throw new Error(error);
+      .catch(() => {
+        alert(
+          "メールアドレスの更新ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+        );
       });
   };
 };
