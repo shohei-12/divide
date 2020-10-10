@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { push } from "connected-react-router";
 import { PrimaryButton, TextInput } from "../components/UIkit";
 import { signIn } from "../re-ducks/users/operations";
 
@@ -87,6 +88,20 @@ const SignIn: React.FC = () => {
         disabled={email && password ? false : true}
         onClick={handleSubmit(() => dispatchSignIn())}
       />
+      <div className="space-s"></div>
+      <p
+        className="inline-block pointer-h"
+        onClick={() => dispatch(push("/signup"))}
+      >
+        ユーザー登録がお済みでない方はこちら
+      </p>
+      <br />
+      <p
+        className="inline-block pointer-h"
+        onClick={() => dispatch(push("/password/reset"))}
+      >
+        パスワードを忘れた方はこちら
+      </p>
     </div>
   );
 };

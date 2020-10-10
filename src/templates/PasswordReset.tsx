@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { push } from "connected-react-router";
 import { PrimaryButton, TextInput } from "../components/UIkit";
 import { auth } from "../firebase";
 
@@ -13,6 +15,8 @@ const PasswordReset: React.FC = () => {
       email: "",
     },
   });
+
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
 
@@ -66,6 +70,13 @@ const PasswordReset: React.FC = () => {
         disabled={email ? false : true}
         onClick={handleSubmit(() => resetPassword(email))}
       />
+      <div className="space-s"></div>
+      <p
+        className="inline-block pointer-h"
+        onClick={() => dispatch(push("/signin"))}
+      >
+        ログインページに戻る
+      </p>
     </div>
   );
 };

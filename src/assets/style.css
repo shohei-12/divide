@@ -21,6 +21,14 @@ body {
   height: 32px;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
+.pointer-h:hover {
+  cursor: pointer;
+}
+
 .c-mw700 {
   max-width: 700px;
   margin: 0 auto;
