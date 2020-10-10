@@ -1,11 +1,12 @@
 import React from "react";
 import { Switch, Route } from "react-router";
-import { SignIn, SignUp, UserEdit } from "./templates";
+import { PasswordReset, SignIn, SignUp, UserEdit } from "./templates";
 import Auth from "./Auth";
 
 const Router: React.FC = () => {
   return (
     <Switch>
+      <Route exact path="/password/reset" component={PasswordReset} />
       <Route exact path="/signin" component={SignIn} />
       <Route exact path="/signup" component={SignUp} />
       <Auth>
