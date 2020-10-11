@@ -28,7 +28,6 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [validation, setValidation] = useState("");
 
   const inputUsername = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +46,6 @@ const SignUp: React.FC = () => {
   const inputPassword = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(event.target.value);
-      setValidation(event.target.value);
     },
     [setPassword]
   );
@@ -142,10 +140,8 @@ const SignUp: React.FC = () => {
             value: 6,
             message: "6文字以上で入力してください。",
           },
-          pattern: {
-            value: new RegExp("^" + validation + "$"),
-            message: "パスワードが一致しません。",
-          },
+          validate: (value) =>
+            value === password || "パスワードが一致しません。",
         })}
         error={Boolean(errors.confirmPassword)}
         helperText={errors.confirmPassword && errors.confirmPassword.message}
