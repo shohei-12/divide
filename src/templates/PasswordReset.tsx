@@ -27,8 +27,8 @@ const PasswordReset: React.FC = () => {
     [setEmail]
   );
 
-  const resetPassword = (email: string) => {
-    auth
+  const resetPassword = async (email: string) => {
+    await auth
       .sendPasswordResetEmail(email)
       .then(() => {
         alert(
