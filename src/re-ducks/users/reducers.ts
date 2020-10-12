@@ -19,7 +19,7 @@ export const UsersReducer = (
     case Actions.TASK_REGISTRATION:
       return {
         ...state,
-        tasks: [...state.tasks, action.payload.task],
+        tasks: [action.payload.task, ...state.tasks],
       };
     default:
       return state;
