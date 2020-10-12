@@ -58,7 +58,7 @@ const SignUp: React.FC = () => {
   );
 
   const dispatchSignUp = () => {
-    dispatch(signUp(username, email, password, confirmPassword));
+    dispatch(signUp(username, email, password));
   };
 
   return (

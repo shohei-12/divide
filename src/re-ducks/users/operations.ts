@@ -1,6 +1,7 @@
 import { push } from "connected-react-router";
 import { signInAction, signOutAction } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
+import { Task } from "../users/types";
 
 const usersRef = db.collection("users");
 
@@ -9,17 +10,36 @@ export const listenAuthState = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const uid = user.uid;
+        const list: Task[] = [];
+
         usersRef
           .doc(uid)
           .get()
-          .then((snapshot) => {
-            const data = snapshot.data()!;
+          .then(async (snapshot) => {
+            const userData = snapshot.data()!;
+
+            await usersRef
+              .doc(uid)
+              .collection("tasks")
+              .orderBy("updated_at", "desc")
+              .get()
+              .then((snapshots) => {
+                snapshots.forEach((snapshot) => {
+                  const taskData = snapshot.data();
+                  const task = {
+                    id: taskData.id,
+                    contents: taskData.contents,
+                  } as Task;
+                  list.push(task);
+                });
+              });
 
             dispatch(
               signInAction({
                 uid,
-                username: data.username,
-                email: data.email,
+                username: userData.username,
+                email: userData.email,
+                tasks: list,
               })
             );
           })
@@ -40,32 +60,47 @@ export const signIn = (email: string, password: string) => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        const user = result.user;
+        const uid = result.user!.uid;
+        const list: Task[] = [];
 
-        if (user) {
-          const uid = user.uid;
-          usersRef
-            .doc(uid)
-            .get()
-            .then((snapshot) => {
-              const data = snapshot.data()!;
+        usersRef
+          .doc(uid)
+          .get()
+          .then(async (snapshot) => {
+            const userData = snapshot.data()!;
 
-              dispatch(
-                signInAction({
-                  uid,
-                  username: data.username,
-                  email: data.email,
-                })
-              );
-            })
-            .catch(() => {
-              alert(
-                "ユーザー情報を取得することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-              );
-            });
+            await usersRef
+              .doc(uid)
+              .collection("tasks")
+              .orderBy("updated_at", "desc")
+              .get()
+              .then((snapshots) => {
+                snapshots.forEach((snapshot) => {
+                  const taskData = snapshot.data();
+                  const task = {
+                    id: taskData.id,
+                    contents: taskData.contents,
+                  } as Task;
+                  list.push(task);
+                });
+              });
 
-          dispatch(push("/"));
-        }
+            dispatch(
+              signInAction({
+                uid,
+                username: userData.username,
+                email: userData.email,
+                tasks: list,
+              })
+            );
+
+            dispatch(push("/"));
+          })
+          .catch(() => {
+            alert(
+              "ユーザー情報を取得することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+            );
+          });
       })
       .catch(() => {
         alert("入力されたメールアドレスまたはパスワードに誤りがあります。");
@@ -75,19 +110,21 @@ export const signIn = (email: string, password: string) => {
 
 export const signOut = () => {
   return async (dispatch: any) => {
-    auth.signOut().then(() => {
-      dispatch(signOutAction());
-      dispatch(push("/signin"));
-    });
+    auth
+      .signOut()
+      .then(() => {
+        dispatch(signOutAction());
+        dispatch(push("/signin"));
+      })
+      .catch(() => {
+        alert(
+          "ログアウトができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+        );
+      });
   };
 };
 
-export const signUp = (
-  username: string,
-  email: string,
-  password: string,
-  confirmPassword: string
-) => {
+export const signUp = (username: string, email: string, password: string) => {
   return async (dispatch: any) => {
     auth
       .createUserWithEmailAndPassword(email, password)
@@ -116,14 +153,14 @@ export const signUp = (
                   email,
                 })
               );
+
+              dispatch(push("/"));
             })
             .catch(() => {
               alert(
                 "ユーザー情報を保存することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
               );
             });
-
-          dispatch(push("/"));
         }
       })
       .catch(() => {
@@ -153,19 +190,18 @@ export const userUpdate = (uid: string, username: string, email: string) => {
           .then(() => {
             dispatch(
               signInAction({
-                uid,
                 username,
                 email,
               })
             );
+
+            dispatch(push("/"));
           })
           .catch(() => {
             alert(
               "ユーザー情報の更新ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
             );
           });
-
-        dispatch(push("/"));
       })
       .catch(() => {
         alert(

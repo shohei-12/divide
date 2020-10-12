@@ -1,9 +1,6 @@
+import { UserState } from "../users/types";
+
 export interface State {
-  users: {
-    isSignedIn: boolean;
-    uid: string;
-    username: string;
-    email: string;
-  };
+  users: UserState;
   router: any;
 }
