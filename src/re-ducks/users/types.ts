@@ -17,15 +17,16 @@ export interface SmallTask {
   contents: string;
 }
 
-export interface DispatchSignInAction {
+export interface DispatchAction {
   isSignedIn?: boolean;
   uid?: string;
   username?: string;
   email?: string;
+  task?: Task;
   tasks?: Task[];
 }
 
 export interface UserAction {
   type: string;
-  payload: DispatchSignInAction;
+  payload: DispatchAction;
 }

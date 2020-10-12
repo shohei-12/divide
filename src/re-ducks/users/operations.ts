@@ -1,5 +1,5 @@
 import { push } from "connected-react-router";
-import { signInAction, signOutAction } from "./actions";
+import { signInAction, signOutAction, taskRegistrationAction } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { Task } from "../users/types";
 
@@ -206,6 +206,42 @@ export const userUpdate = (uid: string, username: string, email: string) => {
       .catch(() => {
         alert(
           "メールアドレスの更新ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
+        );
+      });
+  };
+};
+
+export const taskRegistration = (contents: string) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid;
+    const tasksRef = db.collection("users").doc(uid).collection("tasks");
+    const id = tasksRef.doc().id;
+
+    const taskInitialData = {
+      id,
+      contents,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    const taskState = {
+      task: {
+        id,
+        contents,
+      },
+    };
+
+    tasksRef
+      .doc(id)
+      .set(taskInitialData)
+      .then(() => {
+        dispatch(taskRegistrationAction(taskState));
+        dispatch(push("/"));
+      })
+      .catch(() => {
+        alert(
+          "タスクの登録ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
         );
       });
   };

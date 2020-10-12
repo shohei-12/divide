@@ -1,11 +1,8 @@
 import React, { useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { PrimaryButton, TextInput } from "../components/UIkit";
-import { db, FirebaseTimestamp } from "../firebase";
-import { State } from "../re-ducks/store/types";
-import { getUserId } from "../re-ducks/users/selectors";
+import { taskRegistration } from "../re-ducks/users/operations";
 
 type Inputs = {
   contents: string;
@@ -19,8 +16,6 @@ const TaskRegistration: React.FC = () => {
   });
 
   const dispatch = useDispatch();
-  const selector = useSelector((state: State) => state);
-  const uid = getUserId(selector);
 
   const [contents, setContents] = useState("");
 
@@ -31,29 +26,8 @@ const TaskRegistration: React.FC = () => {
     [setContents]
   );
 
-  const taskRegistration = (contents: string) => {
-    const timestamp = FirebaseTimestamp.now();
-    const tasksRef = db.collection("users").doc(uid).collection("tasks");
-    const id = tasksRef.doc().id;
-
-    const taskInitialData = {
-      id,
-      contents,
-      created_at: timestamp,
-      updated_at: timestamp,
-    };
-
-    tasksRef
-      .doc(id)
-      .set(taskInitialData)
-      .then(() => {
-        dispatch(push("/"));
-      })
-      .catch(() => {
-        alert(
-          "タスクの登録ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-        );
-      });
+  const dispatchTaskRegistration = () => {
+    dispatch(taskRegistration(contents));
   };
 
   return (
@@ -82,7 +56,7 @@ const TaskRegistration: React.FC = () => {
       <PrimaryButton
         text="登録する"
         disabled={contents ? false : true}
-        onClick={handleSubmit(() => taskRegistration(contents))}
+        onClick={handleSubmit(() => dispatchTaskRegistration())}
       />
     </div>
   );

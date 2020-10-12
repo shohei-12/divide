@@ -1,7 +1,7 @@
-import { DispatchSignInAction } from "./types";
+import { DispatchAction } from "./types";
 
 export const SIGN_IN = "SIGN_IN";
-export const signInAction = (userState: DispatchSignInAction) => {
+export const signInAction = (userState: DispatchAction) => {
   return {
     type: "SIGN_IN",
     payload: {
@@ -21,6 +21,16 @@ export const signOutAction = () => {
       username: "",
       email: "",
       tasks: [],
+    },
+  };
+};
+
+export const TASK_REGISTRATION = "TASK_REGISTRATION";
+export const taskRegistrationAction = (taskState: DispatchAction) => {
+  return {
+    type: "TASK_REGISTRATION",
+    payload: {
+      task: taskState.task,
     },
   };
 };
