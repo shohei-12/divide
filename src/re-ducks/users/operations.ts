@@ -5,49 +5,58 @@ import { Task } from "../users/types";
 
 const usersRef = db.collection("users");
 
+const fetchSignInUserInfo = async (
+  uid: string,
+  tasks: Task[],
+  dispatch: any
+) => {
+  await usersRef
+    .doc(uid)
+    .get()
+    .then(async (snapshot) => {
+      const userData = snapshot.data()!;
+
+      await usersRef
+        .doc(uid)
+        .collection("tasks")
+        .orderBy("updated_at", "desc")
+        .get()
+        .then((snapshots) => {
+          snapshots.forEach((snapshot) => {
+            const taskData = snapshot.data();
+            const task = {
+              id: taskData.id,
+              contents: taskData.contents,
+            } as Task;
+            tasks.push(task);
+          });
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+
+      dispatch(
+        signInAction({
+          uid,
+          username: userData.username,
+          email: userData.email,
+          tasks: tasks,
+        })
+      );
+    })
+    .catch((error) => {
+      throw new Error(error);
+    });
+};
+
 export const listenAuthState = () => {
   return async (dispatch: any) => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const uid = user.uid;
-        const list: Task[] = [];
+        const tasks: Task[] = [];
 
-        usersRef
-          .doc(uid)
-          .get()
-          .then(async (snapshot) => {
-            const userData = snapshot.data()!;
-
-            await usersRef
-              .doc(uid)
-              .collection("tasks")
-              .orderBy("updated_at", "desc")
-              .get()
-              .then((snapshots) => {
-                snapshots.forEach((snapshot) => {
-                  const taskData = snapshot.data();
-                  const task = {
-                    id: taskData.id,
-                    contents: taskData.contents,
-                  } as Task;
-                  list.push(task);
-                });
-              });
-
-            dispatch(
-              signInAction({
-                uid,
-                username: userData.username,
-                email: userData.email,
-                tasks: list,
-              })
-            );
-          })
-          .catch(() => {
-            alert(
-              "ユーザー情報を取得することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-            );
-          });
+        fetchSignInUserInfo(uid, tasks, dispatch);
       } else {
         dispatch(push("/signin"));
       }
@@ -59,48 +68,13 @@ export const signIn = (email: string, password: string) => {
   return async (dispatch: any) => {
     auth
       .signInWithEmailAndPassword(email, password)
-      .then((result) => {
+      .then(async (result) => {
         const uid = result.user!.uid;
-        const list: Task[] = [];
+        const tasks: Task[] = [];
 
-        usersRef
-          .doc(uid)
-          .get()
-          .then(async (snapshot) => {
-            const userData = snapshot.data()!;
+        fetchSignInUserInfo(uid, tasks, dispatch);
 
-            await usersRef
-              .doc(uid)
-              .collection("tasks")
-              .orderBy("updated_at", "desc")
-              .get()
-              .then((snapshots) => {
-                snapshots.forEach((snapshot) => {
-                  const taskData = snapshot.data();
-                  const task = {
-                    id: taskData.id,
-                    contents: taskData.contents,
-                  } as Task;
-                  list.push(task);
-                });
-              });
-
-            dispatch(
-              signInAction({
-                uid,
-                username: userData.username,
-                email: userData.email,
-                tasks: list,
-              })
-            );
-
-            dispatch(push("/"));
-          })
-          .catch(() => {
-            alert(
-              "ユーザー情報を取得することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-            );
-          });
+        dispatch(push("/"));
       })
       .catch(() => {
         alert("入力されたメールアドレスまたはパスワードに誤りがあります。");
@@ -116,10 +90,8 @@ export const signOut = () => {
         dispatch(signOutAction());
         dispatch(push("/signin"));
       })
-      .catch(() => {
-        alert(
-          "ログアウトができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-        );
+      .catch((error) => {
+        throw new Error(error);
       });
   };
 };
@@ -156,17 +128,13 @@ export const signUp = (username: string, email: string, password: string) => {
 
               dispatch(push("/"));
             })
-            .catch(() => {
-              alert(
-                "ユーザー情報を保存することができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-              );
+            .catch((error) => {
+              throw new Error(error);
             });
         }
       })
-      .catch(() => {
-        alert(
-          "ユーザー登録ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-        );
+      .catch((error) => {
+        throw new Error(error);
       });
   };
 };
@@ -197,16 +165,12 @@ export const userUpdate = (uid: string, username: string, email: string) => {
 
             dispatch(push("/"));
           })
-          .catch(() => {
-            alert(
-              "ユーザー情報の更新ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-            );
+          .catch((error) => {
+            throw new Error(error);
           });
       })
-      .catch(() => {
-        alert(
-          "メールアドレスの更新ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-        );
+      .catch((error) => {
+        throw new Error(error);
       });
   };
 };
@@ -215,7 +179,7 @@ export const taskRegistration = (contents: string) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid;
-    const tasksRef = db.collection("users").doc(uid).collection("tasks");
+    const tasksRef = usersRef.doc(uid).collection("tasks");
     const id = tasksRef.doc().id;
 
     const taskInitialData = {
@@ -239,10 +203,8 @@ export const taskRegistration = (contents: string) => {
         dispatch(taskRegistrationAction(taskState));
         dispatch(push("/"));
       })
-      .catch(() => {
-        alert(
-          "タスクの登録ができませんでした。通信環境の良い場所で再度お試しくださいませ。"
-        );
+      .catch((error) => {
+        throw new Error(error);
       });
   };
 };
