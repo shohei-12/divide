@@ -210,3 +210,31 @@ export const taskRegistration = (contents: string) => {
       });
   };
 };
+
+export const taskDivision = (contents: string, taskId: string) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid;
+    const smallTasksRef = usersRef
+      .doc(uid)
+      .collection("tasks")
+      .doc(taskId)
+      .collection("small_tasks");
+    const id = smallTasksRef.doc().id;
+
+    const smallTaskInitialData = {
+      id,
+      contents,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    smallTasksRef
+      .doc(id)
+      .set(smallTaskInitialData)
+      .then(() => {})
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};

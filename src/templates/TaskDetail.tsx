@@ -5,13 +5,14 @@ import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { PrimaryButton, TextInput } from "../components/UIkit";
 import { Task } from "../components/Tasks";
+import { taskDivision } from "../re-ducks/users/operations";
 
 type Inputs = {
   contents: string;
 };
 
 const TaskDetail: React.FC = () => {
-  const { register, handleSubmit, errors } = useForm<Inputs>({
+  const { register, handleSubmit, reset, errors } = useForm<Inputs>({
     defaultValues: {
       contents: "",
     },
@@ -31,6 +32,11 @@ const TaskDetail: React.FC = () => {
     },
     [setContents]
   );
+
+  const dispatchTaskDivision = () => {
+    dispatch(taskDivision(contents, taskId));
+    reset();
+  };
 
   return (
     <div className="c-mw700">
@@ -58,7 +64,7 @@ const TaskDetail: React.FC = () => {
       <PrimaryButton
         text="分割"
         disabled={contents ? false : true}
-        onClick={handleSubmit(() => console.log("hoge"))}
+        onClick={handleSubmit(() => dispatchTaskDivision())}
       />
       <div className="space-l"></div>
       {task && <Task contents={task.contents} datetime={task.updated_at} />}
