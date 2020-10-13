@@ -27,6 +27,7 @@ const fetchSignInUserInfo = async (
             const task = {
               id: taskData.id,
               contents: taskData.contents,
+              updated_at: taskData.updated_at,
             } as Task;
             tasks.push(task);
           });
@@ -193,6 +194,7 @@ export const taskRegistration = (contents: string) => {
       task: {
         id,
         contents,
+        updated_at: timestamp,
       },
     };
 

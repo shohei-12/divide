@@ -10,6 +10,7 @@ export interface Task {
   id: string;
   contents: string;
   small_tasks?: SmallTask[];
+  updated_at: firebase.firestore.Timestamp;
 }
 
 export interface SmallTask {

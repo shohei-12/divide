@@ -4,6 +4,7 @@ import {
   PasswordReset,
   SignIn,
   SignUp,
+  TaskDetail,
   TaskRegistration,
   UserEdit,
 } from "./templates";
@@ -16,6 +17,7 @@ const Router: React.FC = () => {
       <Route exact path="/signin" component={SignIn} />
       <Route exact path="/signup" component={SignUp} />
       <Auth>
+        <Route exact path="/task/detail/:id" component={TaskDetail} />
         <Route exact path="/task/registration" component={TaskRegistration} />
         <Route exact path="/user/edit" component={UserEdit} />
       </Auth>
