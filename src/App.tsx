@@ -8,10 +8,10 @@ const App: React.FC = () => {
   const theme = createMuiTheme({
     palette: {
       primary: {
-        main: colors.blue[200],
+        main: colors.cyan["A200"],
       },
       secondary: {
-        main: colors.pink[500],
+        main: colors.pink[400],
       },
       type: "dark",
     },
