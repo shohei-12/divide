@@ -9,13 +9,14 @@ export interface UserState {
 export interface Task {
   id: string;
   contents: string;
-  small_tasks?: SmallTask[];
+  small_tasks: SmallTask[];
   updated_at: firebase.firestore.Timestamp;
 }
 
 export interface SmallTask {
   id: string;
   contents: string;
+  updated_at: firebase.firestore.Timestamp;
 }
 
 export interface DispatchAction {

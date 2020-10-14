@@ -1,13 +1,14 @@
 import { push } from "connected-react-router";
 import { signInAction, signOutAction, taskRegistrationAction } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
-import { Task } from "../users/types";
+import { Task, SmallTask } from "../users/types";
 
 const usersRef = db.collection("users");
 
 const fetchSignInUserInfo = async (
   uid: string,
   tasks: Task[],
+  smallTasks: SmallTask[],
   dispatch: any
 ) => {
   await usersRef
@@ -21,16 +22,46 @@ const fetchSignInUserInfo = async (
         .collection("tasks")
         .orderBy("updated_at", "desc")
         .get()
-        .then((snapshots) => {
-          snapshots.forEach((snapshot) => {
-            const taskData = snapshot.data();
-            const task = {
-              id: taskData.id,
-              contents: taskData.contents,
-              updated_at: taskData.updated_at,
-            } as Task;
-            tasks.push(task);
-          });
+        .then(async (snapshots) => {
+          for (const snapshot of snapshots.docs) {
+            await snapshot.ref
+              .collection("small_tasks")
+              .get()
+              .then((snapshots) => {
+                if (snapshots.docs.length > 0) {
+                  snapshots.forEach((snapshot) => {
+                    const smallTaskData = snapshot.data();
+                    const smallTask = {
+                      id: smallTaskData.id,
+                      contents: smallTaskData.contents,
+                      updated_at: smallTaskData.updated_at,
+                    } as SmallTask;
+                    smallTasks.push(smallTask);
+                  });
+
+                  const taskData = snapshot.data();
+                  const task = {
+                    id: taskData.id,
+                    contents: taskData.contents,
+                    small_tasks: smallTasks,
+                    updated_at: taskData.updated_at,
+                  } as Task;
+                  tasks.push(task);
+                } else {
+                  const taskData = snapshot.data();
+                  const task = {
+                    id: taskData.id,
+                    contents: taskData.contents,
+                    small_tasks: [],
+                    updated_at: taskData.updated_at,
+                  } as Task;
+                  tasks.push(task);
+                }
+              })
+              .catch((error) => {
+                throw new Error(error);
+              });
+          }
         })
         .catch((error) => {
           throw new Error(error);
@@ -41,7 +72,7 @@ const fetchSignInUserInfo = async (
           uid,
           username: userData.username,
           email: userData.email,
-          tasks: tasks,
+          tasks,
         })
       );
     })
@@ -56,8 +87,9 @@ export const listenAuthState = () => {
       if (user) {
         const uid = user.uid;
         const tasks: Task[] = [];
+        const smallTasks: SmallTask[] = [];
 
-        fetchSignInUserInfo(uid, tasks, dispatch);
+        fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
       } else {
         dispatch(push("/signin"));
       }
@@ -72,8 +104,9 @@ export const signIn = (email: string, password: string) => {
       .then(async (result) => {
         const uid = result.user!.uid;
         const tasks: Task[] = [];
+        const smallTasks: SmallTask[] = [];
 
-        fetchSignInUserInfo(uid, tasks, dispatch);
+        fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
 
         dispatch(push("/"));
       })
@@ -194,6 +227,7 @@ export const taskRegistration = (contents: string) => {
       task: {
         id,
         contents,
+        small_tasks: [],
         updated_at: timestamp,
       },
     };
