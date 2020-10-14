@@ -22,7 +22,8 @@ const TaskDetail: React.FC = () => {
   const selector = useSelector((state: State) => state);
   const tasks = getTasks(selector);
   const taskId = window.location.pathname.split("/")[3];
-  const task = tasks.find((element) => element.id === taskId);
+  const taskIndex = tasks.findIndex((element) => element.id === taskId);
+  const task = tasks[taskIndex];
 
   const [contents, setContents] = useState("");
 
@@ -34,40 +35,44 @@ const TaskDetail: React.FC = () => {
   );
 
   const dispatchTaskDivision = () => {
-    dispatch(taskDivision(contents, taskId));
+    dispatch(taskDivision(contents, taskId, taskIndex));
     reset();
   };
 
   return (
     <div className="c-mw700">
-      <h2>タスクの詳細</h2>
-      <TextInput
-        fullWidth={true}
-        label="タスクを分割する"
-        multiline={true}
-        required={true}
-        rows="5"
-        type="text"
-        name="contents"
-        inputRef={register({
-          required: "入力必須です。",
-          maxLength: {
-            value: 100,
-            message: "100文字以内で入力してください。",
-          },
-        })}
-        error={Boolean(errors.contents)}
-        helperText={errors.contents && errors.contents.message}
-        onChange={inputContents}
-      />
-      <div className="space-m"></div>
-      <PrimaryButton
-        text="分割"
-        disabled={contents ? false : true}
-        onClick={handleSubmit(() => dispatchTaskDivision())}
-      />
-      <div className="space-l"></div>
-      {task && <Task contents={task.contents} datetime={task.updated_at} />}
+      {task && (
+        <>
+          <h2>タスクの詳細</h2>
+          <TextInput
+            fullWidth={true}
+            label="タスクを分割する"
+            multiline={true}
+            required={true}
+            rows="5"
+            type="text"
+            name="contents"
+            inputRef={register({
+              required: "入力必須です。",
+              maxLength: {
+                value: 100,
+                message: "100文字以内で入力してください。",
+              },
+            })}
+            error={Boolean(errors.contents)}
+            helperText={errors.contents && errors.contents.message}
+            onChange={inputContents}
+          />
+          <div className="space-m"></div>
+          <PrimaryButton
+            text="分割"
+            disabled={contents ? false : true}
+            onClick={handleSubmit(() => dispatchTaskDivision())}
+          />
+          <div className="space-l"></div>
+          <Task contents={task.contents} datetime={task.updated_at} />
+        </>
+      )}
     </div>
   );
 };

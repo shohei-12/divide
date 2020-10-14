@@ -34,3 +34,10 @@ export const taskRegistrationAction = (taskState: DispatchAction) => {
     },
   };
 };
+
+export const TASK_DIVISION = "TASK_DIVISION";
+export const taskDivisionAction = () => {
+  return {
+    type: "TASK_DIVISION",
+  };
+};

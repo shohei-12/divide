@@ -30,5 +30,5 @@ export interface DispatchAction {
 
 export interface UserAction {
   type: string;
-  payload: DispatchAction;
+  payload?: DispatchAction;
 }

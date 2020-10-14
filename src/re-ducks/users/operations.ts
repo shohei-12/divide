@@ -1,5 +1,10 @@
 import { push } from "connected-react-router";
-import { signInAction, signOutAction, taskRegistrationAction } from "./actions";
+import {
+  signInAction,
+  signOutAction,
+  taskRegistrationAction,
+  taskDivisionAction,
+} from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { Task, SmallTask } from "../users/types";
 
@@ -11,6 +16,8 @@ const fetchSignInUserInfo = async (
   smallTasks: SmallTask[],
   dispatch: any
 ) => {
+  const array: SmallTask[] = [];
+
   await usersRef
     .doc(uid)
     .get()
@@ -26,6 +33,7 @@ const fetchSignInUserInfo = async (
           for (const snapshot of snapshots.docs) {
             await snapshot.ref
               .collection("small_tasks")
+              .orderBy("updated_at", "asc")
               .get()
               .then((snapshots) => {
                 if (snapshots.docs.length > 0) {
@@ -36,17 +44,18 @@ const fetchSignInUserInfo = async (
                       contents: smallTaskData.contents,
                       updated_at: smallTaskData.updated_at,
                     } as SmallTask;
-                    smallTasks.push(smallTask);
+                    array.push(smallTask);
                   });
 
                   const taskData = snapshot.data();
                   const task = {
                     id: taskData.id,
                     contents: taskData.contents,
-                    small_tasks: smallTasks,
+                    small_tasks: smallTasks.concat(array),
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
+                  array.splice(0);
                 } else {
                   const taskData = snapshot.data();
                   const task = {
@@ -245,10 +254,15 @@ export const taskRegistration = (contents: string) => {
   };
 };
 
-export const taskDivision = (contents: string, taskId: string) => {
+export const taskDivision = (
+  contents: string,
+  taskId: string,
+  taskIndex: number
+) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
-    const uid = getState().users.uid;
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as Task[];
     const smallTasksRef = usersRef
       .doc(uid)
       .collection("tasks")
@@ -263,10 +277,20 @@ export const taskDivision = (contents: string, taskId: string) => {
       updated_at: timestamp,
     };
 
+    const smallTask = {
+      id,
+      contents,
+      updated_at: timestamp,
+    };
+
+    tasks[taskIndex].small_tasks.push(smallTask);
+
     smallTasksRef
       .doc(id)
       .set(smallTaskInitialData)
-      .then(() => {})
+      .then(() => {
+        dispatch(taskDivisionAction());
+      })
       .catch((error) => {
         throw new Error(error);
       });
