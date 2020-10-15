@@ -4,27 +4,32 @@ import { useForm } from "react-hook-form";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { State } from "../re-ducks/store/types";
 import { getTasks } from "../re-ducks/users/selectors";
-import { taskUpdate } from "../re-ducks/users/operations";
+import { smallTaskUpdate } from "../re-ducks/users/operations";
 
 type Inputs = {
   contents: string;
 };
 
-const TaskEdit: React.FC = () => {
+const SmallTaskEdit: React.FC = () => {
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const tasks = getTasks(selector);
   const taskId = window.location.pathname.split("/")[3];
+  const smallTaskId = window.location.pathname.split("/")[4];
   const taskIndex = tasks.findIndex((element) => element.id === taskId);
   const task = tasks[taskIndex];
+  const smallTaskIndex = task.small_tasks.findIndex(
+    (element) => element.id === smallTaskId
+  );
+  const smallTask = task.small_tasks[smallTaskIndex];
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
-      contents: task?.contents,
+      contents: smallTask?.contents,
     },
   });
 
-  const [contents, setContents] = useState(task?.contents);
+  const [contents, setContents] = useState(smallTask?.contents);
 
   const inputContents = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,13 +38,15 @@ const TaskEdit: React.FC = () => {
     [setContents]
   );
 
-  const dispatchTaskUpdate = () => {
-    dispatch(taskUpdate(contents, taskId, taskIndex));
+  const dispatchSmallTaskUpdate = () => {
+    dispatch(
+      smallTaskUpdate(contents, taskId, taskIndex, smallTaskId, smallTaskIndex)
+    );
   };
 
   return (
     <div className="c-mw700">
-      {task && (
+      {smallTask && (
         <>
           <h2>タスクの更新</h2>
           <TextInput
@@ -65,7 +72,7 @@ const TaskEdit: React.FC = () => {
           <SecondaryButton
             text="更新する"
             disabled={contents ? false : true}
-            onClick={handleSubmit(() => dispatchTaskUpdate())}
+            onClick={handleSubmit(() => dispatchSmallTaskUpdate())}
           />
         </>
       )}
@@ -73,4 +80,4 @@ const TaskEdit: React.FC = () => {
   );
 };
 
-export default TaskEdit;
+export default SmallTaskEdit;

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { SecondaryButton, TextInput } from "../components/UIkit";
-import { Task } from "../components/Tasks";
+import { SmallTask, Task } from "../components/Tasks";
 import { taskDivision } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -85,22 +85,25 @@ const TaskDetail: React.FC = () => {
           />
           <div className="space-l"></div>
           {task.small_tasks.length === 1 && (
-            <Task
-              taskId={task.small_tasks[0].id}
+            <SmallTask
+              taskId={task.id}
+              smallTaskId={task.small_tasks[0].id}
               contents={task.small_tasks[0].contents}
               datetime={task.small_tasks[0].updated_at}
             />
           )}
           {task.small_tasks.length === 2 && (
             <>
-              <Task
-                taskId={task.small_tasks[0].id}
+              <SmallTask
+                taskId={task.id}
+                smallTaskId={task.small_tasks[0].id}
                 contents={task.small_tasks[0].contents}
                 datetime={task.small_tasks[0].updated_at}
               />
               <AddIcon className={classes.icon} color="primary" />
-              <Task
-                taskId={task.small_tasks[1].id}
+              <SmallTask
+                taskId={task.id}
+                smallTaskId={task.small_tasks[1].id}
                 contents={task.small_tasks[1].contents}
                 datetime={task.small_tasks[1].updated_at}
               />
@@ -110,16 +113,18 @@ const TaskDetail: React.FC = () => {
             <>
               {task.small_tasks.slice(0, -1).map((smallTask, index) => (
                 <React.Fragment key={index}>
-                  <Task
-                    taskId={smallTask.id}
+                  <SmallTask
+                    taskId={task.id}
+                    smallTaskId={smallTask.id}
                     contents={smallTask.contents}
                     datetime={smallTask.updated_at}
                   />
                   <AddIcon className={classes.icon} color="primary" />
                 </React.Fragment>
               ))}
-              <Task
-                taskId={task.small_tasks.slice(-1)[0].id}
+              <SmallTask
+                taskId={task.id}
+                smallTaskId={task.small_tasks.slice(-1)[0].id}
                 contents={task.small_tasks.slice(-1)[0].contents}
                 datetime={task.small_tasks.slice(-1)[0].updated_at}
               />

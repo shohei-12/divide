@@ -34,7 +34,7 @@ const fetchSignInUserInfo = async (
           for (const snapshot of snapshots.docs) {
             await snapshot.ref
               .collection("small_tasks")
-              .orderBy("updated_at", "asc")
+              .orderBy("created_at", "asc")
               .get()
               .then((snapshots) => {
                 if (snapshots.docs.length > 0) {
@@ -320,6 +320,44 @@ export const taskUpdate = (
     tasksRef
       .doc(taskId)
       .set(taskData, { merge: true })
+      .then(() => {
+        dispatch(taskUpdateAction());
+        dispatch(push(`/task/detail/${taskId}`));
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const smallTaskUpdate = (
+  contents: string,
+  taskId: string,
+  taskIndex: number,
+  smallTaskId: string,
+  smallTaskIndex: number
+) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid as string;
+    const task = getState().users.tasks[taskIndex] as Task;
+    const smallTasksRef = usersRef
+      .doc(uid)
+      .collection("tasks")
+      .doc(taskId)
+      .collection("small_tasks");
+
+    task.small_tasks[smallTaskIndex].contents = contents;
+    task.small_tasks[smallTaskIndex].updated_at = timestamp;
+
+    const smallTaskData = {
+      contents,
+      updated_at: timestamp,
+    };
+
+    smallTasksRef
+      .doc(smallTaskId)
+      .set(smallTaskData, { merge: true })
       .then(() => {
         dispatch(taskUpdateAction());
         dispatch(push(`/task/detail/${taskId}`));

@@ -1,6 +1,7 @@
 export { default as PasswordReset } from "./PasswordReset";
 export { default as SignIn } from "./SignIn";
 export { default as SignUp } from "./SignUp";
+export { default as SmallTaskEdit } from "./SmallTaskEdit";
 export { default as TaskDetail } from "./TaskDetail";
 export { default as TaskEdit } from "./TaskEdit";
 export { default as TaskList } from "./TaskList";
