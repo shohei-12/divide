@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { push } from "connected-react-router";
-import { PrimaryButton, TextInput } from "../components/UIkit";
+import { SecondaryButton, TextInput } from "../components/UIkit";
 import { auth } from "../firebase";
 
 type Inputs = {
@@ -67,7 +67,7 @@ const PasswordReset: React.FC = () => {
         onChange={inputEmail}
       />
       <div className="space-m"></div>
-      <PrimaryButton
+      <SecondaryButton
         text="パスワードをリセットする"
         disabled={email ? false : true}
         onClick={handleSubmit(() => resetPassword(email))}

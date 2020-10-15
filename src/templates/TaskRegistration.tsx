@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { PrimaryButton, TextInput } from "../components/UIkit";
+import { SecondaryButton, TextInput } from "../components/UIkit";
 import { taskRegistration } from "../re-ducks/users/operations";
 
 type Inputs = {
@@ -53,7 +53,7 @@ const TaskRegistration: React.FC = () => {
         onChange={inputContents}
       />
       <div className="space-m"></div>
-      <PrimaryButton
+      <SecondaryButton
         text="登録する"
         disabled={contents ? false : true}
         onClick={handleSubmit(() => dispatchTaskRegistration())}

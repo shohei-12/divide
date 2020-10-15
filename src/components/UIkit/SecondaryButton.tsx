@@ -6,7 +6,8 @@ type Props = {
   disabled: boolean;
   onClick: () => any;
 };
-const PrimaryButton: React.FC<Props> = (props) => {
+
+const SecondaryButton: React.FC<Props> = (props) => {
   return (
     <Button
       color="secondary"
@@ -19,4 +20,4 @@ const PrimaryButton: React.FC<Props> = (props) => {
   );
 };
 
-export default PrimaryButton;
+export default SecondaryButton;

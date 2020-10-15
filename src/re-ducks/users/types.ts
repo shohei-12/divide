@@ -1,34 +1,34 @@
-export interface UserState {
+export type UserState = {
   isSignedIn: boolean;
   uid: string;
   username: string;
   email: string;
   tasks: Task[];
-}
+};
 
-export interface Task {
+export type Task = {
   id: string;
   contents: string;
   small_tasks: SmallTask[];
   updated_at: firebase.firestore.Timestamp;
-}
+};
 
-export interface SmallTask {
+export type SmallTask = {
   id: string;
   contents: string;
   updated_at: firebase.firestore.Timestamp;
-}
+};
 
-export interface DispatchAction {
+export type DispatchAction = {
   isSignedIn?: boolean;
   uid?: string;
   username?: string;
   email?: string;
   task?: Task;
   tasks?: Task[];
-}
+};
 
-export interface UserAction {
+export type UserAction = {
   type: string;
   payload?: DispatchAction;
-}
+};

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { PrimaryButton, TextInput } from "../components/UIkit";
+import { SecondaryButton, TextInput } from "../components/UIkit";
 import { getUserId, getUsername, getEmail } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { userUpdate } from "../re-ducks/users/operations";
@@ -88,7 +88,7 @@ const UserEdit: React.FC = () => {
         onChange={inputEmail}
       />
       <div className="space-m"></div>
-      <PrimaryButton
+      <SecondaryButton
         text="更新する"
         disabled={username && email ? false : true}
         onClick={handleSubmit(() => dispatchUserUpdate())}

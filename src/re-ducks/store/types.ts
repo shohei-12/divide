@@ -1,6 +1,6 @@
 import { UserState } from "../users/types";
 
-export interface State {
+export type State = {
   users: UserState;
   router: any;
-}
+};

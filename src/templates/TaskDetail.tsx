@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
-import { PrimaryButton, TextInput } from "../components/UIkit";
+import { SecondaryButton, TextInput } from "../components/UIkit";
 import { Task } from "../components/Tasks";
 import { taskDivision } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
@@ -78,7 +78,7 @@ const TaskDetail: React.FC = () => {
             onChange={inputContents}
           />
           <div className="space-m"></div>
-          <PrimaryButton
+          <SecondaryButton
             text="分割"
             disabled={contents ? false : true}
             onClick={handleSubmit(() => dispatchTaskDivision())}

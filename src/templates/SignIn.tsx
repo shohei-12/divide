@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { push } from "connected-react-router";
-import { PrimaryButton, TextInput } from "../components/UIkit";
+import { SecondaryButton, TextInput } from "../components/UIkit";
 import { signIn } from "../re-ducks/users/operations";
 
 type Inputs = {
@@ -88,7 +88,7 @@ const SignIn: React.FC = () => {
         onChange={inputPassword}
       />
       <div className="space-m"></div>
-      <PrimaryButton
+      <SecondaryButton
         text="ログインする"
         disabled={email && password ? false : true}
         onClick={handleSubmit(() => dispatchSignIn())}
