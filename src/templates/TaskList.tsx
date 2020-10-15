@@ -14,10 +14,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     task: {
       margin: 8,
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.up("xs")]: {
         width: "100%",
       },
-      [theme.breakpoints.up("sm")]: {
+      [theme.breakpoints.up("lg")]: {
         width: "calc(50% - 16px)",
       },
       [theme.breakpoints.up("xl")]: {

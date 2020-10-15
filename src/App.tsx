@@ -8,7 +8,11 @@ import "./assets/style.css";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    toolbar: theme.mixins.toolbar,
+    main: {
+      [theme.breakpoints.up("sm")]: {
+        padding: "84px 0 20px 240px",
+      },
+    },
   })
 );
 
@@ -29,8 +33,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <DrawerMenu />
-      <main>
-        <div className={classes.toolbar} />
+      <main className={classes.main}>
         <Router />
       </main>
     </ThemeProvider>
