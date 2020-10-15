@@ -41,3 +41,10 @@ export const taskDivisionAction = () => {
     type: "TASK_DIVISION",
   };
 };
+
+export const TASK_UPDATE = "TASK_UPDATE";
+export const taskUpdateAction = () => {
+  return {
+    type: "TASK_UPDATE",
+  };
+};

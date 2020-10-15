@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { push } from "connected-react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -29,12 +31,14 @@ const useStyles = makeStyles({
 });
 
 type Props = {
+  taskId: string;
   contents: string;
   datetime: firebase.firestore.Timestamp;
 };
 
 const Task: React.FC<Props> = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const formatDatetime = (datetime: Date) => {
     return (
@@ -66,7 +70,9 @@ const Task: React.FC<Props> = (props) => {
         <Typography variant="h5" component="h3">
           {props.contents}
         </Typography>
-        <IconButton>
+        <IconButton
+          onClick={() => dispatch(push(`/task/edit/${props.taskId}`))}
+        >
           <EditIcon />
         </IconButton>
         <IconButton>

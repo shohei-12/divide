@@ -45,7 +45,11 @@ const TaskList: React.FC = () => {
             className={classes.task}
             onClick={() => dispatch(push(`/task/detail/${task.id}`))}
           >
-            <Task contents={task.contents} datetime={task.updated_at} />
+            <Task
+              taskId={task.id}
+              contents={task.contents}
+              datetime={task.updated_at}
+            />
           </div>
         ))}
     </div>

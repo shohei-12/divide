@@ -25,6 +25,10 @@ export const UsersReducer = (
       return {
         ...state,
       };
+    case Actions.TASK_UPDATE:
+      return {
+        ...state,
+      };
     default:
       return state;
   }

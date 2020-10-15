@@ -86,6 +86,7 @@ const TaskDetail: React.FC = () => {
           <div className="space-l"></div>
           {task.small_tasks.length === 1 && (
             <Task
+              taskId={task.small_tasks[0].id}
               contents={task.small_tasks[0].contents}
               datetime={task.small_tasks[0].updated_at}
             />
@@ -93,11 +94,13 @@ const TaskDetail: React.FC = () => {
           {task.small_tasks.length === 2 && (
             <>
               <Task
+                taskId={task.small_tasks[0].id}
                 contents={task.small_tasks[0].contents}
                 datetime={task.small_tasks[0].updated_at}
               />
               <AddIcon className={classes.icon} color="primary" />
               <Task
+                taskId={task.small_tasks[1].id}
                 contents={task.small_tasks[1].contents}
                 datetime={task.small_tasks[1].updated_at}
               />
@@ -108,6 +111,7 @@ const TaskDetail: React.FC = () => {
               {task.small_tasks.slice(0, -1).map((smallTask, index) => (
                 <React.Fragment key={index}>
                   <Task
+                    taskId={smallTask.id}
                     contents={smallTask.contents}
                     datetime={smallTask.updated_at}
                   />
@@ -115,6 +119,7 @@ const TaskDetail: React.FC = () => {
                 </React.Fragment>
               ))}
               <Task
+                taskId={task.small_tasks.slice(-1)[0].id}
                 contents={task.small_tasks.slice(-1)[0].contents}
                 datetime={task.small_tasks.slice(-1)[0].updated_at}
               />
@@ -124,7 +129,11 @@ const TaskDetail: React.FC = () => {
             <ArrowDownwardIcon className={classes.icon} color="primary" />
           )}
           <div className="space-l"></div>
-          <Task contents={task.contents} datetime={task.updated_at} />
+          <Task
+            taskId={taskId}
+            contents={task.contents}
+            datetime={task.updated_at}
+          />
         </>
       )}
     </div>

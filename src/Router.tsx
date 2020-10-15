@@ -5,6 +5,7 @@ import {
   SignIn,
   SignUp,
   TaskDetail,
+  TaskEdit,
   TaskList,
   TaskRegistration,
   UserEdit,
@@ -19,6 +20,7 @@ const Router: React.FC = () => {
       <Route exact path="/signup" component={SignUp} />
       <Auth>
         <Route exact path="/task/detail/:id" component={TaskDetail} />
+        <Route exact path="/task/edit/:id" component={TaskEdit} />
         <Route exact path="/" component={TaskList} />
         <Route exact path="/task/registration" component={TaskRegistration} />
         <Route exact path="/user/edit" component={UserEdit} />

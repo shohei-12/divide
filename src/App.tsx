@@ -9,8 +9,9 @@ import "./assets/style.css";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
+      padding: "76px 10px 20px",
       [theme.breakpoints.up("sm")]: {
-        padding: "84px 0 20px 240px",
+        padding: "84px 10px 20px 250px",
       },
     },
   })

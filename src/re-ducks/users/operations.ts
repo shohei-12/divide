@@ -4,6 +4,7 @@ import {
   signOutAction,
   taskRegistrationAction,
   taskDivisionAction,
+  taskUpdateAction,
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { Task, SmallTask } from "../users/types";
@@ -290,6 +291,38 @@ export const taskDivision = (
       .set(smallTaskInitialData)
       .then(() => {
         dispatch(taskDivisionAction());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const taskUpdate = (
+  contents: string,
+  taskId: string,
+  taskIndex: number
+) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid as string;
+    const task = getState().users.tasks[taskIndex] as Task;
+    const tasksRef = usersRef.doc(uid).collection("tasks");
+
+    task.contents = contents;
+    task.updated_at = timestamp;
+
+    const taskData = {
+      contents,
+      updated_at: timestamp,
+    };
+
+    tasksRef
+      .doc(taskId)
+      .set(taskData, { merge: true })
+      .then(() => {
+        dispatch(taskUpdateAction());
+        dispatch(push(`/task/detail/${taskId}`));
       })
       .catch((error) => {
         throw new Error(error);
