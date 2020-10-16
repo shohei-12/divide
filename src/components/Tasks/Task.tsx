@@ -66,18 +66,27 @@ const Task: React.FC<Props> = (props) => {
             className={classes.check}
             color="primary"
             inputProps={{ "aria-label": "タスクの完了" }}
+            onClick={(
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ) => {
+              event.stopPropagation();
+            }}
           />
         </div>
         <Typography variant="h5" component="h3">
           {props.contents}
         </Typography>
         <IconButton
-          onClick={() => dispatch(push(`/task/edit/${props.taskId}`))}
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.stopPropagation();
+            dispatch(push(`/task/edit/${props.taskId}`));
+          }}
         >
           <EditIcon />
         </IconButton>
         <IconButton
-          onClick={() => {
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.stopPropagation();
             if (window.confirm("本当に削除しますか？")) {
               dispatch(taskDelete(props.taskId));
             }
