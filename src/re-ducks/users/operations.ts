@@ -371,8 +371,8 @@ export const smallTaskUpdate = (
 
 export const taskDelete = (taskId: string) => {
   return async (dispatch: any, getState: any) => {
-    const uid = getState().users.uid;
-    let tasks = getState().users.tasks as Task[];
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as Task[];
     const tasksRef = usersRef.doc(uid).collection("tasks");
 
     getState().users.tasks = tasks.filter((task) => task.id !== taskId);
@@ -383,6 +383,33 @@ export const taskDelete = (taskId: string) => {
       .then(() => {
         dispatch(taskDeleteAction());
         dispatch(push("/"));
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const smallTaskDelete = (taskId: string, smallTaskId: string) => {
+  return async (dispatch: any, getState: any) => {
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as Task[];
+    const task = tasks.find((element) => element.id === taskId)!;
+    const smallTasksRef = usersRef
+      .doc(uid)
+      .collection("tasks")
+      .doc(taskId)
+      .collection("small_tasks");
+
+    task.small_tasks = task.small_tasks.filter(
+      (smallTask) => smallTask.id !== smallTaskId
+    );
+
+    smallTasksRef
+      .doc(smallTaskId)
+      .delete()
+      .then(() => {
+        dispatch(taskDeleteAction());
       })
       .catch((error) => {
         throw new Error(error);

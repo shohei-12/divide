@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
+import { smallTaskDelete } from "../../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -80,7 +81,13 @@ const SmallTask: React.FC<Props> = (props) => {
         >
           <EditIcon />
         </IconButton>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            if (window.confirm("本当に削除しますか？")) {
+              dispatch(smallTaskDelete(props.taskId, props.smallTaskId));
+            }
+          }}
+        >
           <DeleteIcon />
         </IconButton>
       </CardContent>
