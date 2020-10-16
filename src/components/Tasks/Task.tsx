@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
+import { taskDelete } from "../../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -75,7 +76,13 @@ const Task: React.FC<Props> = (props) => {
         >
           <EditIcon />
         </IconButton>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            if (window.confirm("本当に削除しますか？")) {
+              dispatch(taskDelete(props.taskId));
+            }
+          }}
+        >
           <DeleteIcon />
         </IconButton>
       </CardContent>

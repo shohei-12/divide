@@ -48,3 +48,10 @@ export const taskUpdateAction = () => {
     type: "TASK_UPDATE",
   };
 };
+
+export const TASK_DELETE = "TASK_DELETE";
+export const taskDeleteAction = () => {
+  return {
+    type: "TASK_DELETE",
+  };
+};

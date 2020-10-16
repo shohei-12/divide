@@ -5,6 +5,7 @@ import {
   taskRegistrationAction,
   taskDivisionAction,
   taskUpdateAction,
+  taskDeleteAction,
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { Task, SmallTask } from "../users/types";
@@ -361,6 +362,27 @@ export const smallTaskUpdate = (
       .then(() => {
         dispatch(taskUpdateAction());
         dispatch(push(`/task/detail/${taskId}`));
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const taskDelete = (taskId: string) => {
+  return async (dispatch: any, getState: any) => {
+    const uid = getState().users.uid;
+    let tasks = getState().users.tasks as Task[];
+    const tasksRef = usersRef.doc(uid).collection("tasks");
+
+    getState().users.tasks = tasks.filter((task) => task.id !== taskId);
+
+    tasksRef
+      .doc(taskId)
+      .delete()
+      .then(() => {
+        dispatch(taskDeleteAction());
+        dispatch(push("/"));
       })
       .catch((error) => {
         throw new Error(error);

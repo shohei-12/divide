@@ -29,6 +29,10 @@ export const UsersReducer = (
       return {
         ...state,
       };
+    case Actions.TASK_DELETE:
+      return {
+        ...state,
+      };
     default:
       return state;
   }
