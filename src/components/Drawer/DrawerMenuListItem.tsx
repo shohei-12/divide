@@ -16,6 +16,7 @@ type Props = {
   text: string;
   icon: JSX.Element;
   path: string;
+  handleDrawerToggle: () => void;
 };
 
 const DrawerMenuListItem: React.FC<Props> = (props) => {
@@ -23,10 +24,30 @@ const DrawerMenuListItem: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
 
   return (
-    <ListItem button onClick={() => dispatch(push(props.path))}>
-      <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
-      <ListItemText primary={props.text} />
-    </ListItem>
+    <>
+      {window.innerWidth >= 600 ? (
+        <ListItem
+          button
+          onClick={() => {
+            dispatch(push(props.path));
+          }}
+        >
+          <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
+          <ListItemText primary={props.text} />
+        </ListItem>
+      ) : (
+        <ListItem
+          button
+          onClick={() => {
+            dispatch(push(props.path));
+            props.handleDrawerToggle();
+          }}
+        >
+          <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
+          <ListItemText primary={props.text} />
+        </ListItem>
+      )}
+    </>
   );
 };
 

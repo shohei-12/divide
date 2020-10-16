@@ -89,7 +89,7 @@ const DrawerMenu: React.FC = () => {
     setMobileOpen(!mobileOpen);
   }, [setMobileOpen, mobileOpen]);
 
-  const list = [
+  const signInList = [
     {
       text: "タスクの登録",
       icon: <AddCircleIcon />,
@@ -102,45 +102,75 @@ const DrawerMenu: React.FC = () => {
     },
   ];
 
+  const guestList = [
+    {
+      text: "ログイン",
+      icon: <ExitToAppIcon />,
+      path: "/signin",
+    },
+    {
+      text: "ユーザーの登録",
+      icon: <PersonAddIcon />,
+      path: "/signup",
+    },
+    {
+      text: "パスワードのリセット",
+      icon: <LockIcon />,
+      path: "/password/reset",
+    },
+  ];
+
   const listChild = (
     <>
       {isSignedIn ? (
         <>
-          {list.map((item, index) => (
+          {signInList.map((item, index) => (
             <DrawerMenuListItem
               key={index}
               text={item.text}
               icon={item.icon}
               path={item.path}
+              handleDrawerToggle={handleDrawerToggle}
             />
           ))}
-          <ListItem button onClick={() => dispatch(signOut())}>
-            <ListItemIcon className={classes.icon}>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary="ログアウト" />
-          </ListItem>
+          {window.innerWidth >= 600 ? (
+            <ListItem
+              button
+              onClick={() => {
+                dispatch(signOut());
+              }}
+            >
+              <ListItemIcon className={classes.icon}>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="ログアウト" />
+            </ListItem>
+          ) : (
+            <ListItem
+              button
+              onClick={() => {
+                dispatch(signOut());
+                handleDrawerToggle();
+              }}
+            >
+              <ListItemIcon className={classes.icon}>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="ログアウト" />
+            </ListItem>
+          )}
         </>
       ) : (
         <>
-          <ListItem button onClick={() => dispatch(push("/signin"))}>
-            <ListItemIcon className={classes.icon}>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary="ログイン" />
-          </ListItem>
-          <ListItem button onClick={() => dispatch(push("/signup"))}>
-            <ListItemIcon className={classes.icon}>
-              <PersonAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="ユーザーの登録" />
-          </ListItem>
-          <ListItem button onClick={() => dispatch(push("/password/reset"))}>
-            <ListItemIcon className={classes.icon}>
-              <LockIcon />
-            </ListItemIcon>
-            <ListItemText primary="パスワードのリセット" />
-          </ListItem>
+          {guestList.map((item, index) => (
+            <DrawerMenuListItem
+              key={index}
+              text={item.text}
+              icon={item.icon}
+              path={item.path}
+              handleDrawerToggle={handleDrawerToggle}
+            />
+          ))}
         </>
       )}
     </>
