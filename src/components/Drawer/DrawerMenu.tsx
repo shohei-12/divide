@@ -37,12 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
         flexShrink: 0,
       },
     },
-    appBar: {
-      [theme.breakpoints.up("sm")]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-      },
-    },
     menuButton: {
       marginRight: theme.spacing(2),
       [theme.breakpoints.up("sm")]: {
@@ -99,6 +93,11 @@ const DrawerMenu: React.FC = () => {
       text: "プロフィールの編集",
       icon: <EditIcon />,
       path: "/user/edit",
+    },
+    {
+      text: "パスワードのリセット",
+      icon: <LockIcon />,
+      path: "/password/reset",
     },
   ];
 
@@ -179,7 +178,7 @@ const DrawerMenu: React.FC = () => {
   return (
     <div className={classes.root}>
       <Hidden smUp>
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position="fixed">
           <Toolbar>
             <IconButton
               color="inherit"
