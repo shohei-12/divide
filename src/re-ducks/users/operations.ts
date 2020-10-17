@@ -3,9 +3,7 @@ import {
   signInAction,
   signOutAction,
   taskRegistrationAction,
-  taskDivisionAction,
-  taskUpdateAction,
-  taskDeleteAction,
+  taskNonPayloadAction,
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { Task, SmallTask } from "../users/types";
@@ -113,13 +111,16 @@ export const signIn = (email: string, password: string) => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then(async (result) => {
-        const uid = result.user!.uid;
-        const tasks: Task[] = [];
-        const smallTasks: SmallTask[] = [];
+        const user = result.user;
+        if (user) {
+          const uid = user.uid;
+          const tasks: Task[] = [];
+          const smallTasks: SmallTask[] = [];
 
-        fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
+          fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
 
-        dispatch(push("/"));
+          dispatch(push("/"));
+        }
       })
       .catch(() => {
         alert("入力されたメールアドレスまたはパスワードに誤りがあります。");
@@ -291,7 +292,7 @@ export const taskDivision = (
       .doc(id)
       .set(smallTaskInitialData)
       .then(() => {
-        dispatch(taskDivisionAction());
+        dispatch(taskNonPayloadAction());
       })
       .catch((error) => {
         throw new Error(error);
@@ -322,7 +323,7 @@ export const taskUpdate = (
       .doc(taskId)
       .set(taskData, { merge: true })
       .then(() => {
-        dispatch(taskUpdateAction());
+        dispatch(taskNonPayloadAction());
         dispatch(push(`/task/detail/${taskId}`));
       })
       .catch((error) => {
@@ -360,7 +361,7 @@ export const smallTaskUpdate = (
       .doc(smallTaskId)
       .set(smallTaskData, { merge: true })
       .then(() => {
-        dispatch(taskUpdateAction());
+        dispatch(taskNonPayloadAction());
         dispatch(push(`/task/detail/${taskId}`));
       })
       .catch((error) => {
@@ -381,7 +382,7 @@ export const taskDelete = (taskId: string) => {
       .doc(taskId)
       .delete()
       .then(() => {
-        dispatch(taskDeleteAction());
+        dispatch(taskNonPayloadAction());
         dispatch(push("/"));
       })
       .catch((error) => {
@@ -409,7 +410,7 @@ export const smallTaskDelete = (taskId: string, smallTaskId: string) => {
       .doc(smallTaskId)
       .delete()
       .then(() => {
-        dispatch(taskDeleteAction());
+        dispatch(taskNonPayloadAction());
       })
       .catch((error) => {
         throw new Error(error);

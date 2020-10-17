@@ -35,23 +35,9 @@ export const taskRegistrationAction = (taskState: DispatchAction) => {
   };
 };
 
-export const TASK_DIVISION = "TASK_DIVISION";
-export const taskDivisionAction = () => {
+export const TASK_NON_PAYLOAD = "TASK_NON_PAYLOAD";
+export const taskNonPayloadAction = () => {
   return {
-    type: "TASK_DIVISION",
-  };
-};
-
-export const TASK_UPDATE = "TASK_UPDATE";
-export const taskUpdateAction = () => {
-  return {
-    type: "TASK_UPDATE",
-  };
-};
-
-export const TASK_DELETE = "TASK_DELETE";
-export const taskDeleteAction = () => {
-  return {
-    type: "TASK_DELETE",
+    type: "TASK_NON_PAYLOAD",
   };
 };

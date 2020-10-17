@@ -21,15 +21,7 @@ export const UsersReducer = (
         ...state,
         tasks: [action.payload!.task, ...state.tasks],
       };
-    case Actions.TASK_DIVISION:
-      return {
-        ...state,
-      };
-    case Actions.TASK_UPDATE:
-      return {
-        ...state,
-      };
-    case Actions.TASK_DELETE:
+    case Actions.TASK_NON_PAYLOAD:
       return {
         ...state,
       };
