@@ -11,6 +11,7 @@ export type Task = {
   contents: string;
   small_tasks: SmallTask[];
   deadline: firebase.firestore.Timestamp | null;
+  checked: boolean;
   updated_at: firebase.firestore.Timestamp;
 };
 
@@ -18,6 +19,7 @@ export type SmallTask = {
   id: string;
   contents: string;
   deadline: firebase.firestore.Timestamp | null;
+  checked: boolean;
   updated_at: firebase.firestore.Timestamp;
 };
 

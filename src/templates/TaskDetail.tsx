@@ -114,6 +114,7 @@ const TaskDetail: React.FC = () => {
               smallTaskId={task.small_tasks[0].id}
               contents={task.small_tasks[0].contents}
               deadline={task.small_tasks[0].deadline}
+              checked={task.small_tasks[0].checked}
               datetime={task.small_tasks[0].updated_at}
             />
           )}
@@ -124,6 +125,7 @@ const TaskDetail: React.FC = () => {
                 smallTaskId={task.small_tasks[0].id}
                 contents={task.small_tasks[0].contents}
                 deadline={task.small_tasks[0].deadline}
+                checked={task.small_tasks[0].checked}
                 datetime={task.small_tasks[0].updated_at}
               />
               <AddIcon className={classes.icon} color="primary" />
@@ -132,6 +134,7 @@ const TaskDetail: React.FC = () => {
                 smallTaskId={task.small_tasks[1].id}
                 contents={task.small_tasks[1].contents}
                 deadline={task.small_tasks[1].deadline}
+                checked={task.small_tasks[1].checked}
                 datetime={task.small_tasks[1].updated_at}
               />
             </>
@@ -145,6 +148,7 @@ const TaskDetail: React.FC = () => {
                     smallTaskId={smallTask.id}
                     contents={smallTask.contents}
                     deadline={smallTask.deadline}
+                    checked={smallTask.checked}
                     datetime={smallTask.updated_at}
                   />
                   <AddIcon className={classes.icon} color="primary" />
@@ -155,6 +159,7 @@ const TaskDetail: React.FC = () => {
                 smallTaskId={task.small_tasks.slice(-1)[0].id}
                 contents={task.small_tasks.slice(-1)[0].contents}
                 deadline={task.small_tasks.slice(-1)[0].deadline}
+                checked={task.small_tasks.slice(-1)[0].checked}
                 datetime={task.small_tasks.slice(-1)[0].updated_at}
               />
             </>
@@ -167,6 +172,7 @@ const TaskDetail: React.FC = () => {
             taskId={taskId}
             contents={task.contents}
             deadline={task.deadline}
+            checked={task.checked}
             datetime={task.updated_at}
           />
         </>

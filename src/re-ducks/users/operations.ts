@@ -42,6 +42,7 @@ const fetchSignInUserInfo = async (
                     const smallTask = {
                       id: smallTaskData.id,
                       deadline: smallTaskData.deadline,
+                      checked: smallTaskData.checked,
                       contents: smallTaskData.contents,
                       updated_at: smallTaskData.updated_at,
                     } as SmallTask;
@@ -54,6 +55,7 @@ const fetchSignInUserInfo = async (
                     contents: taskData.contents,
                     small_tasks: smallTasks.concat(array),
                     deadline: taskData.deadline,
+                    checked: taskData.checked,
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
@@ -65,6 +67,7 @@ const fetchSignInUserInfo = async (
                     contents: taskData.contents,
                     small_tasks: [],
                     deadline: taskData.deadline,
+                    checked: taskData.checked,
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
@@ -236,6 +239,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
         id,
         contents,
         deadline: val,
+        checked: false,
         created_at: timestamp,
         updated_at: timestamp,
       };
@@ -246,6 +250,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
           contents,
           small_tasks: [],
           deadline: val,
+          checked: false,
           updated_at: timestamp,
         },
       };
@@ -292,6 +297,7 @@ export const taskDivision = (
         id,
         contents,
         deadline: val,
+        checked: false,
         created_at: timestamp,
         updated_at: timestamp,
       };
@@ -300,6 +306,7 @@ export const taskDivision = (
         id,
         contents,
         deadline: val,
+        checked: false,
         updated_at: timestamp,
       };
 
@@ -457,6 +464,71 @@ export const smallTaskDelete = (taskId: string, smallTaskId: string) => {
     smallTasksRef
       .doc(smallTaskId)
       .delete()
+      .then(() => {
+        dispatch(taskNonPayloadAction());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const taskCheckToggle = (check: boolean, taskId: string) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as Task[];
+    const task = tasks.find((element) => element.id === taskId)!;
+    const tasksRef = usersRef.doc(uid).collection("tasks");
+
+    task.checked = check;
+
+    const taskData = {
+      checked: check,
+      updated_at: timestamp,
+    };
+
+    tasksRef
+      .doc(taskId)
+      .set(taskData, { merge: true })
+      .then(() => {
+        dispatch(taskNonPayloadAction());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
+export const smallTaskCheckToggle = (
+  check: boolean,
+  taskId: string,
+  smallTaskId: string
+) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as Task[];
+    const task = tasks.find((element) => element.id === taskId)!;
+    const smallTask = task.small_tasks.find(
+      (element) => element.id === smallTaskId
+    )!;
+    const smallTasksRef = usersRef
+      .doc(uid)
+      .collection("tasks")
+      .doc(taskId)
+      .collection("small_tasks");
+
+    smallTask.checked = check;
+
+    const smallTaskData = {
+      checked: check,
+      updated_at: timestamp,
+    };
+
+    smallTasksRef
+      .doc(smallTaskId)
+      .set(smallTaskData, { merge: true })
       .then(() => {
         dispatch(taskNonPayloadAction());
       })

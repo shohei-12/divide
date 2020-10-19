@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Deadline } from ".";
-import { taskDelete } from "../../re-ducks/users/operations";
+import { taskCheckToggle, taskDelete } from "../../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -36,6 +36,7 @@ type Props = {
   taskId: string;
   contents: string;
   deadline: firebase.firestore.Timestamp | null;
+  checked: boolean;
   datetime: firebase.firestore.Timestamp;
 };
 
@@ -67,12 +68,14 @@ const Task: React.FC<Props> = (props) => {
           <div className={classes.flex + " " + classes.alignRight}>
             {props.deadline && <Deadline deadline={props.deadline} />}
             <Checkbox
+              checked={props.checked}
               color="primary"
               inputProps={{ "aria-label": "タスクの完了" }}
               onClick={(
                 event: React.MouseEvent<HTMLButtonElement, MouseEvent>
               ) => {
                 event.stopPropagation();
+                dispatch(taskCheckToggle(!props.checked, props.taskId));
               }}
             />
           </div>
