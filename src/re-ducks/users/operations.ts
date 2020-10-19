@@ -327,7 +327,8 @@ export const taskDivision = (
 export const taskUpdate = (
   contents: string,
   taskId: string,
-  taskIndex: number
+  taskIndex: number,
+  deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
@@ -338,21 +339,32 @@ export const taskUpdate = (
     task.contents = contents;
     task.updated_at = timestamp;
 
-    const taskData = {
-      contents,
-      updated_at: timestamp,
+    const updateTaskData = (val: firebase.firestore.Timestamp | null) => {
+      task.deadline = val;
+
+      const taskData = {
+        contents,
+        deadline: val,
+        updated_at: timestamp,
+      };
+
+      tasksRef
+        .doc(taskId)
+        .set(taskData, { merge: true })
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+          dispatch(push(`/task/detail/${taskId}`));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
     };
 
-    tasksRef
-      .doc(taskId)
-      .set(taskData, { merge: true })
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-        dispatch(push(`/task/detail/${taskId}`));
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    if (deadline) {
+      updateTaskData(FirebaseTimestamp.fromDate(deadline));
+    } else {
+      updateTaskData(deadline);
+    }
   };
 };
 
@@ -361,7 +373,8 @@ export const smallTaskUpdate = (
   taskId: string,
   taskIndex: number,
   smallTaskId: string,
-  smallTaskIndex: number
+  smallTaskIndex: number,
+  deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
@@ -376,21 +389,32 @@ export const smallTaskUpdate = (
     task.small_tasks[smallTaskIndex].contents = contents;
     task.small_tasks[smallTaskIndex].updated_at = timestamp;
 
-    const smallTaskData = {
-      contents,
-      updated_at: timestamp,
+    const updateSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
+      task.small_tasks[smallTaskIndex].deadline = val;
+
+      const smallTaskData = {
+        contents,
+        deadline: val,
+        updated_at: timestamp,
+      };
+
+      smallTasksRef
+        .doc(smallTaskId)
+        .set(smallTaskData, { merge: true })
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+          dispatch(push(`/task/detail/${taskId}`));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
     };
 
-    smallTasksRef
-      .doc(smallTaskId)
-      .set(smallTaskData, { merge: true })
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-        dispatch(push(`/task/detail/${taskId}`));
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    if (deadline) {
+      updateSmallTaskData(FirebaseTimestamp.fromDate(deadline));
+    } else {
+      updateSmallTaskData(deadline);
+    }
   };
 };
 
