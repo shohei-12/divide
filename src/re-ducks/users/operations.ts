@@ -41,6 +41,7 @@ const fetchSignInUserInfo = async (
                     const smallTaskData = snapshot.data();
                     const smallTask = {
                       id: smallTaskData.id,
+                      deadline: smallTaskData.deadline,
                       contents: smallTaskData.contents,
                       updated_at: smallTaskData.updated_at,
                     } as SmallTask;
@@ -52,6 +53,7 @@ const fetchSignInUserInfo = async (
                     id: taskData.id,
                     contents: taskData.contents,
                     small_tasks: smallTasks.concat(array),
+                    deadline: taskData.deadline,
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
@@ -62,6 +64,7 @@ const fetchSignInUserInfo = async (
                     id: taskData.id,
                     contents: taskData.contents,
                     small_tasks: [],
+                    deadline: taskData.deadline,
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
@@ -262,7 +265,8 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
 export const taskDivision = (
   contents: string,
   taskId: string,
-  taskIndex: number
+  taskIndex: number,
+  deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
@@ -278,6 +282,7 @@ export const taskDivision = (
     const smallTaskInitialData = {
       id,
       contents,
+      deadline,
       created_at: timestamp,
       updated_at: timestamp,
     };
@@ -285,6 +290,7 @@ export const taskDivision = (
     const smallTask = {
       id,
       contents,
+      deadline,
       updated_at: timestamp,
     };
 

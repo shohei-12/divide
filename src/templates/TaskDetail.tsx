@@ -7,6 +7,8 @@ import { SecondaryButton, TextInput } from "../components/UIkit";
 import { SmallTask, Task } from "../components/Tasks";
 import { taskDivision } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
+import DateFnsUtils from "@date-io/date-fns";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 
@@ -40,6 +42,7 @@ const TaskDetail: React.FC = () => {
   const task = tasks[taskIndex];
 
   const [contents, setContents] = useState("");
+  const [deadline, setDeadline] = useState(null);
 
   const inputContents = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,9 +51,17 @@ const TaskDetail: React.FC = () => {
     [setContents]
   );
 
+  const inputDeadline = useCallback(
+    (date: any) => {
+      setDeadline(date);
+    },
+    [setDeadline]
+  );
+
   const dispatchTaskDivision = () => {
-    dispatch(taskDivision(contents, taskId, taskIndex));
+    dispatch(taskDivision(contents, taskId, taskIndex, deadline));
     reset();
+    setDeadline(null);
   };
 
   return (
@@ -77,6 +88,18 @@ const TaskDetail: React.FC = () => {
             helperText={errors.contents && errors.contents.message}
             onChange={inputContents}
           />
+          <div className="space-m"></div>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DateTimePicker
+              clearable
+              autoOk
+              ampm={false}
+              value={deadline}
+              onChange={inputDeadline}
+              format="yyyy/MM/dd HH:mm"
+              label="タスクの期限"
+            />
+          </MuiPickersUtilsProvider>
           <div className="space-m"></div>
           <SecondaryButton
             text="分割"
