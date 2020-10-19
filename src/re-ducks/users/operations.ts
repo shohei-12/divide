@@ -231,65 +231,41 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
     const tasksRef = usersRef.doc(uid).collection("tasks");
     const id = tasksRef.doc().id;
 
+    const saveTaskData = (val: firebase.firestore.Timestamp | null) => {
+      const taskInitialData = {
+        id,
+        contents,
+        deadline: val,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
+
+      const taskState = {
+        task: {
+          id,
+          contents,
+          small_tasks: [],
+          deadline: val,
+          updated_at: timestamp,
+        },
+      };
+
+      tasksRef
+        .doc(id)
+        .set(taskInitialData)
+        .then(() => {
+          dispatch(taskRegistrationAction(taskState));
+          dispatch(push("/"));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    };
+
     if (deadline) {
-      const deadlineTimestamp = FirebaseTimestamp.fromDate(deadline);
-      const taskInitialData = {
-        id,
-        contents,
-        deadline: deadlineTimestamp,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
-
-      const taskState = {
-        task: {
-          id,
-          contents,
-          small_tasks: [],
-          deadline: deadlineTimestamp,
-          updated_at: timestamp,
-        },
-      };
-
-      tasksRef
-        .doc(id)
-        .set(taskInitialData)
-        .then(() => {
-          dispatch(taskRegistrationAction(taskState));
-          dispatch(push("/"));
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      saveTaskData(FirebaseTimestamp.fromDate(deadline));
     } else {
-      const taskInitialData = {
-        id,
-        contents,
-        deadline,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
-
-      const taskState = {
-        task: {
-          id,
-          contents,
-          small_tasks: [],
-          deadline,
-          updated_at: timestamp,
-        },
-      };
-
-      tasksRef
-        .doc(id)
-        .set(taskInitialData)
-        .then(() => {
-          dispatch(taskRegistrationAction(taskState));
-          dispatch(push("/"));
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      saveTaskData(deadline);
     }
   };
 };
@@ -311,61 +287,39 @@ export const taskDivision = (
       .collection("small_tasks");
     const id = smallTasksRef.doc().id;
 
+    const saveSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
+      const smallTaskInitialData = {
+        id,
+        contents,
+        deadline: val,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
+
+      const smallTask = {
+        id,
+        contents,
+        deadline: val,
+        updated_at: timestamp,
+      };
+
+      tasks[taskIndex].small_tasks.push(smallTask);
+
+      smallTasksRef
+        .doc(id)
+        .set(smallTaskInitialData)
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    };
+
     if (deadline) {
-      const deadlineTimestamp = FirebaseTimestamp.fromDate(deadline);
-      const smallTaskInitialData = {
-        id,
-        contents,
-        deadline: deadlineTimestamp,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
-
-      const smallTask = {
-        id,
-        contents,
-        deadline: deadlineTimestamp,
-        updated_at: timestamp,
-      };
-
-      tasks[taskIndex].small_tasks.push(smallTask);
-
-      smallTasksRef
-        .doc(id)
-        .set(smallTaskInitialData)
-        .then(() => {
-          dispatch(taskNonPayloadAction());
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      saveSmallTaskData(FirebaseTimestamp.fromDate(deadline));
     } else {
-      const smallTaskInitialData = {
-        id,
-        contents,
-        deadline,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
-
-      const smallTask = {
-        id,
-        contents,
-        deadline,
-        updated_at: timestamp,
-      };
-
-      tasks[taskIndex].small_tasks.push(smallTask);
-
-      smallTasksRef
-        .doc(id)
-        .set(smallTaskInitialData)
-        .then(() => {
-          dispatch(taskNonPayloadAction());
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      saveSmallTaskData(deadline);
     }
   };
 };
