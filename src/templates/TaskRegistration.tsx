@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { taskRegistration } from "../re-ducks/users/operations";
+import DateFnsUtils from "@date-io/date-fns";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 type Inputs = {
   contents: string;
@@ -18,6 +20,7 @@ const TaskRegistration: React.FC = () => {
   const dispatch = useDispatch();
 
   const [contents, setContents] = useState("");
+  const [deadline, setDeadline] = useState(null);
 
   const inputContents = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,8 +29,15 @@ const TaskRegistration: React.FC = () => {
     [setContents]
   );
 
+  const inputDeadline = useCallback(
+    (date: any) => {
+      setDeadline(date);
+    },
+    [setDeadline]
+  );
+
   const dispatchTaskRegistration = () => {
-    dispatch(taskRegistration(contents));
+    dispatch(taskRegistration(contents, deadline));
   };
 
   return (
@@ -52,6 +62,18 @@ const TaskRegistration: React.FC = () => {
         helperText={errors.contents && errors.contents.message}
         onChange={inputContents}
       />
+      <div className="space-m"></div>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <DateTimePicker
+          clearable
+          autoOk
+          ampm={false}
+          value={deadline}
+          onChange={inputDeadline}
+          format="yyyy/MM/dd HH:mm"
+          label="タスクの期限"
+        />
+      </MuiPickersUtilsProvider>
       <div className="space-m"></div>
       <SecondaryButton
         text="登録する"

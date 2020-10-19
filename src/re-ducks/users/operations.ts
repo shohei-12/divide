@@ -221,7 +221,7 @@ export const userUpdate = (uid: string, username: string, email: string) => {
   };
 };
 
-export const taskRegistration = (contents: string) => {
+export const taskRegistration = (contents: string, deadline: Date | null) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid;
@@ -231,6 +231,7 @@ export const taskRegistration = (contents: string) => {
     const taskInitialData = {
       id,
       contents,
+      deadline,
       created_at: timestamp,
       updated_at: timestamp,
     };
@@ -240,6 +241,7 @@ export const taskRegistration = (contents: string) => {
         id,
         contents,
         small_tasks: [],
+        deadline,
         updated_at: timestamp,
       },
     };
