@@ -10,14 +10,14 @@ export type Task = {
   id: string;
   contents: string;
   small_tasks: SmallTask[];
-  deadline: Date | null;
+  deadline: firebase.firestore.Timestamp | null;
   updated_at: firebase.firestore.Timestamp;
 };
 
 export type SmallTask = {
   id: string;
   contents: string;
-  deadline: Date | null;
+  deadline: firebase.firestore.Timestamp | null;
   updated_at: firebase.firestore.Timestamp;
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
+import { Deadline } from ".";
 import { taskDelete } from "../../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
     fontSize: 14,
     display: "inline-block",
   },
-  check: {
+  alignRight: {
     marginRight: 0,
     marginLeft: "auto",
   },
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
 type Props = {
   taskId: string;
   contents: string;
+  deadline: firebase.firestore.Timestamp | null;
   datetime: firebase.firestore.Timestamp;
 };
 
@@ -62,16 +64,18 @@ const Task: React.FC<Props> = (props) => {
           <Typography className={classes.datetime} color="textSecondary">
             {formatDatetime(props.datetime.toDate())}
           </Typography>
-          <Checkbox
-            className={classes.check}
-            color="primary"
-            inputProps={{ "aria-label": "タスクの完了" }}
-            onClick={(
-              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-            ) => {
-              event.stopPropagation();
-            }}
-          />
+          <div className={classes.flex + " " + classes.alignRight}>
+            {props.deadline && <Deadline deadline={props.deadline} />}
+            <Checkbox
+              color="primary"
+              inputProps={{ "aria-label": "タスクの完了" }}
+              onClick={(
+                event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+              ) => {
+                event.stopPropagation();
+              }}
+            />
+          </div>
         </div>
         <Typography variant="h5" component="h3">
           {props.contents}

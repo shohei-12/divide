@@ -68,6 +68,7 @@ const TaskRegistration: React.FC = () => {
           clearable
           autoOk
           ampm={false}
+          disablePast
           value={deadline}
           onChange={inputDeadline}
           format="yyyy/MM/dd HH:mm"

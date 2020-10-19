@@ -94,6 +94,7 @@ const TaskDetail: React.FC = () => {
               clearable
               autoOk
               ampm={false}
+              disablePast
               value={deadline}
               onChange={inputDeadline}
               format="yyyy/MM/dd HH:mm"
@@ -112,6 +113,7 @@ const TaskDetail: React.FC = () => {
               taskId={task.id}
               smallTaskId={task.small_tasks[0].id}
               contents={task.small_tasks[0].contents}
+              deadline={task.small_tasks[0].deadline}
               datetime={task.small_tasks[0].updated_at}
             />
           )}
@@ -121,6 +123,7 @@ const TaskDetail: React.FC = () => {
                 taskId={task.id}
                 smallTaskId={task.small_tasks[0].id}
                 contents={task.small_tasks[0].contents}
+                deadline={task.small_tasks[0].deadline}
                 datetime={task.small_tasks[0].updated_at}
               />
               <AddIcon className={classes.icon} color="primary" />
@@ -128,6 +131,7 @@ const TaskDetail: React.FC = () => {
                 taskId={task.id}
                 smallTaskId={task.small_tasks[1].id}
                 contents={task.small_tasks[1].contents}
+                deadline={task.small_tasks[1].deadline}
                 datetime={task.small_tasks[1].updated_at}
               />
             </>
@@ -140,6 +144,7 @@ const TaskDetail: React.FC = () => {
                     taskId={task.id}
                     smallTaskId={smallTask.id}
                     contents={smallTask.contents}
+                    deadline={smallTask.deadline}
                     datetime={smallTask.updated_at}
                   />
                   <AddIcon className={classes.icon} color="primary" />
@@ -149,6 +154,7 @@ const TaskDetail: React.FC = () => {
                 taskId={task.id}
                 smallTaskId={task.small_tasks.slice(-1)[0].id}
                 contents={task.small_tasks.slice(-1)[0].contents}
+                deadline={task.small_tasks.slice(-1)[0].deadline}
                 datetime={task.small_tasks.slice(-1)[0].updated_at}
               />
             </>
@@ -160,6 +166,7 @@ const TaskDetail: React.FC = () => {
           <Task
             taskId={taskId}
             contents={task.contents}
+            deadline={task.deadline}
             datetime={task.updated_at}
           />
         </>

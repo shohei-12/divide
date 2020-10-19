@@ -48,6 +48,7 @@ const TaskList: React.FC = () => {
             <Task
               taskId={task.id}
               contents={task.contents}
+              deadline={task.deadline}
               datetime={task.updated_at}
             />
           </div>

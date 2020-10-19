@@ -231,34 +231,66 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
     const tasksRef = usersRef.doc(uid).collection("tasks");
     const id = tasksRef.doc().id;
 
-    const taskInitialData = {
-      id,
-      contents,
-      deadline,
-      created_at: timestamp,
-      updated_at: timestamp,
-    };
-
-    const taskState = {
-      task: {
+    if (deadline) {
+      const deadlineTimestamp = FirebaseTimestamp.fromDate(deadline);
+      const taskInitialData = {
         id,
         contents,
-        small_tasks: [],
-        deadline,
+        deadline: deadlineTimestamp,
+        created_at: timestamp,
         updated_at: timestamp,
-      },
-    };
+      };
 
-    tasksRef
-      .doc(id)
-      .set(taskInitialData)
-      .then(() => {
-        dispatch(taskRegistrationAction(taskState));
-        dispatch(push("/"));
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+      const taskState = {
+        task: {
+          id,
+          contents,
+          small_tasks: [],
+          deadline: deadlineTimestamp,
+          updated_at: timestamp,
+        },
+      };
+
+      tasksRef
+        .doc(id)
+        .set(taskInitialData)
+        .then(() => {
+          dispatch(taskRegistrationAction(taskState));
+          dispatch(push("/"));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      const taskInitialData = {
+        id,
+        contents,
+        deadline,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
+
+      const taskState = {
+        task: {
+          id,
+          contents,
+          small_tasks: [],
+          deadline,
+          updated_at: timestamp,
+        },
+      };
+
+      tasksRef
+        .doc(id)
+        .set(taskInitialData)
+        .then(() => {
+          dispatch(taskRegistrationAction(taskState));
+          dispatch(push("/"));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   };
 };
 
@@ -279,32 +311,62 @@ export const taskDivision = (
       .collection("small_tasks");
     const id = smallTasksRef.doc().id;
 
-    const smallTaskInitialData = {
-      id,
-      contents,
-      deadline,
-      created_at: timestamp,
-      updated_at: timestamp,
-    };
+    if (deadline) {
+      const deadlineTimestamp = FirebaseTimestamp.fromDate(deadline);
+      const smallTaskInitialData = {
+        id,
+        contents,
+        deadline: deadlineTimestamp,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
 
-    const smallTask = {
-      id,
-      contents,
-      deadline,
-      updated_at: timestamp,
-    };
+      const smallTask = {
+        id,
+        contents,
+        deadline: deadlineTimestamp,
+        updated_at: timestamp,
+      };
 
-    tasks[taskIndex].small_tasks.push(smallTask);
+      tasks[taskIndex].small_tasks.push(smallTask);
 
-    smallTasksRef
-      .doc(id)
-      .set(smallTaskInitialData)
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+      smallTasksRef
+        .doc(id)
+        .set(smallTaskInitialData)
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      const smallTaskInitialData = {
+        id,
+        contents,
+        deadline,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
+
+      const smallTask = {
+        id,
+        contents,
+        deadline,
+        updated_at: timestamp,
+      };
+
+      tasks[taskIndex].small_tasks.push(smallTask);
+
+      smallTasksRef
+        .doc(id)
+        .set(smallTaskInitialData)
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   };
 };
 
