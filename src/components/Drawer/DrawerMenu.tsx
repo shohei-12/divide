@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import { getIsSignedIn } from "../../re-ducks/users/selectors";
+import { getIsSignedIn, getTheme } from "../../re-ducks/users/selectors";
 import { State } from "../../re-ducks/store/types";
-import { signOut } from "../../re-ducks/users/operations";
+import { signOut, themeToggle } from "../../re-ducks/users/operations";
 import { DrawerMenuListItem } from ".";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -20,6 +20,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LockIcon from "@material-ui/icons/Lock";
+import Brightness3Icon from "@material-ui/icons/Brightness3";
+import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -59,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 4,
     },
     appName: {
-      backgroundColor: "#18ffff",
+      backgroundColor: theme.palette.primary.main,
       margin: 0,
       height: 60,
       textAlign: "center",
@@ -77,6 +79,7 @@ const DrawerMenu: React.FC = () => {
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const isSignedIn = getIsSignedIn(selector);
+  const theme = getTheme(selector);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = useCallback(() => {
@@ -133,30 +136,86 @@ const DrawerMenu: React.FC = () => {
             />
           ))}
           {window.innerWidth >= 600 ? (
-            <ListItem
-              button
-              onClick={() => {
-                dispatch(signOut());
-              }}
-            >
-              <ListItemIcon className={classes.icon}>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="ログアウト" />
-            </ListItem>
+            <>
+              <ListItem
+                button
+                onClick={() => {
+                  dispatch(signOut());
+                }}
+              >
+                <ListItemIcon className={classes.icon}>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="ログアウト" />
+              </ListItem>
+              {theme === "light" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("dark"));
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <Brightness3Icon />
+                  </ListItemIcon>
+                  <ListItemText primary="ダークモード" />
+                </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("light"));
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <BrightnessHighIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ライトモード" />
+                </ListItem>
+              )}
+            </>
           ) : (
-            <ListItem
-              button
-              onClick={() => {
-                dispatch(signOut());
-                handleDrawerToggle();
-              }}
-            >
-              <ListItemIcon className={classes.icon}>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="ログアウト" />
-            </ListItem>
+            <>
+              <ListItem
+                button
+                onClick={() => {
+                  dispatch(signOut());
+                  handleDrawerToggle();
+                }}
+              >
+                <ListItemIcon className={classes.icon}>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="ログアウト" />
+              </ListItem>
+              {theme === "light" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("dark"));
+                    handleDrawerToggle();
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <Brightness3Icon />
+                  </ListItemIcon>
+                  <ListItemText primary="ダークモード" />
+                </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("light"));
+                    handleDrawerToggle();
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <BrightnessHighIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ライトモード" />
+                </ListItem>
+              )}
+            </>
           )}
         </>
       ) : (
@@ -170,6 +229,65 @@ const DrawerMenu: React.FC = () => {
               handleDrawerToggle={handleDrawerToggle}
             />
           ))}
+          {window.innerWidth >= 600 ? (
+            <>
+              {theme === "light" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("dark"));
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <Brightness3Icon />
+                  </ListItemIcon>
+                  <ListItemText primary="ダークモード" />
+                </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("light"));
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <BrightnessHighIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ライトモード" />
+                </ListItem>
+              )}
+            </>
+          ) : (
+            <>
+              {theme === "light" ? (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("dark"));
+                    handleDrawerToggle();
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <Brightness3Icon />
+                  </ListItemIcon>
+                  <ListItemText primary="ダークモード" />
+                </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  onClick={() => {
+                    dispatch(themeToggle("light"));
+                    handleDrawerToggle();
+                  }}
+                >
+                  <ListItemIcon className={classes.icon}>
+                    <BrightnessHighIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ライトモード" />
+                </ListItem>
+              )}
+            </>
+          )}
         </>
       )}
     </>

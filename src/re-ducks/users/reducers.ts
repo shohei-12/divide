@@ -25,6 +25,11 @@ export const UsersReducer = (
       return {
         ...state,
       };
+    case Actions.THEME_TOGGLE:
+      return {
+        ...state,
+        ...action.payload,
+      };
     default:
       return state;
   }

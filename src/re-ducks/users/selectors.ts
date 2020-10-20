@@ -17,4 +17,6 @@ export const getUsername = createSelector(
 
 export const getEmail = createSelector([usersSelector], (state) => state.email);
 
+export const getTheme = createSelector([usersSelector], (state) => state.theme);
+
 export const getTasks = createSelector([usersSelector], (state) => state.tasks);

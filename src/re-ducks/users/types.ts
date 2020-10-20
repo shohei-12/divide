@@ -4,6 +4,7 @@ export type UserState = {
   username: string;
   email: string;
   tasks: Task[];
+  theme: string;
 };
 
 export type Task = {
@@ -30,6 +31,7 @@ export type DispatchAction = {
   email?: string;
   task?: Task;
   tasks?: Task[];
+  theme?: string;
 };
 
 export type UserAction = {

@@ -6,6 +6,7 @@ const initialUserState: UserState = {
   username: "",
   email: "",
   tasks: [],
+  theme: "light",
 };
 
 export const initialState = {

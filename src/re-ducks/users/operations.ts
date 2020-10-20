@@ -4,6 +4,7 @@ import {
   signOutAction,
   taskRegistrationAction,
   taskNonPayloadAction,
+  themeToggleAction,
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { Task, SmallTask } from "../users/types";
@@ -88,6 +89,7 @@ const fetchSignInUserInfo = async (
           username: userData.username,
           email: userData.email,
           tasks,
+          theme: userData.theme,
         })
       );
     })
@@ -149,7 +151,9 @@ export const signOut = () => {
 };
 
 export const signUp = (username: string, email: string, password: string) => {
-  return async (dispatch: any) => {
+  return async (dispatch: any, getState: any) => {
+    const theme = getState().users.theme as string;
+
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
@@ -162,6 +166,7 @@ export const signUp = (username: string, email: string, password: string) => {
             uid,
             username,
             email,
+            theme,
             created_at: timestamp,
             updated_at: timestamp,
           };
@@ -535,5 +540,29 @@ export const smallTaskCheckToggle = (
       .catch((error) => {
         throw new Error(error);
       });
+  };
+};
+
+export const themeToggle = (theme: string) => {
+  return async (dispatch: any, getState: any) => {
+    const uid = getState().users.uid as string;
+
+    const themeData = {
+      theme,
+    };
+
+    if (uid) {
+      usersRef
+        .doc(uid)
+        .set(themeData, { merge: true })
+        .then(() => {
+          dispatch(themeToggleAction(themeData));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      dispatch(themeToggleAction(themeData));
+    }
   };
 };

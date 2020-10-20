@@ -41,3 +41,13 @@ export const taskNonPayloadAction = () => {
     type: "TASK_NON_PAYLOAD",
   };
 };
+
+export const THEME_TOGGLE = "THEME_TOGGLE";
+export const themeToggleAction = (themeState: DispatchAction) => {
+  return {
+    type: "THEME_TOGGLE",
+    payload: {
+      ...themeState,
+    },
+  };
+};
