@@ -24,30 +24,18 @@ const DrawerMenuListItem: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
 
   return (
-    <>
-      {window.innerWidth >= 600 ? (
-        <ListItem
-          button
-          onClick={() => {
-            dispatch(push(props.path));
-          }}
-        >
-          <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
-          <ListItemText primary={props.text} />
-        </ListItem>
-      ) : (
-        <ListItem
-          button
-          onClick={() => {
-            dispatch(push(props.path));
-            props.handleDrawerToggle();
-          }}
-        >
-          <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
-          <ListItemText primary={props.text} />
-        </ListItem>
-      )}
-    </>
+    <ListItem
+      button
+      onClick={() => {
+        dispatch(push(props.path));
+        if (window.innerWidth < 600) {
+          props.handleDrawerToggle();
+        }
+      }}
+    >
+      <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
+      <ListItemText primary={props.text} />
+    </ListItem>
   );
 };
 
