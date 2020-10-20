@@ -57,6 +57,7 @@ const fetchSignInUserInfo = async (
                     small_tasks: smallTasks.concat(array),
                     deadline: taskData.deadline,
                     checked: taskData.checked,
+                    priority: taskData.priority,
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
@@ -69,6 +70,7 @@ const fetchSignInUserInfo = async (
                     small_tasks: [],
                     deadline: taskData.deadline,
                     checked: taskData.checked,
+                    priority: taskData.priority,
                     updated_at: taskData.updated_at,
                   } as Task;
                   tasks.push(task);
@@ -245,6 +247,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
         contents,
         deadline: val,
         checked: false,
+        priority: 0,
         created_at: timestamp,
         updated_at: timestamp,
       };
@@ -256,6 +259,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
           small_tasks: [],
           deadline: val,
           checked: false,
+          priority: 0,
           updated_at: timestamp,
         },
       };
@@ -564,5 +568,30 @@ export const themeToggle = (theme: string) => {
     } else {
       dispatch(themeToggleAction(themeData));
     }
+  };
+};
+
+export const setPriority = (priority: number, taskId: string) => {
+  return async (dispatch: any, getState: any) => {
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as Task[];
+    const task = tasks.find((element) => element.id === taskId)!;
+    const tasksRef = usersRef.doc(uid).collection("tasks");
+
+    task.priority = priority;
+
+    const taskData = {
+      priority,
+    };
+
+    tasksRef
+      .doc(taskId)
+      .set(taskData, { merge: true })
+      .then(() => {
+        dispatch(taskNonPayloadAction());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
-import { Deadline } from ".";
+import { Deadline, PriorityButton } from ".";
 import { taskCheckToggle, taskDelete } from "../../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -101,6 +101,7 @@ const Task: React.FC<Props> = (props) => {
         >
           <DeleteIcon />
         </IconButton>
+        <PriorityButton taskId={props.taskId} />
       </CardContent>
     </Card>
   );

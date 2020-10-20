@@ -13,6 +13,7 @@ export type Task = {
   small_tasks: SmallTask[];
   deadline: firebase.firestore.Timestamp | null;
   checked: boolean;
+  priority: number;
   updated_at: firebase.firestore.Timestamp;
 };
 
