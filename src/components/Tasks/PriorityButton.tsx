@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles({
   red: {
@@ -57,25 +58,27 @@ const PriorityButton: React.FC<Props> = (props) => {
 
   return (
     <>
-      <IconButton
-        onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          event.stopPropagation();
-          handleClick(event);
-        }}
-      >
-        {(() => {
-          switch (priority) {
-            case 0:
-              return <FiberManualRecordIcon />;
-            case 1:
-              return <FiberManualRecordIcon className={classes.red} />;
-            case 2:
-              return <FiberManualRecordIcon className={classes.yellow} />;
-            case 3:
-              return <FiberManualRecordIcon className={classes.green} />;
-          }
-        })()}
-      </IconButton>
+      <Tooltip title="優先度">
+        <IconButton
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.stopPropagation();
+            handleClick(event);
+          }}
+        >
+          {(() => {
+            switch (priority) {
+              case 0:
+                return <FiberManualRecordIcon />;
+              case 1:
+                return <FiberManualRecordIcon className={classes.red} />;
+              case 2:
+                return <FiberManualRecordIcon className={classes.yellow} />;
+              case 3:
+                return <FiberManualRecordIcon className={classes.green} />;
+            }
+          })()}
+        </IconButton>
+      </Tooltip>
       <Menu
         anchorEl={anchorEl}
         keepMounted

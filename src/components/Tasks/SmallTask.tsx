@@ -14,6 +14,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles({
   content: {
@@ -90,24 +91,28 @@ const SmallTask: React.FC<Props> = (props) => {
         <Typography variant="h5" component="h3">
           {props.contents}
         </Typography>
-        <IconButton
-          onClick={() =>
-            dispatch(
-              push(`/small-task/edit/${props.taskId}/${props.smallTaskId}`)
-            )
-          }
-        >
-          <EditIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => {
-            if (window.confirm("本当に削除しますか？")) {
-              dispatch(smallTaskDelete(props.taskId, props.smallTaskId));
+        <Tooltip title="編集">
+          <IconButton
+            onClick={() =>
+              dispatch(
+                push(`/small-task/edit/${props.taskId}/${props.smallTaskId}`)
+              )
             }
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="削除">
+          <IconButton
+            onClick={() => {
+              if (window.confirm("本当に削除しますか？")) {
+                dispatch(smallTaskDelete(props.taskId, props.smallTaskId));
+              }
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
         <PriorityButton taskId={props.taskId} smallTaskId={props.smallTaskId} />
       </CardContent>
     </Card>

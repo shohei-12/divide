@@ -11,6 +11,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles({
   content: {
@@ -83,24 +84,32 @@ const Task: React.FC<Props> = (props) => {
         <Typography variant="h5" component="h3">
           {props.contents}
         </Typography>
-        <IconButton
-          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            event.stopPropagation();
-            dispatch(push(`/task/edit/${props.taskId}`));
-          }}
-        >
-          <EditIcon />
-        </IconButton>
-        <IconButton
-          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            event.stopPropagation();
-            if (window.confirm("本当に削除しますか？")) {
-              dispatch(taskDelete(props.taskId));
-            }
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title="編集">
+          <IconButton
+            onClick={(
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ) => {
+              event.stopPropagation();
+              dispatch(push(`/task/edit/${props.taskId}`));
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="削除">
+          <IconButton
+            onClick={(
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ) => {
+              event.stopPropagation();
+              if (window.confirm("本当に削除しますか？")) {
+                dispatch(taskDelete(props.taskId));
+              }
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
         <PriorityButton taskId={props.taskId} />
       </CardContent>
     </Card>
