@@ -6,19 +6,19 @@ type Props = {
 
 const Deadline: React.FC<Props> = (props) => {
   const daysRemaining = (deadline: Date) => {
-    return Math.round(
+    return Math.floor(
       (deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
     );
   };
 
   const hoursRemaining = (deadline: Date) => {
-    return Math.round(
+    return Math.floor(
       (deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60)
     );
   };
 
   const minutesRemaining = (deadline: Date) => {
-    return Math.round(
+    return Math.floor(
       (deadline.getTime() - new Date().getTime()) / (1000 * 60)
     );
   };
