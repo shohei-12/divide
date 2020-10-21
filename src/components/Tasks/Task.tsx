@@ -75,7 +75,7 @@ const Task: React.FC<Props> = (props) => {
                 event: React.MouseEvent<HTMLButtonElement, MouseEvent>
               ) => {
                 event.stopPropagation();
-                dispatch(taskCheckToggle(!props.checked, props.taskId));
+                dispatch(taskCheckToggle(!props.checked, props.taskId, null));
               }}
             />
           </div>

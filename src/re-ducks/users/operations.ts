@@ -485,68 +485,58 @@ export const smallTaskDelete = (taskId: string, smallTaskId: string) => {
   };
 };
 
-export const taskCheckToggle = (check: boolean, taskId: string) => {
-  return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
-    const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as Task[];
-    const task = tasks.find((element) => element.id === taskId)!;
-    const tasksRef = usersRef.doc(uid).collection("tasks");
-
-    task.checked = check;
-
-    const taskData = {
-      checked: check,
-      updated_at: timestamp,
-    };
-
-    tasksRef
-      .doc(taskId)
-      .set(taskData, { merge: true })
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  };
-};
-
-export const smallTaskCheckToggle = (
+export const taskCheckToggle = (
   check: boolean,
   taskId: string,
-  smallTaskId: string
+  smallTaskId: string | null
 ) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as Task[];
     const task = tasks.find((element) => element.id === taskId)!;
-    const smallTask = task.small_tasks.find(
-      (element) => element.id === smallTaskId
-    )!;
-    const smallTasksRef = usersRef
-      .doc(uid)
-      .collection("tasks")
-      .doc(taskId)
-      .collection("small_tasks");
 
-    smallTask.checked = check;
-
-    const smallTaskData = {
+    const taskData = {
       checked: check,
       updated_at: timestamp,
     };
 
-    smallTasksRef
-      .doc(smallTaskId)
-      .set(smallTaskData, { merge: true })
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    if (smallTaskId) {
+      const smallTask = task.small_tasks.find(
+        (element) => element.id === smallTaskId
+      )!;
+      const smallTasksRef = usersRef
+        .doc(uid)
+        .collection("tasks")
+        .doc(taskId)
+        .collection("small_tasks");
+
+      smallTask.checked = check;
+
+      smallTasksRef
+        .doc(smallTaskId)
+        .set(taskData, { merge: true })
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      const tasksRef = usersRef.doc(uid).collection("tasks");
+
+      task.checked = check;
+
+      tasksRef
+        .doc(taskId)
+        .set(taskData, { merge: true })
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   };
 };
 

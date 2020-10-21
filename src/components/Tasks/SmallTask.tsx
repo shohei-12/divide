@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Deadline, PriorityButton } from ".";
 import {
-  smallTaskCheckToggle,
+  taskCheckToggle,
   smallTaskDelete,
 } from "../../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
@@ -77,7 +77,7 @@ const SmallTask: React.FC<Props> = (props) => {
               inputProps={{ "aria-label": "タスクの完了" }}
               onClick={() => {
                 dispatch(
-                  smallTaskCheckToggle(
+                  taskCheckToggle(
                     !props.checked,
                     props.taskId,
                     props.smallTaskId
