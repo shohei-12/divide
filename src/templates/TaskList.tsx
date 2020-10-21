@@ -42,6 +42,18 @@ const TaskList: React.FC = () => {
       break;
     case "?unfinished":
       tasks = tasks.filter((task) => task.checked === false);
+      break;
+    case "?priority=none":
+      tasks = tasks.filter((task) => task.priority === 0);
+      break;
+    case "?priority=high":
+      tasks = tasks.filter((task) => task.priority === 1);
+      break;
+    case "?priority=medium":
+      tasks = tasks.filter((task) => task.priority === 2);
+      break;
+    case "?priority=low":
+      tasks = tasks.filter((task) => task.priority === 3);
   }
 
   return (

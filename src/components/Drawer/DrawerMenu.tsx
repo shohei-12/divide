@@ -24,6 +24,7 @@ import Brightness3Icon from "@material-ui/icons/Brightness3";
 import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -73,6 +74,15 @@ const useStyles = makeStyles((theme: Theme) =>
         cursor: "pointer",
       },
     },
+    red: {
+      color: "#ff1744",
+    },
+    yellow: {
+      color: "#ffea00",
+    },
+    green: {
+      color: "#00e676",
+    },
   })
 );
 
@@ -93,6 +103,26 @@ const DrawerMenu: React.FC = () => {
       text: "タスクの登録",
       icon: <AddCircleIcon />,
       path: "/task/registration",
+    },
+    {
+      text: "優先度：なし",
+      icon: <FiberManualRecordIcon />,
+      path: "?priority=none",
+    },
+    {
+      text: "優先度：高",
+      icon: <FiberManualRecordIcon className={classes.red} />,
+      path: "?priority=high",
+    },
+    {
+      text: "優先度：中",
+      icon: <FiberManualRecordIcon className={classes.yellow} />,
+      path: "?priority=medium",
+    },
+    {
+      text: "優先度：低",
+      icon: <FiberManualRecordIcon className={classes.green} />,
+      path: "?priority=low",
     },
     {
       text: "完了したタスク",
