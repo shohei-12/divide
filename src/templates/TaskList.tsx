@@ -5,6 +5,9 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { State } from "../re-ducks/store/types";
 import { getTasks } from "../re-ducks/users/selectors";
 import { Task } from "../components/Tasks";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import Hidden from "@material-ui/core/Hidden";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,6 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         cursor: "pointer",
       },
+    },
+    fab: {
+      position: "fixed",
+      right: 30,
+      bottom: 30,
     },
   })
 );
@@ -74,6 +82,16 @@ const TaskList: React.FC = () => {
             />
           </div>
         ))}
+      <Hidden smUp>
+        <Fab
+          className={classes.fab}
+          color="primary"
+          aria-label="タスクの登録"
+          onClick={() => dispatch(push("/task/registration"))}
+        >
+          <AddIcon />
+        </Fab>
+      </Hidden>
     </div>
   );
 };
