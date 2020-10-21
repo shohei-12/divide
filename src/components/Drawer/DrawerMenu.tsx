@@ -22,6 +22,8 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LockIcon from "@material-ui/icons/Lock";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
 import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -91,6 +93,16 @@ const DrawerMenu: React.FC = () => {
       text: "タスクの登録",
       icon: <AddCircleIcon />,
       path: "/task/registration",
+    },
+    {
+      text: "完了したタスク",
+      icon: <CheckBoxIcon />,
+      path: "/?finished",
+    },
+    {
+      text: "完了していないタスク",
+      icon: <CheckBoxOutlineBlankIcon />,
+      path: "/?unfinished",
     },
     {
       text: "プロフィールの編集",

@@ -68,17 +68,19 @@ const Task: React.FC<Props> = (props) => {
           </Typography>
           <div className={classes.flex + " " + classes.alignRight}>
             {props.deadline && <Deadline deadline={props.deadline} />}
-            <Checkbox
-              checked={props.checked}
-              color="primary"
-              inputProps={{ "aria-label": "タスクの完了" }}
-              onClick={(
-                event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-              ) => {
-                event.stopPropagation();
-                dispatch(taskCheckToggle(!props.checked, props.taskId, null));
-              }}
-            />
+            <Tooltip title="タスクの完了">
+              <Checkbox
+                checked={props.checked}
+                color="primary"
+                inputProps={{ "aria-label": "タスクの完了" }}
+                onClick={(
+                  event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                ) => {
+                  event.stopPropagation();
+                  dispatch(taskCheckToggle(!props.checked, props.taskId, null));
+                }}
+              />
+            </Tooltip>
           </div>
         </div>
         <Typography variant="h5" component="h3">

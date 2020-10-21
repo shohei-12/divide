@@ -34,7 +34,15 @@ const TaskList: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
-  const tasks = getTasks(selector);
+  let tasks = getTasks(selector);
+
+  switch (selector.router.location.search) {
+    case "?finished":
+      tasks = tasks.filter((task) => task.checked === true);
+      break;
+    case "?unfinished":
+      tasks = tasks.filter((task) => task.checked === false);
+  }
 
   return (
     <div className={classes.flex}>
