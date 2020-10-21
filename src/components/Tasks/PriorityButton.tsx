@@ -23,6 +23,7 @@ const useStyles = makeStyles({
 
 type Props = {
   taskId: string;
+  smallTaskId?: string;
 };
 
 const PriorityButton: React.FC<Props> = (props) => {
@@ -31,6 +32,9 @@ const PriorityButton: React.FC<Props> = (props) => {
   const selector = useSelector((state: State) => state);
   const tasks = getTasks(selector);
   const task = tasks.find((element) => element.id === props.taskId)!;
+  const smallTask = task.small_tasks.find(
+    (element) => element.id === props.smallTaskId
+  );
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -45,6 +49,12 @@ const PriorityButton: React.FC<Props> = (props) => {
     setAnchorEl(null);
   }, [setAnchorEl]);
 
+  const taskSetPriority = props.smallTaskId
+    ? setPriority.bind(null, props.taskId, props.smallTaskId)
+    : setPriority.bind(null, props.taskId, null);
+
+  const priority = props.smallTaskId ? smallTask!.priority : task.priority;
+
   return (
     <>
       <IconButton
@@ -54,7 +64,7 @@ const PriorityButton: React.FC<Props> = (props) => {
         }}
       >
         {(() => {
-          switch (task.priority) {
+          switch (priority) {
             case 0:
               return <FiberManualRecordIcon />;
             case 1:
@@ -79,7 +89,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
             event.stopPropagation();
             handleClose();
-            dispatch(setPriority(0, props.taskId));
+            dispatch(taskSetPriority(0));
           }}
         >
           <FiberManualRecordIcon />
@@ -89,7 +99,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
             event.stopPropagation();
             handleClose();
-            dispatch(setPriority(1, props.taskId));
+            dispatch(taskSetPriority(1));
           }}
         >
           <FiberManualRecordIcon className={classes.red} />高
@@ -98,7 +108,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
             event.stopPropagation();
             handleClose();
-            dispatch(setPriority(2, props.taskId));
+            dispatch(taskSetPriority(2));
           }}
         >
           <FiberManualRecordIcon className={classes.yellow} />中
@@ -107,7 +117,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
             event.stopPropagation();
             handleClose();
-            dispatch(setPriority(3, props.taskId));
+            dispatch(taskSetPriority(3));
           }}
         >
           <FiberManualRecordIcon className={classes.green} />低

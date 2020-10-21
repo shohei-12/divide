@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
-import { Deadline } from ".";
+import { Deadline, PriorityButton } from ".";
 import {
   smallTaskCheckToggle,
   smallTaskDelete,
@@ -108,6 +108,7 @@ const SmallTask: React.FC<Props> = (props) => {
         >
           <DeleteIcon />
         </IconButton>
+        <PriorityButton taskId={props.taskId} smallTaskId={props.smallTaskId} />
       </CardContent>
     </Card>
   );

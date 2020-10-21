@@ -44,6 +44,7 @@ const fetchSignInUserInfo = async (
                       id: smallTaskData.id,
                       deadline: smallTaskData.deadline,
                       checked: smallTaskData.checked,
+                      priority: smallTaskData.priority,
                       contents: smallTaskData.contents,
                       updated_at: smallTaskData.updated_at,
                     } as SmallTask;
@@ -307,6 +308,7 @@ export const taskDivision = (
         contents,
         deadline: val,
         checked: false,
+        priority: 0,
         created_at: timestamp,
         updated_at: timestamp,
       };
@@ -316,6 +318,7 @@ export const taskDivision = (
         contents,
         deadline: val,
         checked: false,
+        priority: 0,
         updated_at: timestamp,
       };
 
@@ -571,27 +574,55 @@ export const themeToggle = (theme: string) => {
   };
 };
 
-export const setPriority = (priority: number, taskId: string) => {
+export const setPriority = (
+  taskId: string,
+  smallTaskId: string | null,
+  priority: number
+) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as Task[];
     const task = tasks.find((element) => element.id === taskId)!;
-    const tasksRef = usersRef.doc(uid).collection("tasks");
-
-    task.priority = priority;
 
     const taskData = {
       priority,
     };
 
-    tasksRef
-      .doc(taskId)
-      .set(taskData, { merge: true })
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    if (smallTaskId) {
+      const smallTask = task.small_tasks.find(
+        (element) => element.id === smallTaskId
+      )!;
+      const smallTasksRef = usersRef
+        .doc(uid)
+        .collection("tasks")
+        .doc(taskId)
+        .collection("small_tasks");
+
+      smallTask.priority = priority;
+
+      smallTasksRef
+        .doc(smallTaskId)
+        .set(taskData, { merge: true })
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      const tasksRef = usersRef.doc(uid).collection("tasks");
+
+      task.priority = priority;
+
+      tasksRef
+        .doc(taskId)
+        .set(taskData, { merge: true })
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   };
 };
