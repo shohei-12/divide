@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { push } from "connected-react-router";
 import { SecondaryButton, TextInput } from "../components/UIkit";
-import { signIn } from "../re-ducks/users/operations";
+import { signIn, guestSignIn } from "../re-ducks/users/operations";
 
 type Inputs = {
   email: string;
@@ -92,6 +92,11 @@ const SignIn: React.FC = () => {
         text="ログインする"
         disabled={email && password ? false : true}
         onClick={handleSubmit(() => dispatchSignIn())}
+      />
+      <div className="space-m"></div>
+      <SecondaryButton
+        text="ゲストユーザーでログインする"
+        onClick={() => dispatch(guestSignIn())}
       />
       <div className="space-s"></div>
       <p

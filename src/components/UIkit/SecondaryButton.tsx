@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 
 type Props = {
   text: string;
-  disabled: boolean;
+  disabled?: boolean;
   onClick: () => any;
 };
 

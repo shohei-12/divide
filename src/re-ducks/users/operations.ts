@@ -139,6 +139,28 @@ export const signIn = (email: string, password: string) => {
   };
 };
 
+export const guestSignIn = () => {
+  return async (dispatch: any) => {
+    auth
+      .signInWithEmailAndPassword("guest@example.com", "password")
+      .then(async (result) => {
+        const user = result.user;
+        if (user) {
+          const uid = user.uid;
+          const tasks: Task[] = [];
+          const smallTasks: SmallTask[] = [];
+
+          fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
+
+          dispatch(push("/"));
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
 export const signOut = () => {
   return async (dispatch: any) => {
     auth

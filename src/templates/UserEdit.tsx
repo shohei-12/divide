@@ -66,6 +66,7 @@ const UserEdit: React.FC = () => {
         })}
         error={Boolean(errors.username)}
         helperText={errors.username && errors.username.message}
+        disabled={uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : false}
         onChange={inputUsername}
       />
       <TextInput
@@ -85,12 +86,19 @@ const UserEdit: React.FC = () => {
         })}
         error={Boolean(errors.email)}
         helperText={errors.email && errors.email.message}
+        disabled={uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : false}
         onChange={inputEmail}
       />
       <div className="space-m"></div>
       <SecondaryButton
         text="更新する"
-        disabled={username && email ? false : true}
+        disabled={
+          uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2"
+            ? true
+            : username && email
+            ? false
+            : true
+        }
         onClick={handleSubmit(() => dispatchUserUpdate())}
       />
     </div>

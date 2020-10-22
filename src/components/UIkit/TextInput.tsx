@@ -12,6 +12,7 @@ type Props = {
   inputRef: any;
   error: boolean;
   helperText: string | undefined;
+  disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -29,6 +30,7 @@ const TextInput: React.FC<Props> = (props) => {
       inputRef={props.inputRef}
       error={props.error}
       helperText={props.helperText}
+      disabled={props.disabled}
       onChange={props.onChange}
     />
   );
