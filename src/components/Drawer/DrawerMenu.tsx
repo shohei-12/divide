@@ -16,7 +16,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import EditIcon from "@material-ui/icons/Edit";
+import EmailIcon from "@material-ui/icons/Email";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LockIcon from "@material-ui/icons/Lock";
@@ -135,8 +135,8 @@ const DrawerMenu: React.FC = () => {
       path: "/?unfinished",
     },
     {
-      text: "プロフィールの編集",
-      icon: <EditIcon />,
+      text: "メールアドレスの編集",
+      icon: <EmailIcon />,
       path: "/user/edit",
     },
     {

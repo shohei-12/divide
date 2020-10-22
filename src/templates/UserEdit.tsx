@@ -38,7 +38,7 @@ const UserEdit: React.FC = () => {
 
   return (
     <div className="c-mw700">
-      <h2>ユーザー編集</h2>
+      <h2>メールアドレスの編集</h2>
       <TextInput
         fullWidth={true}
         label="メールアドレス"
