@@ -107,22 +107,22 @@ const DrawerMenu: React.FC = () => {
     {
       text: "優先度：なし",
       icon: <FiberManualRecordIcon />,
-      path: "?priority=none",
+      path: "/?priority=none",
     },
     {
       text: "優先度：高",
       icon: <FiberManualRecordIcon className={classes.red} />,
-      path: "?priority=high",
+      path: "/?priority=high",
     },
     {
       text: "優先度：中",
       icon: <FiberManualRecordIcon className={classes.yellow} />,
-      path: "?priority=medium",
+      path: "/?priority=medium",
     },
     {
       text: "優先度：低",
       icon: <FiberManualRecordIcon className={classes.green} />,
-      path: "?priority=low",
+      path: "/?priority=low",
     },
     {
       text: "完了したタスク",
