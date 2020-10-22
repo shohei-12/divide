@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { SecondaryButton, TextInput } from "../components/UIkit";
-import { SmallTask, Task } from "../components/Tasks";
-import { taskDivision } from "../re-ducks/users/operations";
+import { SmallTask } from "../components/Tasks";
+import { smallTaskDivision } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -25,7 +25,7 @@ type Inputs = {
   contents: string;
 };
 
-const TaskDetail: React.FC = () => {
+const SmallTaskDetail: React.FC = () => {
   const classes = useStyles();
 
   const { register, handleSubmit, reset, errors } = useForm<Inputs>({
@@ -38,13 +38,18 @@ const TaskDetail: React.FC = () => {
   const selector = useSelector((state: State) => state);
   const tasks = getTasks(selector);
   const taskId = window.location.pathname.split("/")[3];
+  const smallTaskId = window.location.pathname.split("/")[4];
   const taskIndex = tasks.findIndex((element) => element.id === taskId);
   const task = tasks[taskIndex];
-  const smallTasks = task?.small_tasks.filter(
-    (smallTask) => smallTask.parentId === null
+  const smallTaskIndex = task?.small_tasks.findIndex(
+    (element) => element.id === smallTaskId
+  );
+  const smallTask = task?.small_tasks[smallTaskIndex];
+  const tinyTasks = task?.small_tasks.filter(
+    (element) => element.parentId === smallTask?.id
   );
   const smallTasksExcludeNull = task?.small_tasks.filter(
-    (smallTask) => smallTask.parentId !== null
+    (element) => element.parentId !== null
   );
 
   const [contents, setContents] = useState("");
@@ -65,14 +70,16 @@ const TaskDetail: React.FC = () => {
   );
 
   const dispatchTaskDivision = () => {
-    dispatch(taskDivision(contents, taskId, taskIndex, deadline));
+    dispatch(
+      smallTaskDivision(contents, taskId, smallTaskId, taskIndex, deadline)
+    );
     reset();
     setDeadline(null);
   };
 
   return (
     <div className="c-mw700">
-      {task && (
+      {smallTask && (
         <>
           <h2>タスクの分割</h2>
           <TextInput
@@ -114,89 +121,89 @@ const TaskDetail: React.FC = () => {
             onClick={handleSubmit(() => dispatchTaskDivision())}
           />
           <div className="space-l"></div>
-          {smallTasks.length === 1 && (
+          {tinyTasks.length === 1 && (
             <SmallTask
               tinyTasks={smallTasksExcludeNull.filter(
-                (smallTask) => smallTask.parentId === smallTasks[0].id
+                (element) => element.parentId === tinyTasks[0].id
               )}
               taskId={task.id}
-              smallTaskId={smallTasks[0].id}
-              contents={smallTasks[0].contents}
-              deadline={smallTasks[0].deadline}
-              checked={smallTasks[0].checked}
-              datetime={smallTasks[0].updated_at}
+              smallTaskId={tinyTasks[0].id}
+              contents={tinyTasks[0].contents}
+              deadline={tinyTasks[0].deadline}
+              checked={tinyTasks[0].checked}
+              datetime={tinyTasks[0].updated_at}
             />
           )}
-          {smallTasks.length === 2 && (
+          {tinyTasks.length === 2 && (
             <>
               <SmallTask
                 tinyTasks={smallTasksExcludeNull.filter(
-                  (smallTask) => smallTask.parentId === smallTasks[0].id
+                  (element) => element.parentId === tinyTasks[0].id
                 )}
                 taskId={task.id}
-                smallTaskId={smallTasks[0].id}
-                contents={smallTasks[0].contents}
-                deadline={smallTasks[0].deadline}
-                checked={smallTasks[0].checked}
-                datetime={smallTasks[0].updated_at}
+                smallTaskId={tinyTasks[0].id}
+                contents={tinyTasks[0].contents}
+                deadline={tinyTasks[0].deadline}
+                checked={tinyTasks[0].checked}
+                datetime={tinyTasks[0].updated_at}
               />
               <AddIcon className={classes.icon} color="primary" />
               <SmallTask
                 tinyTasks={smallTasksExcludeNull.filter(
-                  (smallTask) => smallTask.parentId === smallTasks[1].id
+                  (element) => element.parentId === tinyTasks[1].id
                 )}
                 taskId={task.id}
-                smallTaskId={smallTasks[1].id}
-                contents={smallTasks[1].contents}
-                deadline={smallTasks[1].deadline}
-                checked={smallTasks[1].checked}
-                datetime={smallTasks[1].updated_at}
+                smallTaskId={tinyTasks[1].id}
+                contents={tinyTasks[1].contents}
+                deadline={tinyTasks[1].deadline}
+                checked={tinyTasks[1].checked}
+                datetime={tinyTasks[1].updated_at}
               />
             </>
           )}
-          {smallTasks.length > 2 && (
+          {tinyTasks.length > 2 && (
             <>
-              {smallTasks.slice(0, -1).map((smallTask, index) => (
+              {tinyTasks.slice(0, -1).map((tinyTask, index) => (
                 <React.Fragment key={index}>
                   <SmallTask
                     tinyTasks={smallTasksExcludeNull.filter(
-                      (element) => element.parentId === smallTask.id
+                      (element) => element.parentId === tinyTask.id
                     )}
                     taskId={task.id}
-                    smallTaskId={smallTask.id}
-                    contents={smallTask.contents}
-                    deadline={smallTask.deadline}
-                    checked={smallTask.checked}
-                    datetime={smallTask.updated_at}
+                    smallTaskId={tinyTask.id}
+                    contents={tinyTask.contents}
+                    deadline={tinyTask.deadline}
+                    checked={tinyTask.checked}
+                    datetime={tinyTask.updated_at}
                   />
                   <AddIcon className={classes.icon} color="primary" />
                 </React.Fragment>
               ))}
               <SmallTask
                 tinyTasks={smallTasksExcludeNull.filter(
-                  (smallTask) =>
-                    smallTask.parentId === smallTasks.slice(-1)[0].id
+                  (element) => element.parentId === tinyTasks.slice(-1)[0].id
                 )}
                 taskId={task.id}
-                smallTaskId={smallTasks.slice(-1)[0].id}
-                contents={smallTasks.slice(-1)[0].contents}
-                deadline={smallTasks.slice(-1)[0].deadline}
-                checked={smallTasks.slice(-1)[0].checked}
-                datetime={smallTasks.slice(-1)[0].updated_at}
+                smallTaskId={tinyTasks.slice(-1)[0].id}
+                contents={tinyTasks.slice(-1)[0].contents}
+                deadline={tinyTasks.slice(-1)[0].deadline}
+                checked={tinyTasks.slice(-1)[0].checked}
+                datetime={tinyTasks.slice(-1)[0].updated_at}
               />
             </>
           )}
-          {smallTasks.length > 0 && (
+          {tinyTasks.length > 0 && (
             <ArrowDownwardIcon className={classes.icon} color="primary" />
           )}
           <div className="space-l"></div>
-          <Task
-            smallTasks={smallTasks}
-            taskId={taskId}
-            contents={task.contents}
-            deadline={task.deadline}
-            checked={task.checked}
-            datetime={task.updated_at}
+          <SmallTask
+            tinyTasks={tinyTasks}
+            taskId={task.id}
+            smallTaskId={smallTaskId}
+            contents={smallTask.contents}
+            deadline={smallTask.deadline}
+            checked={smallTask.checked}
+            datetime={smallTask.updated_at}
           />
         </>
       )}
@@ -204,4 +211,4 @@ const TaskDetail: React.FC = () => {
   );
 };
 
-export default TaskDetail;
+export default SmallTaskDetail;

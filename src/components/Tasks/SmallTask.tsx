@@ -6,15 +6,18 @@ import {
   taskCheckToggle,
   smallTaskDelete,
 } from "../../re-ducks/users/operations";
+import { SmallTaskState } from "../../re-ducks/users/types";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
+import ViewModuleIcon from "@material-ui/icons/ViewModule";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Tooltip from "@material-ui/core/Tooltip";
+import Badge from "@material-ui/core/Badge";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
+  tinyTasks: SmallTaskState[];
   taskId: string;
   smallTaskId: string;
   contents: string;
@@ -101,6 +105,19 @@ const SmallTask: React.FC<Props> = (props) => {
         <Typography className={classes.text} variant="h5" component="h3">
           {props.contents}
         </Typography>
+        <Tooltip title="分割">
+          <IconButton
+            onClick={() =>
+              dispatch(
+                push(`/small-task/detail/${props.taskId}/${props.smallTaskId}`)
+              )
+            }
+          >
+            <Badge badgeContent={props.tinyTasks.length} color="primary">
+              <ViewModuleIcon />
+            </Badge>
+          </IconButton>
+        </Tooltip>
         <Tooltip title="編集">
           <IconButton
             onClick={() =>

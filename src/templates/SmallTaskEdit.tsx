@@ -84,7 +84,7 @@ const SmallTaskEdit: React.FC = () => {
     <div className="c-mw700">
       {smallTask && (
         <>
-          <h2>タスクの更新</h2>
+          <h2>タスクの編集</h2>
           <TextInput
             fullWidth={true}
             label="内容"

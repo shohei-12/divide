@@ -7,17 +7,17 @@ import {
   themeToggleAction,
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
-import { Task, SmallTask } from "../users/types";
+import { TaskState, SmallTaskState } from "../users/types";
 
 const usersRef = db.collection("users");
 
 const fetchSignInUserInfo = async (
   uid: string,
-  tasks: Task[],
-  smallTasks: SmallTask[],
+  tasks: TaskState[],
+  smallTasks: SmallTaskState[],
   dispatch: any
 ) => {
-  const array: SmallTask[] = [];
+  const array: SmallTaskState[] = [];
 
   await usersRef
     .doc(uid)
@@ -42,12 +42,13 @@ const fetchSignInUserInfo = async (
                     const smallTaskData = snapshot.data();
                     const smallTask = {
                       id: smallTaskData.id,
+                      contents: smallTaskData.contents,
                       deadline: smallTaskData.deadline,
                       checked: smallTaskData.checked,
                       priority: smallTaskData.priority,
-                      contents: smallTaskData.contents,
+                      parentId: smallTaskData.parentId,
                       updated_at: smallTaskData.updated_at,
-                    } as SmallTask;
+                    } as SmallTaskState;
                     array.push(smallTask);
                   });
 
@@ -60,7 +61,7 @@ const fetchSignInUserInfo = async (
                     checked: taskData.checked,
                     priority: taskData.priority,
                     updated_at: taskData.updated_at,
-                  } as Task;
+                  } as TaskState;
                   tasks.push(task);
                   array.splice(0);
                 } else {
@@ -73,7 +74,7 @@ const fetchSignInUserInfo = async (
                     checked: taskData.checked,
                     priority: taskData.priority,
                     updated_at: taskData.updated_at,
-                  } as Task;
+                  } as TaskState;
                   tasks.push(task);
                 }
               })
@@ -105,8 +106,8 @@ export const listenAuthState = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const uid = user.uid;
-        const tasks: Task[] = [];
-        const smallTasks: SmallTask[] = [];
+        const tasks: TaskState[] = [];
+        const smallTasks: SmallTaskState[] = [];
 
         fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
       } else {
@@ -124,8 +125,8 @@ export const signIn = (email: string, password: string) => {
         const user = result.user;
         if (user) {
           const uid = user.uid;
-          const tasks: Task[] = [];
-          const smallTasks: SmallTask[] = [];
+          const tasks: TaskState[] = [];
+          const smallTasks: SmallTaskState[] = [];
 
           fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
 
@@ -146,8 +147,8 @@ export const guestSignIn = () => {
         const user = result.user;
         if (user) {
           const uid = user.uid;
-          const tasks: Task[] = [];
-          const smallTasks: SmallTask[] = [];
+          const tasks: TaskState[] = [];
+          const smallTasks: SmallTaskState[] = [];
 
           fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
 
@@ -311,7 +312,7 @@ export const taskDivision = (
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as Task[];
+    const tasks = getState().users.tasks as TaskState[];
     const smallTasksRef = usersRef
       .doc(uid)
       .collection("tasks")
@@ -326,6 +327,7 @@ export const taskDivision = (
         deadline: val,
         checked: false,
         priority: 0,
+        parentId: null,
         created_at: timestamp,
         updated_at: timestamp,
       };
@@ -336,6 +338,68 @@ export const taskDivision = (
         deadline: val,
         checked: false,
         priority: 0,
+        parentId: null,
+        updated_at: timestamp,
+      };
+
+      tasks[taskIndex].small_tasks.push(smallTask);
+
+      smallTasksRef
+        .doc(id)
+        .set(smallTaskInitialData)
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    };
+
+    if (deadline) {
+      saveSmallTaskData(FirebaseTimestamp.fromDate(deadline));
+    } else {
+      saveSmallTaskData(deadline);
+    }
+  };
+};
+
+export const smallTaskDivision = (
+  contents: string,
+  taskId: string,
+  smallTaskId: string,
+  taskIndex: number,
+  deadline: Date | null
+) => {
+  return async (dispatch: any, getState: any) => {
+    const timestamp = FirebaseTimestamp.now();
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as TaskState[];
+    const smallTasksRef = usersRef
+      .doc(uid)
+      .collection("tasks")
+      .doc(taskId)
+      .collection("small_tasks");
+    const id = smallTasksRef.doc().id;
+
+    const saveSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
+      const smallTaskInitialData = {
+        id,
+        contents,
+        deadline: val,
+        checked: false,
+        priority: 0,
+        parentId: smallTaskId,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
+
+      const smallTask = {
+        id,
+        contents,
+        deadline: val,
+        checked: false,
+        priority: 0,
+        parentId: smallTaskId,
         updated_at: timestamp,
       };
 
@@ -369,7 +433,7 @@ export const taskUpdate = (
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid as string;
-    const task = getState().users.tasks[taskIndex] as Task;
+    const task = getState().users.tasks[taskIndex] as TaskState;
     const tasksRef = usersRef.doc(uid).collection("tasks");
 
     task.contents = contents;
@@ -415,7 +479,7 @@ export const smallTaskUpdate = (
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid as string;
-    const task = getState().users.tasks[taskIndex] as Task;
+    const task = getState().users.tasks[taskIndex] as TaskState;
     const smallTasksRef = usersRef
       .doc(uid)
       .collection("tasks")
@@ -457,7 +521,7 @@ export const smallTaskUpdate = (
 export const taskDelete = (taskId: string) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as Task[];
+    const tasks = getState().users.tasks as TaskState[];
     const tasksRef = usersRef.doc(uid).collection("tasks");
 
     getState().users.tasks = tasks.filter((task) => task.id !== taskId);
@@ -478,7 +542,7 @@ export const taskDelete = (taskId: string) => {
 export const smallTaskDelete = (taskId: string, smallTaskId: string) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as Task[];
+    const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((element) => element.id === taskId)!;
     const smallTasksRef = usersRef
       .doc(uid)
@@ -510,7 +574,7 @@ export const taskCheckToggle = (
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now();
     const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as Task[];
+    const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((element) => element.id === taskId)!;
 
     const taskData = {
@@ -588,7 +652,7 @@ export const setPriority = (
 ) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as Task[];
+    const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((element) => element.id === taskId)!;
 
     const taskData = {

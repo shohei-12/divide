@@ -135,7 +135,7 @@ const DrawerMenu: React.FC = () => {
       path: "/?unfinished",
     },
     {
-      text: "メールアドレスの編集",
+      text: "メールアドレスの変更",
       icon: <EmailIcon />,
       path: "/user/edit",
     },

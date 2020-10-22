@@ -2,26 +2,27 @@ export type UserState = {
   isSignedIn: boolean;
   uid: string;
   email: string;
-  tasks: Task[];
+  tasks: TaskState[];
   theme: string;
 };
 
-export type Task = {
+export type TaskState = {
   id: string;
   contents: string;
-  small_tasks: SmallTask[];
+  small_tasks: SmallTaskState[];
   deadline: firebase.firestore.Timestamp | null;
   checked: boolean;
   priority: number;
   updated_at: firebase.firestore.Timestamp;
 };
 
-export type SmallTask = {
+export type SmallTaskState = {
   id: string;
   contents: string;
   deadline: firebase.firestore.Timestamp | null;
   checked: boolean;
   priority: number;
+  parentId: string | null;
   updated_at: firebase.firestore.Timestamp;
 };
 
@@ -30,8 +31,8 @@ export type DispatchAction = {
   uid?: string;
   username?: string;
   email?: string;
-  task?: Task;
-  tasks?: Task[];
+  task?: TaskState;
+  tasks?: TaskState[];
   theme?: string;
 };
 

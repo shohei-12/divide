@@ -38,7 +38,7 @@ const UserEdit: React.FC = () => {
 
   return (
     <div className="c-mw700">
-      <h2>メールアドレスの編集</h2>
+      <h2>メールアドレスの変更</h2>
       <TextInput
         fullWidth={true}
         label="メールアドレス"
@@ -61,7 +61,7 @@ const UserEdit: React.FC = () => {
       />
       <div className="space-m"></div>
       <SecondaryButton
-        text="更新する"
+        text="変更する"
         disabled={
           uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : email ? false : true
         }
