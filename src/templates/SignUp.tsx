@@ -6,7 +6,6 @@ import { SecondaryButton, TextInput } from "../components/UIkit";
 import { signUp } from "../re-ducks/users/operations";
 
 type Inputs = {
-  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -15,7 +14,6 @@ type Inputs = {
 const SignUp: React.FC = () => {
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -24,17 +22,9 @@ const SignUp: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const inputUsername = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setUsername(event.target.value);
-    },
-    [setUsername]
-  );
 
   const inputEmail = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,31 +48,12 @@ const SignUp: React.FC = () => {
   );
 
   const dispatchSignUp = () => {
-    dispatch(signUp(username, email, password));
+    dispatch(signUp(email, password));
   };
 
   return (
     <div className="c-mw700">
       <h2>新規ユーザー登録</h2>
-      <TextInput
-        fullWidth={true}
-        label="ユーザー名"
-        multiline={false}
-        required={true}
-        rows="1"
-        type="text"
-        name="username"
-        inputRef={register({
-          required: "入力必須です。",
-          maxLength: {
-            value: 30,
-            message: "30文字以内で入力してください。",
-          },
-        })}
-        error={Boolean(errors.username)}
-        helperText={errors.username && errors.username.message}
-        onChange={inputUsername}
-      />
       <TextInput
         fullWidth={true}
         label="メールアドレス"
@@ -150,9 +121,7 @@ const SignUp: React.FC = () => {
       <div className="space-m"></div>
       <SecondaryButton
         text="登録する"
-        disabled={
-          username && email && password && confirmPassword ? false : true
-        }
+        disabled={email && password && confirmPassword ? false : true}
         onClick={handleSubmit(() => dispatchSignUp())}
       />
       <div className="space-s"></div>

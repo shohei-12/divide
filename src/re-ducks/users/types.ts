@@ -1,7 +1,6 @@
 export type UserState = {
   isSignedIn: boolean;
   uid: string;
-  username: string;
   email: string;
   tasks: Task[];
   theme: string;

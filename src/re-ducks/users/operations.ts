@@ -89,7 +89,6 @@ const fetchSignInUserInfo = async (
       dispatch(
         signInAction({
           uid,
-          username: userData.username,
           email: userData.email,
           tasks,
           theme: userData.theme,
@@ -175,7 +174,7 @@ export const signOut = () => {
   };
 };
 
-export const signUp = (username: string, email: string, password: string) => {
+export const signUp = (email: string, password: string) => {
   return async (dispatch: any, getState: any) => {
     const theme = getState().users.theme as string;
 
@@ -189,7 +188,6 @@ export const signUp = (username: string, email: string, password: string) => {
           const timestamp = FirebaseTimestamp.now();
           const userInitialData = {
             uid,
-            username,
             email,
             theme,
             created_at: timestamp,
@@ -203,7 +201,6 @@ export const signUp = (username: string, email: string, password: string) => {
               dispatch(
                 signInAction({
                   uid,
-                  username,
                   email,
                 })
               );
@@ -221,7 +218,7 @@ export const signUp = (username: string, email: string, password: string) => {
   };
 };
 
-export const userUpdate = (uid: string, username: string, email: string) => {
+export const userUpdate = (uid: string, email: string) => {
   return async (dispatch: any) => {
     const timestamp = FirebaseTimestamp.now();
 
@@ -229,7 +226,6 @@ export const userUpdate = (uid: string, username: string, email: string) => {
       .currentUser!.updateEmail(email)
       .then(() => {
         const data = {
-          username,
           email,
           updated_at: timestamp,
         };
@@ -240,7 +236,6 @@ export const userUpdate = (uid: string, username: string, email: string) => {
           .then(() => {
             dispatch(
               signInAction({
-                username,
                 email,
               })
             );

@@ -10,11 +10,6 @@ export const getIsSignedIn = createSelector(
 
 export const getUserId = createSelector([usersSelector], (state) => state.uid);
 
-export const getUsername = createSelector(
-  [usersSelector],
-  (state) => state.username
-);
-
 export const getEmail = createSelector([usersSelector], (state) => state.email);
 
 export const getTheme = createSelector([usersSelector], (state) => state.theme);
