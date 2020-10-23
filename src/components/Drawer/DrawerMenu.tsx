@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logo: {
       position: "relative",
-      top: -2,
+      top: -1,
       [theme.breakpoints.up("sm")]: {
         top: 10,
       },
