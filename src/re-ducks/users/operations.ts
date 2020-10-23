@@ -306,6 +306,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
 export const taskDivision = (
   contents: string,
   taskId: string,
+  smallTaskId: string | null,
   taskIndex: number,
   deadline: Date | null
 ) => {
@@ -320,28 +321,10 @@ export const taskDivision = (
       .collection("small_tasks");
     const id = smallTasksRef.doc().id;
 
-    const saveSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
-      const smallTaskInitialData = {
-        id,
-        contents,
-        deadline: val,
-        checked: false,
-        priority: 0,
-        parentId: null,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
-
-      const smallTask = {
-        id,
-        contents,
-        deadline: val,
-        checked: false,
-        priority: 0,
-        parentId: null,
-        updated_at: timestamp,
-      };
-
+    const setSmallTaskInitialData = (
+      smallTaskInitialData: SmallTaskState,
+      smallTask: SmallTaskState
+    ) => {
       tasks[taskIndex].small_tasks.push(smallTask);
 
       smallTasksRef
@@ -355,65 +338,54 @@ export const taskDivision = (
         });
     };
 
-    if (deadline) {
-      saveSmallTaskData(FirebaseTimestamp.fromDate(deadline));
-    } else {
-      saveSmallTaskData(deadline);
-    }
-  };
-};
-
-export const smallTaskDivision = (
-  contents: string,
-  taskId: string,
-  smallTaskId: string,
-  taskIndex: number,
-  deadline: Date | null
-) => {
-  return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
-    const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as TaskState[];
-    const smallTasksRef = usersRef
-      .doc(uid)
-      .collection("tasks")
-      .doc(taskId)
-      .collection("small_tasks");
-    const id = smallTasksRef.doc().id;
-
     const saveSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
-      const smallTaskInitialData = {
-        id,
-        contents,
-        deadline: val,
-        checked: false,
-        priority: 0,
-        parentId: smallTaskId,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
+      if (smallTaskId) {
+        const smallTaskInitialData = {
+          id,
+          contents,
+          deadline: val,
+          checked: false,
+          priority: 0,
+          parentId: smallTaskId,
+          created_at: timestamp,
+          updated_at: timestamp,
+        };
 
-      const smallTask = {
-        id,
-        contents,
-        deadline: val,
-        checked: false,
-        priority: 0,
-        parentId: smallTaskId,
-        updated_at: timestamp,
-      };
+        const smallTask = {
+          id,
+          contents,
+          deadline: val,
+          checked: false,
+          priority: 0,
+          parentId: smallTaskId,
+          updated_at: timestamp,
+        };
 
-      tasks[taskIndex].small_tasks.push(smallTask);
+        setSmallTaskInitialData(smallTaskInitialData, smallTask);
+      } else {
+        const smallTaskInitialData = {
+          id,
+          contents,
+          deadline: val,
+          checked: false,
+          priority: 0,
+          parentId: null,
+          created_at: timestamp,
+          updated_at: timestamp,
+        };
 
-      smallTasksRef
-        .doc(id)
-        .set(smallTaskInitialData)
-        .then(() => {
-          dispatch(taskNonPayloadAction());
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+        const smallTask = {
+          id,
+          contents,
+          deadline: val,
+          checked: false,
+          priority: 0,
+          parentId: null,
+          updated_at: timestamp,
+        };
+
+        setSmallTaskInitialData(smallTaskInitialData, smallTask);
+      }
     };
 
     if (deadline) {

@@ -5,7 +5,7 @@ import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { SmallTask } from "../components/Tasks";
-import { smallTaskDivision } from "../re-ducks/users/operations";
+import { taskDivision } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -41,10 +41,9 @@ const SmallTaskDetail: React.FC = () => {
   const smallTaskId = window.location.pathname.split("/")[4];
   const taskIndex = tasks.findIndex((element) => element.id === taskId);
   const task = tasks[taskIndex];
-  const smallTaskIndex = task?.small_tasks.findIndex(
+  const smallTask = task?.small_tasks.find(
     (element) => element.id === smallTaskId
   );
-  const smallTask = task?.small_tasks[smallTaskIndex];
   const tinyTasks = task?.small_tasks.filter(
     (element) => element.parentId === smallTask?.id
   );
@@ -70,9 +69,7 @@ const SmallTaskDetail: React.FC = () => {
   );
 
   const dispatchTaskDivision = () => {
-    dispatch(
-      smallTaskDivision(contents, taskId, smallTaskId, taskIndex, deadline)
-    );
+    dispatch(taskDivision(contents, taskId, smallTaskId, taskIndex, deadline));
     reset();
     setDeadline(null);
   };
@@ -93,8 +90,8 @@ const SmallTaskDetail: React.FC = () => {
             inputRef={register({
               required: "入力必須です。",
               maxLength: {
-                value: 100,
-                message: "100文字以内で入力してください。",
+                value: 50,
+                message: "50文字以内で入力してください。",
               },
             })}
             error={Boolean(errors.contents)}

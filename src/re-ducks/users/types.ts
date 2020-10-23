@@ -24,6 +24,7 @@ export type SmallTaskState = {
   priority: number;
   parentId: string | null;
   updated_at: firebase.firestore.Timestamp;
+  created_at?: firebase.firestore.Timestamp;
 };
 
 export type DispatchAction = {

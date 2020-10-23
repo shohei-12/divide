@@ -54,8 +54,8 @@ const TaskRegistration: React.FC = () => {
         inputRef={register({
           required: "入力必須です。",
           maxLength: {
-            value: 100,
-            message: "100文字以内で入力してください。",
+            value: 50,
+            message: "50文字以内で入力してください。",
           },
         })}
         error={Boolean(errors.contents)}
