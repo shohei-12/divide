@@ -1,44 +1,70 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![divide-logo](https://user-images.githubusercontent.com/65577006/97000105-3a633500-1571-11eb-9f9e-284ab34ede72.png)
 
-## Available Scripts
+# DIVIDE
 
-In the project directory, you can run:
+デカルトの「困難は分割せよ」という名言を表現し、タスクを小さく小さく分割することで、より効率的なタスクの解決、困難なタスクの達成を支援する web アプリケーションです。
 
-### `yarn start`
+URL <https://divide-66b71.web.app/>
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# デモ
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+タスクの分割は以下のようにして行います。
 
-### `yarn test`
+![divide-demo](https://user-images.githubusercontent.com/65577006/96997264-6a5c0980-156c-11eb-88fd-d198b18236e1.gif)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 機能一覧
 
-### `yarn build`
+- ユーザー登録・編集
+- ログイン・ログアウト
+- タスク関連の機能
+  - 登録・表示・編集・削除
+  - 分割（分割したタスクをさらに分割することも可能）
+  - 期限設定
+  - 完了チェック
+  - 完了・未完了別表示
+  - 優先度設定
+  - 優先度別表示
+- 各種フォームのバリデーション
+- ライトモード・ダークモードの切り替え
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# 使用技術一覧
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- React
+- Redux
+- TypeScript
+- Material-UI
+- Firebase（Cloud Firestore, Authentication, Hosting）
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# 使用方法
 
-### `yarn eject`
+1. このリポジトリをクローンします。
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+$ git clone https://github.com/shohei-12/divide.git
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. カレントディレクトリを変更します。
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+$ cd divide
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+3. 依存パッケージをインストールします。
 
-## Learn More
+```bash
+$ npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4. アプリケーションを起動します。
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+$ npm start
+```
+
+# 作成者
+
+- 前田 翔平
+
+# ライセンス
+
+divide is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
