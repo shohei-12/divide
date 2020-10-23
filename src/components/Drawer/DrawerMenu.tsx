@@ -28,6 +28,8 @@ import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import LogoLight from "../../assets/img/icons/logo-light.png";
+import LogoDark from "../../assets/img/icons/logo-dark.png";
 
 const drawerWidth = 240;
 
@@ -67,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       margin: 0,
       height: 60,
-      textAlign: "center",
+      paddingLeft: 51,
       lineHeight: "60px",
       color: "#092122",
       "&:hover": {
@@ -82,6 +84,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     green: {
       color: "#00e676",
+    },
+    logo: {
+      position: "relative",
+      top: -1,
+      [theme.breakpoints.up("sm")]: {
+        top: 10,
+      },
     },
   })
 );
@@ -263,6 +272,25 @@ const DrawerMenu: React.FC = () => {
             >
               <MenuIcon />
             </IconButton>
+            {theme === "light" ? (
+              <img
+                className={`${classes.logo} pointer-h`}
+                src={LogoDark}
+                alt="App Logo"
+                width="35px"
+                height="35px"
+                onClick={() => dispatch(push("/"))}
+              />
+            ) : (
+              <img
+                className={`${classes.logo} pointer-h`}
+                src={LogoLight}
+                alt="App Logo"
+                width="35px"
+                height="35px"
+                onClick={() => dispatch(push("/"))}
+              />
+            )}
             <Typography
               className="pointer-h"
               variant="h6"
@@ -310,6 +338,23 @@ const DrawerMenu: React.FC = () => {
               variant="h6"
               onClick={() => dispatch(push("/"))}
             >
+              {theme === "light" ? (
+                <img
+                  className={classes.logo}
+                  src={LogoDark}
+                  alt="App Logo"
+                  width="35px"
+                  height="35px"
+                />
+              ) : (
+                <img
+                  className={classes.logo}
+                  src={LogoLight}
+                  alt="App Logo"
+                  width="35px"
+                  height="35px"
+                />
+              )}
               DIVIDE
             </Typography>
             <List>{listChild}</List>
