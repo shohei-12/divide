@@ -11,87 +11,19 @@ import { TaskState, SmallTaskState } from "../users/types";
 
 const usersRef = db.collection("users");
 
-const fetchSignInUserInfo = async (
-  uid: string,
-  tasks: TaskState[],
-  smallTasks: SmallTaskState[],
-  dispatch: any
-) => {
-  const array: SmallTaskState[] = [];
+const dispatchSignInAction = (user: firebase.User, dispatch: any) => {
+  const uid = user.uid;
 
-  await usersRef
+  usersRef
     .doc(uid)
     .get()
-    .then(async (snapshot) => {
+    .then((snapshot) => {
       const userData = snapshot.data()!;
-
-      await usersRef
-        .doc(uid)
-        .collection("tasks")
-        .orderBy("updated_at", "desc")
-        .get()
-        .then(async (snapshots) => {
-          for (const snapshot of snapshots.docs) {
-            await snapshot.ref
-              .collection("small_tasks")
-              .orderBy("created_at", "asc")
-              .get()
-              .then((snapshots) => {
-                if (snapshots.docs.length > 0) {
-                  snapshots.forEach((snapshot) => {
-                    const smallTaskData = snapshot.data();
-                    const smallTask = {
-                      id: smallTaskData.id,
-                      contents: smallTaskData.contents,
-                      deadline: smallTaskData.deadline,
-                      checked: smallTaskData.checked,
-                      priority: smallTaskData.priority,
-                      parentId: smallTaskData.parentId,
-                      updated_at: smallTaskData.updated_at,
-                    } as SmallTaskState;
-                    array.push(smallTask);
-                  });
-
-                  const taskData = snapshot.data();
-                  const task = {
-                    id: taskData.id,
-                    contents: taskData.contents,
-                    small_tasks: smallTasks.concat(array),
-                    deadline: taskData.deadline,
-                    checked: taskData.checked,
-                    priority: taskData.priority,
-                    updated_at: taskData.updated_at,
-                  } as TaskState;
-                  tasks.push(task);
-                  array.splice(0);
-                } else {
-                  const taskData = snapshot.data();
-                  const task = {
-                    id: taskData.id,
-                    contents: taskData.contents,
-                    small_tasks: [],
-                    deadline: taskData.deadline,
-                    checked: taskData.checked,
-                    priority: taskData.priority,
-                    updated_at: taskData.updated_at,
-                  } as TaskState;
-                  tasks.push(task);
-                }
-              })
-              .catch((error) => {
-                throw new Error(error);
-              });
-          }
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
 
       dispatch(
         signInAction({
           uid,
           email: userData.email,
-          tasks,
           theme: userData.theme,
         })
       );
@@ -105,11 +37,7 @@ export const listenAuthState = () => {
   return async (dispatch: any) => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        const uid = user.uid;
-        const tasks: TaskState[] = [];
-        const smallTasks: SmallTaskState[] = [];
-
-        fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
+        dispatchSignInAction(user, dispatch);
       } else {
         dispatch(push("/signin"));
       }
@@ -124,39 +52,13 @@ export const signIn = (email: string, password: string) => {
       .then(async (result) => {
         const user = result.user;
         if (user) {
-          const uid = user.uid;
-          const tasks: TaskState[] = [];
-          const smallTasks: SmallTaskState[] = [];
-
-          fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
+          dispatchSignInAction(user, dispatch);
 
           dispatch(push("/"));
         }
       })
       .catch(() => {
         alert("入力されたメールアドレスまたはパスワードに誤りがあります。");
-      });
-  };
-};
-
-export const guestSignIn = () => {
-  return async (dispatch: any) => {
-    auth
-      .signInWithEmailAndPassword("guest@example.com", "password")
-      .then(async (result) => {
-        const user = result.user;
-        if (user) {
-          const uid = user.uid;
-          const tasks: TaskState[] = [];
-          const smallTasks: SmallTaskState[] = [];
-
-          fetchSignInUserInfo(uid, tasks, smallTasks, dispatch);
-
-          dispatch(push("/"));
-        }
-      })
-      .catch((error) => {
-        throw new Error(error);
       });
   };
 };
@@ -670,38 +572,53 @@ export const setPriority = (
   };
 };
 
-export const fetchTasks = (uid: string, value: number) => {
+const fetchSomeTasks = (
+  uid: string,
+  start: number,
+  end: number,
+  dispatch: any,
+  getState: any
+) => {
+  const tasks: TaskState[] = [];
+
+  usersRef
+    .doc(uid)
+    .collection("tasks")
+    .orderBy("created_at", "desc")
+    .get()
+    .then((snapshots) => {
+      const tasksOnPageN = snapshots.docs.slice(start, end);
+
+      tasksOnPageN.forEach((snapshot) => {
+        const taskData = snapshot.data();
+        const task = {
+          id: taskData.id,
+          contents: taskData.contents,
+          small_tasks: [],
+          deadline: taskData.deadline,
+          checked: taskData.checked,
+          priority: taskData.priority,
+          updated_at: taskData.updated_at,
+        } as TaskState;
+        tasks.push(task);
+      });
+      getState().users.tasks = tasks;
+      dispatch(taskNonPayloadAction());
+    })
+    .catch((error) => {
+      throw new Error(error);
+    });
+};
+
+export const fetchTasksOnPageN = (uid: string, value: number) => {
   return async (dispatch: any, getState: any) => {
     const firstTaskNum = value * 6 - 5;
-    const tasks: TaskState[] = [];
-    usersRef
-      .doc(uid)
-      .collection("tasks")
-      .orderBy("created_at", "desc")
-      .get()
-      .then((snapshots) => {
-        const taskOnPage = snapshots.docs.slice(
-          firstTaskNum - 1,
-          firstTaskNum + 5
-        );
-        taskOnPage.forEach((snapshot) => {
-          const taskData = snapshot.data();
-          const task = {
-            id: taskData.id,
-            contents: taskData.contents,
-            small_tasks: [],
-            deadline: taskData.deadline,
-            checked: taskData.checked,
-            priority: taskData.priority,
-            updated_at: taskData.updated_at,
-          } as TaskState;
-          tasks.push(task);
-        });
-        getState().users.tasks = tasks;
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    fetchSomeTasks(uid, firstTaskNum - 1, firstTaskNum + 5, dispatch, getState);
+  };
+};
+
+export const fetchTasksOnPage1 = (uid: string) => {
+  return async (dispatch: any, getState: any) => {
+    fetchSomeTasks(uid, 0, 6, dispatch, getState);
   };
 };

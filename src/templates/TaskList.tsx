@@ -4,7 +4,10 @@ import { push } from "connected-react-router";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { State } from "../re-ducks/store/types";
 import { getUserId, getTasks } from "../re-ducks/users/selectors";
-import { fetchTasks } from "../re-ducks/users/operations";
+import {
+  fetchTasksOnPageN,
+  fetchTasksOnPage1,
+} from "../re-ducks/users/operations";
 import { Task } from "../components/Tasks";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -71,6 +74,7 @@ const TaskList: React.FC = () => {
   }
 
   useEffect(() => {
+    dispatch(fetchTasksOnPage1(uid));
     db.collection("users")
       .doc(uid)
       .collection("tasks")
@@ -78,7 +82,7 @@ const TaskList: React.FC = () => {
       .then((snapshot) => {
         setTaskCount(snapshot.size);
       });
-  }, [uid]);
+  }, [dispatch, uid]);
 
   const calcPage = (taskCount: number) => {
     if (taskCount % 6 === 0) {
@@ -89,7 +93,7 @@ const TaskList: React.FC = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    dispatch(fetchTasks(uid, value));
+    dispatch(fetchTasksOnPageN(uid, value));
   };
 
   return (
