@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { State } from "../re-ducks/store/types";
-import { getTasks } from "../re-ducks/users/selectors";
+import { getUserId, getTasks } from "../re-ducks/users/selectors";
+import { fetchTasks } from "../re-ducks/users/operations";
 import { Task } from "../components/Tasks";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Hidden from "@material-ui/core/Hidden";
+import Pagination from "@material-ui/lab/Pagination";
+import { db } from "../firebase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +45,10 @@ const TaskList: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
+  const uid = getUserId(selector);
   let tasks = getTasks(selector);
+
+  const [taskCount, setTaskCount] = useState(0);
 
   switch (selector.router.location.search) {
     case "?finished":
@@ -63,6 +69,28 @@ const TaskList: React.FC = () => {
     case "?priority=low":
       tasks = tasks.filter((task) => task.priority === 3);
   }
+
+  useEffect(() => {
+    db.collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .get()
+      .then((snapshot) => {
+        setTaskCount(snapshot.size);
+      });
+  }, [uid]);
+
+  const calcPage = (taskCount: number) => {
+    if (taskCount % 6 === 0) {
+      return taskCount / 6;
+    } else {
+      return ((taskCount / 6) | 0) + 1;
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    dispatch(fetchTasks(uid, value));
+  };
 
   return (
     <div className={classes.flex}>
@@ -95,6 +123,11 @@ const TaskList: React.FC = () => {
           <AddIcon />
         </Fab>
       </Hidden>
+      <Pagination
+        count={calcPage(taskCount)}
+        color="primary"
+        onChange={handleChange}
+      />
     </div>
   );
 };

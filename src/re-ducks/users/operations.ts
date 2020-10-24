@@ -669,3 +669,39 @@ export const setPriority = (
     }
   };
 };
+
+export const fetchTasks = (uid: string, value: number) => {
+  return async (dispatch: any, getState: any) => {
+    const firstTaskNum = value * 6 - 5;
+    const tasks: TaskState[] = [];
+    usersRef
+      .doc(uid)
+      .collection("tasks")
+      .orderBy("created_at", "desc")
+      .get()
+      .then((snapshots) => {
+        const taskOnPage = snapshots.docs.slice(
+          firstTaskNum - 1,
+          firstTaskNum + 5
+        );
+        taskOnPage.forEach((snapshot) => {
+          const taskData = snapshot.data();
+          const task = {
+            id: taskData.id,
+            contents: taskData.contents,
+            small_tasks: [],
+            deadline: taskData.deadline,
+            checked: taskData.checked,
+            priority: taskData.priority,
+            updated_at: taskData.updated_at,
+          } as TaskState;
+          tasks.push(task);
+        });
+        getState().users.tasks = tasks;
+        dispatch(taskNonPayloadAction());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
