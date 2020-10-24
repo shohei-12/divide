@@ -17,7 +17,11 @@ import { db } from "../firebase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    pb: {
+      paddingBottom: 60,
+    },
     flex: {
+      position: "relative",
       display: "flex",
       flexWrap: "wrap",
     },
@@ -40,6 +44,10 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "fixed",
       right: 30,
       bottom: 30,
+    },
+    pagination: {
+      position: "absolute",
+      bottom: -60,
     },
   })
 );
@@ -79,8 +87,8 @@ const TaskList: React.FC = () => {
       .doc(uid)
       .collection("tasks")
       .get()
-      .then((snapshot) => {
-        setTaskCount(snapshot.size);
+      .then((snapshots) => {
+        setTaskCount(snapshots.size);
       });
   }, [dispatch, uid]);
 
@@ -97,41 +105,44 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div className={classes.flex}>
-      {tasks &&
-        tasks.map((task, index) => (
-          <div
-            key={index}
-            className={classes.task}
-            onClick={() => dispatch(push(`/task/detail/${task.id}`))}
+    <div className={classes.pb}>
+      <div className={classes.flex}>
+        {tasks &&
+          tasks.map((task, index) => (
+            <div
+              key={index}
+              className={classes.task}
+              onClick={() => dispatch(push(`/task/detail/${task.id}`))}
+            >
+              <Task
+                smallTasks={task.small_tasks.filter(
+                  (smallTask) => smallTask.parentId === null
+                )}
+                taskId={task.id}
+                contents={task.contents}
+                deadline={task.deadline}
+                checked={task.checked}
+                datetime={task.updated_at}
+              />
+            </div>
+          ))}
+        <Hidden smUp>
+          <Fab
+            className={classes.fab}
+            color="primary"
+            aria-label="タスクの登録"
+            onClick={() => dispatch(push("/task/registration"))}
           >
-            <Task
-              smallTasks={task.small_tasks.filter(
-                (smallTask) => smallTask.parentId === null
-              )}
-              taskId={task.id}
-              contents={task.contents}
-              deadline={task.deadline}
-              checked={task.checked}
-              datetime={task.updated_at}
-            />
-          </div>
-        ))}
-      <Hidden smUp>
-        <Fab
-          className={classes.fab}
+            <AddIcon />
+          </Fab>
+        </Hidden>
+        <Pagination
+          className={classes.pagination}
+          count={calcPage(taskCount)}
           color="primary"
-          aria-label="タスクの登録"
-          onClick={() => dispatch(push("/task/registration"))}
-        >
-          <AddIcon />
-        </Fab>
-      </Hidden>
-      <Pagination
-        count={calcPage(taskCount)}
-        color="primary"
-        onChange={handleChange}
-      />
+          onChange={handleChange}
+        />
+      </div>
     </div>
   );
 };
