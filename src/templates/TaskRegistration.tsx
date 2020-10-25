@@ -20,7 +20,7 @@ const TaskRegistration: React.FC = () => {
   const dispatch = useDispatch();
 
   const [contents, setContents] = useState("");
-  const [deadline, setDeadline] = useState(null);
+  const [deadline, setDeadline] = useState<Date | null>(null);
 
   const inputContents = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

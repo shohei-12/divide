@@ -48,9 +48,9 @@ type Props = {
   smallTasks: SmallTaskState[];
   taskId: string;
   contents: string;
-  deadline: firebase.firestore.Timestamp | null;
+  deadline: string | null;
   checked: boolean;
-  datetime: firebase.firestore.Timestamp;
+  datetime: string;
 };
 
 const Task: React.FC<Props> = (props) => {
@@ -76,7 +76,7 @@ const Task: React.FC<Props> = (props) => {
       <CardContent className={classes.content}>
         <div className={classes.flex}>
           <Typography className={classes.datetime} color="textSecondary">
-            {formatDatetime(props.datetime.toDate())}
+            {formatDatetime(new Date(props.datetime))}
           </Typography>
           <div className={classes.flex + " " + classes.alignRight}>
             {props.deadline && <Deadline deadline={props.deadline} />}

@@ -27,7 +27,7 @@ const TaskEdit: React.FC = () => {
   });
 
   const [contents, setContents] = useState(task?.contents);
-  const [deadline, setDeadline] = useState(task?.deadline?.toDate()!);
+  const [deadline, setDeadline] = useState(new Date(task?.deadline as string));
   const [deadlineNull, setDeadlineNull] = useState(null);
 
   const inputContents = useCallback(

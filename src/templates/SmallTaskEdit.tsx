@@ -32,7 +32,9 @@ const SmallTaskEdit: React.FC = () => {
   });
 
   const [contents, setContents] = useState(smallTask?.contents);
-  const [deadline, setDeadline] = useState(smallTask?.deadline?.toDate()!);
+  const [deadline, setDeadline] = useState(
+    new Date(smallTask?.deadline as string)
+  );
   const [deadlineNull, setDeadlineNull] = useState(null);
 
   const inputContents = useCallback(

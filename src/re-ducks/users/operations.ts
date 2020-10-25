@@ -8,6 +8,7 @@ import {
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { TaskState, SmallTaskState } from "../users/types";
+import firebase from "firebase/app";
 
 const usersRef = db.collection("users");
 
@@ -157,12 +158,12 @@ export const userUpdate = (uid: string, email: string) => {
 
 export const taskRegistration = (contents: string, deadline: Date | null) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
+    const timestamp = FirebaseTimestamp.now().toDate().toString();
     const uid = getState().users.uid;
     const tasksRef = usersRef.doc(uid).collection("tasks");
     const id = tasksRef.doc().id;
 
-    const saveTaskData = (val: firebase.firestore.Timestamp | null) => {
+    const saveTaskData = (val: string | null) => {
       const taskInitialData = {
         id,
         contents,
@@ -198,7 +199,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
     };
 
     if (deadline) {
-      saveTaskData(FirebaseTimestamp.fromDate(deadline));
+      saveTaskData(deadline.toString());
     } else {
       saveTaskData(deadline);
     }
@@ -240,7 +241,7 @@ export const taskDivision = (
         });
     };
 
-    const saveSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
+    const saveSmallTaskData = (val: string | null) => {
       if (smallTaskId) {
         const smallTaskInitialData = {
           id,
@@ -291,7 +292,7 @@ export const taskDivision = (
     };
 
     if (deadline) {
-      saveSmallTaskData(FirebaseTimestamp.fromDate(deadline));
+      saveSmallTaskData(deadline.toString());
     } else {
       saveSmallTaskData(deadline);
     }
@@ -311,9 +312,9 @@ export const taskUpdate = (
     const tasksRef = usersRef.doc(uid).collection("tasks");
 
     task.contents = contents;
-    task.updated_at = timestamp;
+    task.updated_at = timestamp.toDate().toString();
 
-    const updateTaskData = (val: firebase.firestore.Timestamp | null) => {
+    const updateTaskData = (val: string | null) => {
       task.deadline = val;
 
       const taskData = {
@@ -335,7 +336,7 @@ export const taskUpdate = (
     };
 
     if (deadline) {
-      updateTaskData(FirebaseTimestamp.fromDate(deadline));
+      updateTaskData(deadline.toString());
     } else {
       updateTaskData(deadline);
     }
@@ -363,7 +364,7 @@ export const smallTaskUpdate = (
     task.small_tasks[smallTaskIndex].contents = contents;
     task.small_tasks[smallTaskIndex].updated_at = timestamp;
 
-    const updateSmallTaskData = (val: firebase.firestore.Timestamp | null) => {
+    const updateSmallTaskData = (val: string | null) => {
       task.small_tasks[smallTaskIndex].deadline = val;
 
       const smallTaskData = {
@@ -385,7 +386,7 @@ export const smallTaskUpdate = (
     };
 
     if (deadline) {
-      updateSmallTaskData(FirebaseTimestamp.fromDate(deadline));
+      updateSmallTaskData(deadline.toString());
     } else {
       updateSmallTaskData(deadline);
     }

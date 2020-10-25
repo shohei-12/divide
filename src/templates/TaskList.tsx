@@ -17,10 +17,10 @@ import { db } from "../firebase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    pb: {
+    wrap: {
       paddingBottom: 60,
     },
-    flex: {
+    tasks: {
       position: "relative",
       display: "flex",
       flexWrap: "wrap",
@@ -105,8 +105,8 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div className={classes.pb}>
-      <div className={classes.flex}>
+    <div className={classes.wrap}>
+      <div className={classes.tasks}>
         {tasks &&
           tasks.map((task, index) => (
             <div

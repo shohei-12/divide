@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-  deadline: firebase.firestore.Timestamp;
+  deadline: string;
 };
 
 const Deadline: React.FC<Props> = (props) => {
@@ -25,18 +25,18 @@ const Deadline: React.FC<Props> = (props) => {
 
   return (
     <>
-      {daysRemaining(props.deadline.toDate()) * 24 >= 24 && (
-        <span>あと{daysRemaining(props.deadline.toDate())}日</span>
+      {daysRemaining(new Date(props.deadline)) * 24 >= 24 && (
+        <span>あと{daysRemaining(new Date(props.deadline))}日</span>
       )}
-      {daysRemaining(props.deadline.toDate()) * 24 < 24 &&
-        hoursRemaining(props.deadline.toDate()) >= 1 && (
-          <span>あと{hoursRemaining(props.deadline.toDate())}時間</span>
+      {daysRemaining(new Date(props.deadline)) * 24 < 24 &&
+        hoursRemaining(new Date(props.deadline)) >= 1 && (
+          <span>あと{hoursRemaining(new Date(props.deadline))}時間</span>
         )}
-      {hoursRemaining(props.deadline.toDate()) * 60 < 60 &&
-        minutesRemaining(props.deadline.toDate()) >= 0 && (
-          <span>あと{minutesRemaining(props.deadline.toDate())}分</span>
+      {hoursRemaining(new Date(props.deadline)) * 60 < 60 &&
+        minutesRemaining(new Date(props.deadline)) >= 0 && (
+          <span>あと{minutesRemaining(new Date(props.deadline))}分</span>
         )}
-      {minutesRemaining(props.deadline.toDate()) < 0 && <span>期限切れ</span>}
+      {minutesRemaining(new Date(props.deadline)) < 0 && <span>期限切れ</span>}
     </>
   );
 };

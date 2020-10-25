@@ -10,16 +10,16 @@ export type TaskState = {
   id: string;
   contents: string;
   small_tasks: SmallTaskState[];
-  deadline: firebase.firestore.Timestamp | null;
+  deadline: string | null;
   checked: boolean;
   priority: number;
-  updated_at: firebase.firestore.Timestamp;
+  updated_at: string;
 };
 
 export type SmallTaskState = {
   id: string;
   contents: string;
-  deadline: firebase.firestore.Timestamp | null;
+  deadline: string | null;
   checked: boolean;
   priority: number;
   parentId: string | null;

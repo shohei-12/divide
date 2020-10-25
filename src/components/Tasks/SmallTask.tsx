@@ -52,7 +52,7 @@ type Props = {
   taskId: string;
   smallTaskId: string;
   contents: string;
-  deadline: firebase.firestore.Timestamp | null;
+  deadline: string | null;
   checked: boolean;
   datetime: firebase.firestore.Timestamp;
 };
