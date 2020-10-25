@@ -2,7 +2,6 @@ import { push } from "connected-react-router";
 import {
   signInAction,
   signOutAction,
-  taskRegistrationAction,
   taskNonPayloadAction,
   themeToggleAction,
 } from "./actions";
@@ -159,7 +158,7 @@ export const userUpdate = (uid: string, email: string) => {
 export const taskRegistration = (contents: string, deadline: Date | null) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now().toDate().toString();
-    const uid = getState().users.uid;
+    const uid = getState().users.uid as string;
     const tasksRef = usersRef.doc(uid).collection("tasks");
     const id = tasksRef.doc().id;
 
@@ -174,23 +173,21 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
         updated_at: timestamp,
       };
 
-      const taskState = {
-        task: {
-          id,
-          contents,
-          small_tasks: [],
-          deadline: val,
-          checked: false,
-          priority: 0,
-          updated_at: timestamp,
-        },
+      getState().users.tasks = {
+        id,
+        contents,
+        small_tasks: [],
+        deadline: val,
+        checked: false,
+        priority: 0,
+        updated_at: timestamp,
       };
 
       tasksRef
         .doc(id)
         .set(taskInitialData)
         .then(() => {
-          dispatch(taskRegistrationAction(taskState));
+          dispatch(taskNonPayloadAction);
           dispatch(push("/"));
         })
         .catch((error) => {

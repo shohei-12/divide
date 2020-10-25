@@ -17,11 +17,6 @@ export const UsersReducer = (
         ...state,
         ...action.payload,
       };
-    case Actions.TASK_REGISTRATION:
-      return {
-        ...state,
-        tasks: [action.payload!.task, ...state.tasks],
-      };
     case Actions.TASK_NON_PAYLOAD:
       return {
         ...state,

@@ -24,16 +24,6 @@ export const signOutAction = () => {
   };
 };
 
-export const TASK_REGISTRATION = "TASK_REGISTRATION";
-export const taskRegistrationAction = (taskState: DispatchAction) => {
-  return {
-    type: "TASK_REGISTRATION",
-    payload: {
-      task: taskState.task,
-    },
-  };
-};
-
 export const TASK_NON_PAYLOAD = "TASK_NON_PAYLOAD";
 export const taskNonPayloadAction = () => {
   return {

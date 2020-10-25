@@ -32,7 +32,6 @@ export type DispatchAction = {
   uid?: string;
   username?: string;
   email?: string;
-  task?: TaskState;
   tasks?: TaskState[];
   theme?: string;
 };

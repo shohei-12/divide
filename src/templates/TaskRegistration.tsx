@@ -30,7 +30,7 @@ const TaskRegistration: React.FC = () => {
   );
 
   const inputDeadline = useCallback(
-    (date: any) => {
+    (date: Date | null) => {
       setDeadline(date);
     },
     [setDeadline]
