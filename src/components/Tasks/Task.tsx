@@ -2,8 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Deadline, PriorityButton } from ".";
-import { taskCheckToggle, taskDelete } from "../../re-ducks/users/operations";
-import { SmallTaskState } from "../../re-ducks/users/types";
+import { toggleTaskCheck, deleteTask } from "../../re-ducks/users/operations";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -25,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     datetime: {
       fontSize: 14,
-      display: "inline-block",
     },
     alignRight: {
       marginRight: 0,
@@ -35,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
     },
-    text: {
+    contents: {
       fontSize: 18,
       [theme.breakpoints.up("sm")]: {
         fontSize: 20,
@@ -45,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  smallTasks: SmallTaskState[];
+  smallTaskLength: number;
   taskId: string;
   contents: string;
   deadline: string | null;
@@ -89,20 +87,20 @@ const Task: React.FC<Props> = (props) => {
                   event: React.MouseEvent<HTMLButtonElement, MouseEvent>
                 ) => {
                   event.stopPropagation();
-                  dispatch(taskCheckToggle(!props.checked, props.taskId, null));
+                  dispatch(toggleTaskCheck(!props.checked, props.taskId, null));
                 }}
               />
             </Tooltip>
           </div>
         </div>
-        <Typography className={classes.text} variant="h5" component="h3">
+        <Typography className={classes.contents} variant="h5" component="h3">
           {props.contents}
         </Typography>
         <Tooltip title="分割">
           <IconButton
             onClick={() => dispatch(push(`/task/detail/${props.taskId}`))}
           >
-            <Badge badgeContent={props.smallTasks.length} color="primary">
+            <Badge badgeContent={props.smallTaskLength} color="primary">
               <ViewModuleIcon />
             </Badge>
           </IconButton>
@@ -125,8 +123,8 @@ const Task: React.FC<Props> = (props) => {
               event: React.MouseEvent<HTMLButtonElement, MouseEvent>
             ) => {
               event.stopPropagation();
-              if (window.confirm("本当に削除しますか？")) {
-                dispatch(taskDelete(props.taskId));
+              if (window.confirm("タスクを削除しますか？")) {
+                dispatch(deleteTask(props.taskId, null));
               }
             }}
           >

@@ -81,7 +81,7 @@ const SmallTaskDetail: React.FC = () => {
           <h2>タスクの分割</h2>
           <TextInput
             fullWidth={true}
-            label="タスクを分割する"
+            label="内容"
             multiline={true}
             required={true}
             rows="5"
@@ -120,9 +120,11 @@ const SmallTaskDetail: React.FC = () => {
           <div className="space-l"></div>
           {tinyTasks.length === 1 && (
             <SmallTask
-              tinyTasks={smallTasksExcludeNull.filter(
-                (element) => element.parentId === tinyTasks[0].id
-              )}
+              tinyTaskLength={
+                smallTasksExcludeNull.filter(
+                  (element) => element.parentId === tinyTasks[0].id
+                ).length
+              }
               taskId={task.id}
               smallTaskId={tinyTasks[0].id}
               contents={tinyTasks[0].contents}
@@ -134,9 +136,11 @@ const SmallTaskDetail: React.FC = () => {
           {tinyTasks.length === 2 && (
             <>
               <SmallTask
-                tinyTasks={smallTasksExcludeNull.filter(
-                  (element) => element.parentId === tinyTasks[0].id
-                )}
+                tinyTaskLength={
+                  smallTasksExcludeNull.filter(
+                    (element) => element.parentId === tinyTasks[0].id
+                  ).length
+                }
                 taskId={task.id}
                 smallTaskId={tinyTasks[0].id}
                 contents={tinyTasks[0].contents}
@@ -146,9 +150,11 @@ const SmallTaskDetail: React.FC = () => {
               />
               <AddIcon className={classes.icon} color="primary" />
               <SmallTask
-                tinyTasks={smallTasksExcludeNull.filter(
-                  (element) => element.parentId === tinyTasks[1].id
-                )}
+                tinyTaskLength={
+                  smallTasksExcludeNull.filter(
+                    (element) => element.parentId === tinyTasks[1].id
+                  ).length
+                }
                 taskId={task.id}
                 smallTaskId={tinyTasks[1].id}
                 contents={tinyTasks[1].contents}
@@ -163,9 +169,11 @@ const SmallTaskDetail: React.FC = () => {
               {tinyTasks.slice(0, -1).map((tinyTask, index) => (
                 <React.Fragment key={index}>
                   <SmallTask
-                    tinyTasks={smallTasksExcludeNull.filter(
-                      (element) => element.parentId === tinyTask.id
-                    )}
+                    tinyTaskLength={
+                      smallTasksExcludeNull.filter(
+                        (element) => element.parentId === tinyTask.id
+                      ).length
+                    }
                     taskId={task.id}
                     smallTaskId={tinyTask.id}
                     contents={tinyTask.contents}
@@ -177,9 +185,11 @@ const SmallTaskDetail: React.FC = () => {
                 </React.Fragment>
               ))}
               <SmallTask
-                tinyTasks={smallTasksExcludeNull.filter(
-                  (element) => element.parentId === tinyTasks.slice(-1)[0].id
-                )}
+                tinyTaskLength={
+                  smallTasksExcludeNull.filter(
+                    (element) => element.parentId === tinyTasks.slice(-1)[0].id
+                  ).length
+                }
                 taskId={task.id}
                 smallTaskId={tinyTasks.slice(-1)[0].id}
                 contents={tinyTasks.slice(-1)[0].contents}
@@ -194,7 +204,7 @@ const SmallTaskDetail: React.FC = () => {
           )}
           <div className="space-l"></div>
           <SmallTask
-            tinyTasks={tinyTasks}
+            tinyTaskLength={tinyTasks.length}
             taskId={task.id}
             smallTaskId={smallTaskId}
             contents={smallTask.contents}

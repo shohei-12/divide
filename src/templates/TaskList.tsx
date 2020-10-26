@@ -115,9 +115,11 @@ const TaskList: React.FC = () => {
               onClick={() => dispatch(push(`/task/detail/${task.id}`))}
             >
               <Task
-                smallTasks={task.small_tasks.filter(
-                  (smallTask) => smallTask.parentId === null
-                )}
+                smallTaskLength={
+                  task.small_tasks.filter(
+                    (smallTask) => smallTask.parentId === null
+                  ).length
+                }
                 taskId={task.id}
                 contents={task.contents}
                 deadline={task.deadline}

@@ -45,8 +45,8 @@ const TaskEdit: React.FC = () => {
     [setDeadline]
   );
 
-  const dispatchTaskUpdate = () => {
-    dispatch(updateTask(contents, taskId, deadline));
+  const dispatchUpdateTask = () => {
+    dispatch(updateTask(contents, taskId, null, deadline));
   };
 
   return (
@@ -90,7 +90,7 @@ const TaskEdit: React.FC = () => {
           <SecondaryButton
             text="更新する"
             disabled={contents ? false : true}
-            onClick={handleSubmit(() => dispatchTaskUpdate())}
+            onClick={handleSubmit(() => dispatchUpdateTask())}
           />
         </>
       )}

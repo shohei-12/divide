@@ -2,11 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Deadline, PriorityButton } from ".";
-import {
-  taskCheckToggle,
-  smallTaskDelete,
-} from "../../re-ducks/users/operations";
-import { SmallTaskState } from "../../re-ducks/users/types";
+import { toggleTaskCheck, deleteTask } from "../../re-ducks/users/operations";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -28,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     datetime: {
       fontSize: 14,
-      display: "inline-block",
     },
     alignRight: {
       marginRight: 0,
@@ -38,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
     },
-    text: {
+    contents: {
       fontSize: 18,
       [theme.breakpoints.up("sm")]: {
         fontSize: 20,
@@ -48,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  tinyTasks: SmallTaskState[];
+  tinyTaskLength: number;
   taskId: string;
   smallTaskId: string;
   contents: string;
@@ -91,7 +86,7 @@ const SmallTask: React.FC<Props> = (props) => {
                 inputProps={{ "aria-label": "タスクの完了" }}
                 onClick={() => {
                   dispatch(
-                    taskCheckToggle(
+                    toggleTaskCheck(
                       !props.checked,
                       props.taskId,
                       props.smallTaskId
@@ -102,7 +97,7 @@ const SmallTask: React.FC<Props> = (props) => {
             </Tooltip>
           </div>
         </div>
-        <Typography className={classes.text} variant="h5" component="h3">
+        <Typography className={classes.contents} variant="h5" component="h3">
           {props.contents}
         </Typography>
         <Tooltip title="分割">
@@ -113,7 +108,7 @@ const SmallTask: React.FC<Props> = (props) => {
               )
             }
           >
-            <Badge badgeContent={props.tinyTasks.length} color="primary">
+            <Badge badgeContent={props.tinyTaskLength} color="primary">
               <ViewModuleIcon />
             </Badge>
           </IconButton>
@@ -132,8 +127,8 @@ const SmallTask: React.FC<Props> = (props) => {
         <Tooltip title="削除">
           <IconButton
             onClick={() => {
-              if (window.confirm("本当に削除しますか？")) {
-                dispatch(smallTaskDelete(props.taskId, props.smallTaskId));
+              if (window.confirm("タスクを削除しますか？")) {
+                dispatch(deleteTask(props.taskId, props.smallTaskId));
               }
             }}
           >

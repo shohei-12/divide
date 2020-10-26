@@ -16,6 +16,8 @@ const getTasksRef = (uid: string) => usersRef.doc(uid).collection("tasks");
 const getSmallTasksRef = (uid: string, taskId: string) =>
   usersRef.doc(uid).collection("tasks").doc(taskId).collection("small_tasks");
 
+const getTimestamp = () => FirebaseTimestamp.now().toDate().toString();
+
 const dispatchSignInAction = (user: firebase.User, dispatch: any) => {
   const uid = user.uid;
 
@@ -162,7 +164,7 @@ export const userUpdate = (uid: string, email: string) => {
 
 export const registerTask = (contents: string, deadline: Date | null) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now().toDate().toString();
+    const timestamp = getTimestamp();
     const uid = getState().users.uid as string;
     const tasksRef = getTasksRef(uid);
     const id = tasksRef.doc().id;
@@ -215,7 +217,7 @@ export const divideTask = (
   deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now().toDate().toString();
+    const timestamp = getTimestamp();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((ele) => ele.id === taskId)!;
@@ -300,37 +302,65 @@ export const divideTask = (
 export const updateTask = (
   contents: string,
   taskId: string,
+  smallTaskId: string | null,
   deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now().toDate().toString();
+    const timestamp = getTimestamp();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((ele) => ele.id === taskId)!;
-    const tasksRef = getTasksRef(uid);
-
-    task.contents = contents;
-    task.updated_at = timestamp;
 
     const updateTaskData = (val: string | null) => {
-      task.deadline = val;
-
       const taskData = {
         contents,
         deadline: val,
         updated_at: timestamp,
       };
 
-      tasksRef
-        .doc(taskId)
-        .set(taskData, { merge: true })
-        .then(() => {
-          dispatch(taskNonPayloadAction());
-          dispatch(push(`/task/detail/${taskId}`));
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
+      if (smallTaskId) {
+        const smallTasksRef = getSmallTasksRef(uid, taskId);
+        const smallTask = task.small_tasks.find(
+          (ele) => ele.id === smallTaskId
+        )!;
+        const parentId = smallTask.parentId;
+
+        smallTask.contents = contents;
+        smallTask.updated_at = timestamp;
+        smallTask.deadline = val;
+
+        smallTasksRef
+          .doc(smallTaskId)
+          .set(taskData, { merge: true })
+          .then(() => {
+            dispatch(taskNonPayloadAction());
+            if (parentId !== null) {
+              dispatch(push(`/small-task/detail/${taskId}/${parentId}`));
+            } else {
+              dispatch(push(`/task/detail/${taskId}`));
+            }
+          })
+          .catch((error) => {
+            throw new Error(error);
+          });
+      } else {
+        const tasksRef = getTasksRef(uid);
+
+        task.contents = contents;
+        task.updated_at = timestamp;
+        task.deadline = val;
+
+        tasksRef
+          .doc(taskId)
+          .set(taskData, { merge: true })
+          .then(() => {
+            dispatch(taskNonPayloadAction());
+            dispatch(push(`/task/detail/${taskId}`));
+          })
+          .catch((error) => {
+            throw new Error(error);
+          });
+      }
     };
 
     if (deadline) {
@@ -341,111 +371,53 @@ export const updateTask = (
   };
 };
 
-export const smallTaskUpdate = (
-  contents: string,
-  taskId: string,
-  taskIndex: number,
-  smallTaskId: string,
-  smallTaskIndex: number,
-  deadline: Date | null
-) => {
-  return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now().toDate().toString();
-    const uid = getState().users.uid as string;
-    const task = getState().users.tasks[taskIndex] as TaskState;
-    const smallTasksRef = usersRef
-      .doc(uid)
-      .collection("tasks")
-      .doc(taskId)
-      .collection("small_tasks");
-
-    task.small_tasks[smallTaskIndex].contents = contents;
-    task.small_tasks[smallTaskIndex].updated_at = timestamp;
-
-    const updateSmallTaskData = (val: string | null) => {
-      task.small_tasks[smallTaskIndex].deadline = val;
-
-      const smallTaskData = {
-        contents,
-        deadline: val,
-        updated_at: timestamp,
-      };
-
-      smallTasksRef
-        .doc(smallTaskId)
-        .set(smallTaskData, { merge: true })
-        .then(() => {
-          dispatch(taskNonPayloadAction());
-          dispatch(push(`/task/detail/${taskId}`));
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
-    };
-
-    if (deadline) {
-      updateSmallTaskData(deadline.toString());
-    } else {
-      updateSmallTaskData(deadline);
-    }
-  };
-};
-
-export const taskDelete = (taskId: string) => {
+export const deleteTask = (taskId: string, smallTaskId: string | null) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
     const tasksRef = getTasksRef(uid);
 
-    getState().users.tasks = tasks.filter((task) => task.id !== taskId);
+    if (smallTaskId) {
+      const task = tasks.find((element) => element.id === taskId)!;
+      const smallTasksRef = getSmallTasksRef(uid, taskId);
 
-    tasksRef
-      .doc(taskId)
-      .delete()
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-        dispatch(push("/"));
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+      task.small_tasks = task.small_tasks.filter(
+        (smallTask) => smallTask.id !== smallTaskId
+      );
+
+      smallTasksRef
+        .doc(smallTaskId)
+        .delete()
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } else {
+      getState().users.tasks = tasks.filter((task) => task.id !== taskId);
+
+      tasksRef
+        .doc(taskId)
+        .delete()
+        .then(() => {
+          dispatch(taskNonPayloadAction());
+          dispatch(push("/"));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   };
 };
 
-export const smallTaskDelete = (taskId: string, smallTaskId: string) => {
-  return async (dispatch: any, getState: any) => {
-    const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as TaskState[];
-    const task = tasks.find((element) => element.id === taskId)!;
-    const smallTasksRef = usersRef
-      .doc(uid)
-      .collection("tasks")
-      .doc(taskId)
-      .collection("small_tasks");
-
-    task.small_tasks = task.small_tasks.filter(
-      (smallTask) => smallTask.id !== smallTaskId
-    );
-
-    smallTasksRef
-      .doc(smallTaskId)
-      .delete()
-      .then(() => {
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  };
-};
-
-export const taskCheckToggle = (
+export const toggleTaskCheck = (
   check: boolean,
   taskId: string,
   smallTaskId: string | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
+    const timestamp = getTimestamp();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((element) => element.id === taskId)!;
@@ -459,11 +431,7 @@ export const taskCheckToggle = (
       const smallTask = task.small_tasks.find(
         (element) => element.id === smallTaskId
       )!;
-      const smallTasksRef = usersRef
-        .doc(uid)
-        .collection("tasks")
-        .doc(taskId)
-        .collection("small_tasks");
+      const smallTasksRef = getSmallTasksRef(uid, taskId);
 
       smallTask.checked = check;
 
@@ -477,7 +445,7 @@ export const taskCheckToggle = (
           throw new Error(error);
         });
     } else {
-      const tasksRef = usersRef.doc(uid).collection("tasks");
+      const tasksRef = getTasksRef(uid);
 
       task.checked = check;
 
