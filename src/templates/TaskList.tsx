@@ -81,17 +81,6 @@ const TaskList: React.FC = () => {
       tasks = tasks.filter((task) => task.priority === 3);
   }
 
-  useEffect(() => {
-    dispatch(fetchTasksOnPage1(uid));
-    db.collection("users")
-      .doc(uid)
-      .collection("tasks")
-      .get()
-      .then((snapshots) => {
-        setTaskCount(snapshots.size);
-      });
-  }, [dispatch, uid]);
-
   const calcPage = (taskCount: number) => {
     if (taskCount % 6 === 0) {
       return taskCount / 6;
@@ -103,6 +92,17 @@ const TaskList: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     dispatch(fetchTasksOnPageN(uid, value));
   };
+
+  useEffect(() => {
+    dispatch(fetchTasksOnPage1(uid));
+    db.collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .get()
+      .then((snapshots) => {
+        setTaskCount(snapshots.size);
+      });
+  }, [dispatch, uid]);
 
   return (
     <div className={classes.wrap}>

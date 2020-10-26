@@ -580,26 +580,65 @@ const fetchSomeTasks = (
 ) => {
   const tasks: TaskState[] = [];
   const tasksRef = getTasksRef(uid);
+  const smallTasks: SmallTaskState[] = [];
+  const array: any[] = [];
 
   tasksRef
     .orderBy("created_at", "desc")
     .get()
-    .then((snapshots) => {
-      const tasksOnPageN = snapshots.docs.slice(start, end);
+    .then(async (snapshots) => {
+      const taskDocsOnPageN = snapshots.docs.slice(start, end);
 
-      tasksOnPageN.forEach((snapshot) => {
-        const taskData = snapshot.data();
-        const task = {
-          id: taskData.id,
-          contents: taskData.contents,
-          small_tasks: [],
-          deadline: taskData.deadline,
-          checked: taskData.checked,
-          priority: taskData.priority,
-          updated_at: taskData.updated_at,
-        } as TaskState;
-        tasks.push(task);
-      });
+      for (const snapshot of taskDocsOnPageN) {
+        await snapshot.ref
+          .collection("small_tasks")
+          .orderBy("created_at", "asc")
+          .get()
+          .then((snapshots) => {
+            if (snapshots.docs.length > 0) {
+              snapshots.forEach((snapshot) => {
+                const smallTaskData = snapshot.data();
+                const smallTask = {
+                  id: smallTaskData.id,
+                  contents: smallTaskData.contents,
+                  deadline: smallTaskData.deadline,
+                  checked: smallTaskData.checked,
+                  priority: smallTaskData.priority,
+                  parentId: smallTaskData.parentId,
+                  updated_at: smallTaskData.updated_at,
+                } as SmallTaskState;
+                smallTasks.push(smallTask);
+              });
+              const taskData = snapshot.data();
+              const task = {
+                id: taskData.id,
+                contents: taskData.contents,
+                small_tasks: array.concat(smallTasks),
+                deadline: taskData.deadline,
+                checked: taskData.checked,
+                priority: taskData.priority,
+                updated_at: taskData.updated_at,
+              } as TaskState;
+              tasks.push(task);
+              smallTasks.splice(0);
+            } else {
+              const taskData = snapshot.data();
+              const task = {
+                id: taskData.id,
+                contents: taskData.contents,
+                small_tasks: [],
+                deadline: taskData.deadline,
+                checked: taskData.checked,
+                priority: taskData.priority,
+                updated_at: taskData.updated_at,
+              } as TaskState;
+              tasks.push(task);
+            }
+          })
+          .catch((error) => {
+            throw new Error(error);
+          });
+      }
 
       getState().users.tasks = tasks;
       dispatch(taskNonPayloadAction());
@@ -619,42 +658,5 @@ export const fetchTasksOnPageN = (uid: string, value: number) => {
 export const fetchTasksOnPage1 = (uid: string) => {
   return async (dispatch: any, getState: any) => {
     fetchSomeTasks(uid, 0, 6, dispatch, getState);
-  };
-};
-
-export const fetchSmallTasks = (taskId: string) => {
-  return async (dispatch: any, getState: any) => {
-    const uid = getState().users.uid as string;
-    const tasks = getState().users.tasks as TaskState[];
-    const task = tasks.find((ele) => ele.id === taskId)!;
-    const smallTasksRef = getSmallTasksRef(uid, taskId);
-    const smallTasks: SmallTaskState[] = [];
-
-    smallTasksRef
-      .orderBy("created_at", "asc")
-      .get()
-      .then((snapshots) => {
-        const smallTaskDocs = snapshots.docs;
-
-        smallTaskDocs.forEach((snapshot) => {
-          const smallTaskData = snapshot.data();
-          const smallTask = {
-            id: smallTaskData.id,
-            contents: smallTaskData.contents,
-            deadline: smallTaskData.deadline,
-            checked: smallTaskData.checked,
-            priority: smallTaskData.priority,
-            parentId: smallTaskData.parentId,
-            updated_at: smallTaskData.updated_at,
-          } as SmallTaskState;
-          smallTasks.push(smallTask);
-        });
-
-        task.small_tasks = smallTasks;
-        dispatch(taskNonPayloadAction());
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
   };
 };

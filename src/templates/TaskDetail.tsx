@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { SmallTask, Task } from "../components/Tasks";
-import { divideTask, fetchSmallTasks } from "../re-ducks/users/operations";
+import { divideTask } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -66,12 +66,6 @@ const TaskDetail: React.FC = () => {
     reset();
     setDeadline(null);
   };
-
-  useEffect(() => {
-    if (task) {
-      dispatch(fetchSmallTasks(taskId));
-    }
-  }, [dispatch, task, taskId]);
 
   return (
     <div className="c-mw700">
