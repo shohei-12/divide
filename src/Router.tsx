@@ -5,9 +5,7 @@ import {
   SignIn,
   SignUp,
   SmallTaskDetail,
-  SmallTaskEdit,
   TaskDetail,
-  TaskEdit,
   TaskList,
   TaskRegistration,
   UserEdit,
@@ -26,13 +24,7 @@ const Router: React.FC = () => {
           path="/small-task/detail/:id/:id"
           component={SmallTaskDetail}
         />
-        <Route
-          exact
-          path="/small-task/edit/:id/:id"
-          component={SmallTaskEdit}
-        />
         <Route exact path="/task/detail/:id" component={TaskDetail} />
-        <Route exact path="/task/edit/:id" component={TaskEdit} />
         <Route exact path="/" component={TaskList} />
         <Route exact path="/task/registration" component={TaskRegistration} />
         <Route exact path="/user/edit" component={UserEdit} />

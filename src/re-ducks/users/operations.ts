@@ -323,7 +323,6 @@ export const updateTask = (
         const smallTask = task.small_tasks.find(
           (ele) => ele.id === smallTaskId
         )!;
-        const parentId = smallTask.parentId;
 
         smallTask.contents = contents;
         smallTask.updated_at = timestamp;
@@ -334,11 +333,6 @@ export const updateTask = (
           .set(taskData, { merge: true })
           .then(() => {
             dispatch(taskNonPayloadAction());
-            if (parentId !== null) {
-              dispatch(push(`/small-task/detail/${taskId}/${parentId}`));
-            } else {
-              dispatch(push(`/task/detail/${taskId}`));
-            }
           })
           .catch((error) => {
             throw new Error(error);
@@ -355,7 +349,6 @@ export const updateTask = (
           .set(taskData, { merge: true })
           .then(() => {
             dispatch(taskNonPayloadAction());
-            dispatch(push(`/task/detail/${taskId}`));
           })
           .catch((error) => {
             throw new Error(error);

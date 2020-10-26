@@ -36,9 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("xl")]: {
         width: "calc(33.3333% - 16px)",
       },
-      "&:hover": {
-        cursor: "pointer",
-      },
     },
     fab: {
       position: "fixed",
@@ -109,17 +106,14 @@ const TaskList: React.FC = () => {
       <div className={classes.tasks}>
         {tasks &&
           tasks.map((task, index) => (
-            <div
-              key={index}
-              className={classes.task}
-              onClick={() => dispatch(push(`/task/detail/${task.id}`))}
-            >
+            <div key={index} className={classes.task}>
               <Task
                 smallTaskLength={
                   task.small_tasks.filter(
                     (smallTask) => smallTask.parentId === null
                   ).length
                 }
+                task={task}
                 taskId={task.id}
                 contents={task.contents}
                 deadline={task.deadline}

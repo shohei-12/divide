@@ -14,6 +14,7 @@ type Props = {
   helperText: string | undefined;
   disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
 const TextInput: React.FC<Props> = (props) => {

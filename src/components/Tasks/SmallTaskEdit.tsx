@@ -1,34 +1,62 @@
 import React, { useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { SecondaryButton, TextInput } from "../components/UIkit";
-import { State } from "../re-ducks/store/types";
-import { getTasks } from "../re-ducks/users/selectors";
-import { updateTask } from "../re-ducks/users/operations";
+import { SecondaryButton, TextInput } from "../UIkit";
+import { SmallTaskState } from "../../re-ducks/users/types";
+import { updateTask } from "../../re-ducks/users/operations";
 import DateFnsUtils from "@date-io/date-fns";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    title: {
+      marginTop: 0,
+    },
+    close: {
+      position: "absolute",
+      top: 4,
+      right: 4,
+      padding: 4,
+    },
+    modal: {
+      position: "relative",
+      backgroundColor: theme.palette.background.paper,
+      width: 700,
+      padding: "30px 20px",
+      margin: "60px auto 0",
+      borderRadius: 4,
+    },
+  })
+);
 
 type Inputs = {
   contents: string;
 };
 
-const SmallTaskEdit: React.FC = () => {
+type Props = {
+  smallTask: SmallTaskState;
+  taskId: string;
+  handleClose: () => void;
+};
+
+const SmallTaskEdit: React.FC<Props> = (props) => {
+  const classes = useStyles();
   const dispatch = useDispatch();
-  const selector = useSelector((state: State) => state);
-  const tasks = getTasks(selector);
-  const taskId = window.location.pathname.split("/")[3];
-  const smallTaskId = window.location.pathname.split("/")[4];
-  const task = tasks.find((ele) => ele.id === taskId)!;
-  const smallTask = task?.small_tasks.find((ele) => ele.id === smallTaskId)!;
-  const smallTaskDeadline = smallTask?.deadline;
+  const taskId = props.taskId;
+  const smallTask = props.smallTask;
+  const smallTaskId = smallTask.id;
+  const smallTaskDeadline = smallTask.deadline;
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
-      contents: smallTask?.contents,
+      contents: smallTask.contents,
     },
   });
 
-  const [contents, setContents] = useState(smallTask?.contents);
+  const [contents, setContents] = useState(smallTask.contents);
   const [deadline, setDeadline] = useState(
     smallTaskDeadline ? new Date(smallTaskDeadline) : null
   );
@@ -52,10 +80,13 @@ const SmallTaskEdit: React.FC = () => {
   };
 
   return (
-    <div className="c-mw700">
+    <div className={classes.modal}>
       {smallTask && (
         <>
-          <h2>タスクの編集</h2>
+          <IconButton className={classes.close} onClick={props.handleClose}>
+            <CloseIcon />
+          </IconButton>
+          <h2 className={classes.title}>タスクの編集</h2>
           <TextInput
             fullWidth={true}
             label="内容"
@@ -92,7 +123,10 @@ const SmallTaskEdit: React.FC = () => {
           <SecondaryButton
             text="更新する"
             disabled={contents ? false : true}
-            onClick={handleSubmit(() => dispatchUpdateTask())}
+            onClick={handleSubmit(() => {
+              dispatchUpdateTask();
+              props.handleClose();
+            })}
           />
         </>
       )}

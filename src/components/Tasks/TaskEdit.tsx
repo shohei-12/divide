@@ -1,32 +1,60 @@
 import React, { useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { SecondaryButton, TextInput } from "../components/UIkit";
-import { State } from "../re-ducks/store/types";
-import { getTasks } from "../re-ducks/users/selectors";
-import { updateTask } from "../re-ducks/users/operations";
+import { SecondaryButton, TextInput } from "../UIkit";
+import { TaskState } from "../../re-ducks/users/types";
+import { updateTask } from "../../re-ducks/users/operations";
 import DateFnsUtils from "@date-io/date-fns";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    title: {
+      marginTop: 0,
+    },
+    close: {
+      position: "absolute",
+      top: 4,
+      right: 4,
+      padding: 4,
+    },
+    modal: {
+      position: "relative",
+      backgroundColor: theme.palette.background.paper,
+      width: 700,
+      padding: "30px 20px",
+      margin: "60px auto 0",
+      borderRadius: 4,
+    },
+  })
+);
 
 type Inputs = {
   contents: string;
 };
 
-const TaskEdit: React.FC = () => {
+type Props = {
+  task: TaskState;
+  handleClose: () => void;
+};
+
+const TaskEdit: React.FC<Props> = (props) => {
+  const classes = useStyles();
   const dispatch = useDispatch();
-  const selector = useSelector((state: State) => state);
-  const tasks = getTasks(selector);
-  const taskId = window.location.pathname.split("/")[3];
-  const task = tasks.find((ele) => ele.id === taskId)!;
-  const taskDeadline = task?.deadline;
+  const task = props.task;
+  const taskId = task.id;
+  const taskDeadline = task.deadline;
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
-      contents: task?.contents,
+      contents: task.contents,
     },
   });
 
-  const [contents, setContents] = useState(task?.contents);
+  const [contents, setContents] = useState(task.contents);
   const [deadline, setDeadline] = useState(
     taskDeadline ? new Date(taskDeadline) : null
   );
@@ -50,10 +78,13 @@ const TaskEdit: React.FC = () => {
   };
 
   return (
-    <div className="c-mw700">
+    <div className={classes.modal}>
       {task && (
         <>
-          <h2>タスクの編集</h2>
+          <IconButton className={classes.close} onClick={props.handleClose}>
+            <CloseIcon />
+          </IconButton>
+          <h2 className={classes.title}>タスクの編集</h2>
           <TextInput
             fullWidth={true}
             label="内容"
@@ -84,13 +115,21 @@ const TaskEdit: React.FC = () => {
               onChange={inputDeadline}
               format="yyyy/MM/dd HH:mm"
               label="タスクの期限"
+              onClick={(
+                event: React.MouseEvent<HTMLDivElement, MouseEvent>
+              ) => {
+                event.stopPropagation();
+              }}
             />
           </MuiPickersUtilsProvider>
           <div className="space-m"></div>
           <SecondaryButton
             text="更新する"
             disabled={contents ? false : true}
-            onClick={handleSubmit(() => dispatchUpdateTask())}
+            onClick={handleSubmit(() => {
+              dispatchUpdateTask();
+              props.handleClose();
+            })}
           />
         </>
       )}

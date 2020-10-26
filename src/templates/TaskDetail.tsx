@@ -118,6 +118,7 @@ const TaskDetail: React.FC = () => {
                   (smallTask) => smallTask.parentId === smallTasks[0].id
                 ).length
               }
+              smallTask={smallTasks[0]}
               taskId={task.id}
               smallTaskId={smallTasks[0].id}
               contents={smallTasks[0].contents}
@@ -134,6 +135,7 @@ const TaskDetail: React.FC = () => {
                     (smallTask) => smallTask.parentId === smallTasks[0].id
                   ).length
                 }
+                smallTask={smallTasks[0]}
                 taskId={task.id}
                 smallTaskId={smallTasks[0].id}
                 contents={smallTasks[0].contents}
@@ -148,6 +150,7 @@ const TaskDetail: React.FC = () => {
                     (smallTask) => smallTask.parentId === smallTasks[1].id
                   ).length
                 }
+                smallTask={smallTasks[1]}
                 taskId={task.id}
                 smallTaskId={smallTasks[1].id}
                 contents={smallTasks[1].contents}
@@ -167,6 +170,7 @@ const TaskDetail: React.FC = () => {
                         (element) => element.parentId === smallTask.id
                       ).length
                     }
+                    smallTask={smallTask}
                     taskId={task.id}
                     smallTaskId={smallTask.id}
                     contents={smallTask.contents}
@@ -184,6 +188,7 @@ const TaskDetail: React.FC = () => {
                       smallTask.parentId === smallTasks.slice(-1)[0].id
                   ).length
                 }
+                smallTask={smallTasks.slice(-1)[0]}
                 taskId={task.id}
                 smallTaskId={smallTasks.slice(-1)[0].id}
                 contents={smallTasks.slice(-1)[0].contents}
@@ -199,6 +204,7 @@ const TaskDetail: React.FC = () => {
           <div className="space-l"></div>
           <Task
             smallTaskLength={smallTasks.length}
+            task={task}
             taskId={taskId}
             contents={task.contents}
             deadline={task.deadline}

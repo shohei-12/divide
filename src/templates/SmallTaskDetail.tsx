@@ -125,6 +125,7 @@ const SmallTaskDetail: React.FC = () => {
                   (element) => element.parentId === tinyTasks[0].id
                 ).length
               }
+              smallTask={tinyTasks[0]}
               taskId={task.id}
               smallTaskId={tinyTasks[0].id}
               contents={tinyTasks[0].contents}
@@ -141,6 +142,7 @@ const SmallTaskDetail: React.FC = () => {
                     (element) => element.parentId === tinyTasks[0].id
                   ).length
                 }
+                smallTask={tinyTasks[0]}
                 taskId={task.id}
                 smallTaskId={tinyTasks[0].id}
                 contents={tinyTasks[0].contents}
@@ -155,6 +157,7 @@ const SmallTaskDetail: React.FC = () => {
                     (element) => element.parentId === tinyTasks[1].id
                   ).length
                 }
+                smallTask={tinyTasks[1]}
                 taskId={task.id}
                 smallTaskId={tinyTasks[1].id}
                 contents={tinyTasks[1].contents}
@@ -174,6 +177,7 @@ const SmallTaskDetail: React.FC = () => {
                         (element) => element.parentId === tinyTask.id
                       ).length
                     }
+                    smallTask={tinyTask}
                     taskId={task.id}
                     smallTaskId={tinyTask.id}
                     contents={tinyTask.contents}
@@ -190,6 +194,7 @@ const SmallTaskDetail: React.FC = () => {
                     (element) => element.parentId === tinyTasks.slice(-1)[0].id
                   ).length
                 }
+                smallTask={tinyTasks.slice(-1)[0]}
                 taskId={task.id}
                 smallTaskId={tinyTasks.slice(-1)[0].id}
                 contents={tinyTasks.slice(-1)[0].contents}
@@ -205,6 +210,7 @@ const SmallTaskDetail: React.FC = () => {
           <div className="space-l"></div>
           <SmallTask
             tinyTaskLength={tinyTasks.length}
+            smallTask={smallTask}
             taskId={task.id}
             smallTaskId={smallTaskId}
             contents={smallTask.contents}

@@ -37,10 +37,10 @@ const PriorityButton: React.FC<Props> = (props) => {
     (element) => element.id === props.smallTaskId
   );
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setAnchorEl(event.currentTarget);
     },
     [setAnchorEl]
@@ -61,7 +61,6 @@ const PriorityButton: React.FC<Props> = (props) => {
       <Tooltip title="優先度">
         <IconButton
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            event.stopPropagation();
             handleClick(event);
           }}
         >
@@ -83,14 +82,10 @@ const PriorityButton: React.FC<Props> = (props) => {
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
-        onClose={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-          event.stopPropagation();
-          handleClose();
-        }}
+        onClose={handleClose}
       >
         <MenuItem
-          onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-            event.stopPropagation();
+          onClick={() => {
             handleClose();
             dispatch(taskSetPriority(0));
           }}
@@ -99,8 +94,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           なし
         </MenuItem>
         <MenuItem
-          onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-            event.stopPropagation();
+          onClick={() => {
             handleClose();
             dispatch(taskSetPriority(1));
           }}
@@ -108,8 +102,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           <FiberManualRecordIcon className={classes.red} />高
         </MenuItem>
         <MenuItem
-          onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-            event.stopPropagation();
+          onClick={() => {
             handleClose();
             dispatch(taskSetPriority(2));
           }}
@@ -117,8 +110,7 @@ const PriorityButton: React.FC<Props> = (props) => {
           <FiberManualRecordIcon className={classes.yellow} />中
         </MenuItem>
         <MenuItem
-          onClick={(event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-            event.stopPropagation();
+          onClick={() => {
             handleClose();
             dispatch(taskSetPriority(3));
           }}
