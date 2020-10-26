@@ -13,6 +13,9 @@ const usersRef = db.collection("users");
 
 const getTasksRef = (uid: string) => usersRef.doc(uid).collection("tasks");
 
+const getSmallTasksRef = (uid: string, taskId: string) =>
+  usersRef.doc(uid).collection("tasks").doc(taskId).collection("small_tasks");
+
 const dispatchSignInAction = (user: firebase.User, dispatch: any) => {
   const uid = user.uid;
 
@@ -157,7 +160,7 @@ export const userUpdate = (uid: string, email: string) => {
   };
 };
 
-export const taskRegistration = (contents: string, deadline: Date | null) => {
+export const registerTask = (contents: string, deadline: Date | null) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now().toDate().toString();
     const uid = getState().users.uid as string;
@@ -205,29 +208,25 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
   };
 };
 
-export const taskDivision = (
+export const divideTask = (
   contents: string,
   taskId: string,
   smallTaskId: string | null,
-  taskIndex: number,
   deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
+    const timestamp = FirebaseTimestamp.now().toDate().toString();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
-    const smallTasksRef = usersRef
-      .doc(uid)
-      .collection("tasks")
-      .doc(taskId)
-      .collection("small_tasks");
+    const task = tasks.find((ele) => ele.id === taskId)!;
+    const smallTasksRef = getSmallTasksRef(uid, taskId);
     const id = smallTasksRef.doc().id;
 
     const setSmallTaskInitialData = (
       smallTaskInitialData: SmallTaskState,
       smallTask: SmallTaskState
     ) => {
-      tasks[taskIndex].small_tasks.push(smallTask);
+      task.small_tasks.push(smallTask);
 
       smallTasksRef
         .doc(id)
@@ -298,7 +297,7 @@ export const taskDivision = (
   };
 };
 
-export const taskUpdate = (
+export const updateTask = (
   contents: string,
   taskId: string,
   deadline: Date | null
@@ -351,7 +350,7 @@ export const smallTaskUpdate = (
   deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
+    const timestamp = FirebaseTimestamp.now().toDate().toString();
     const uid = getState().users.uid as string;
     const task = getState().users.tasks[taskIndex] as TaskState;
     const smallTasksRef = usersRef
@@ -396,7 +395,7 @@ export const taskDelete = (taskId: string) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
-    const tasksRef = usersRef.doc(uid).collection("tasks");
+    const tasksRef = getTasksRef(uid);
 
     getState().users.tasks = tasks.filter((task) => task.id !== taskId);
 
@@ -580,10 +579,9 @@ const fetchSomeTasks = (
   getState: any
 ) => {
   const tasks: TaskState[] = [];
+  const tasksRef = getTasksRef(uid);
 
-  usersRef
-    .doc(uid)
-    .collection("tasks")
+  tasksRef
     .orderBy("created_at", "desc")
     .get()
     .then((snapshots) => {
@@ -602,6 +600,7 @@ const fetchSomeTasks = (
         } as TaskState;
         tasks.push(task);
       });
+
       getState().users.tasks = tasks;
       dispatch(taskNonPayloadAction());
     })
@@ -620,5 +619,42 @@ export const fetchTasksOnPageN = (uid: string, value: number) => {
 export const fetchTasksOnPage1 = (uid: string) => {
   return async (dispatch: any, getState: any) => {
     fetchSomeTasks(uid, 0, 6, dispatch, getState);
+  };
+};
+
+export const fetchSmallTasks = (taskId: string) => {
+  return async (dispatch: any, getState: any) => {
+    const uid = getState().users.uid as string;
+    const tasks = getState().users.tasks as TaskState[];
+    const task = tasks.find((ele) => ele.id === taskId)!;
+    const smallTasksRef = getSmallTasksRef(uid, taskId);
+    const smallTasks: SmallTaskState[] = [];
+
+    smallTasksRef
+      .orderBy("created_at", "asc")
+      .get()
+      .then((snapshots) => {
+        const smallTaskDocs = snapshots.docs;
+
+        smallTaskDocs.forEach((snapshot) => {
+          const smallTaskData = snapshot.data();
+          const smallTask = {
+            id: smallTaskData.id,
+            contents: smallTaskData.contents,
+            deadline: smallTaskData.deadline,
+            checked: smallTaskData.checked,
+            priority: smallTaskData.priority,
+            parentId: smallTaskData.parentId,
+            updated_at: smallTaskData.updated_at,
+          } as SmallTaskState;
+          smallTasks.push(smallTask);
+        });
+
+        task.small_tasks = smallTasks;
+        dispatch(taskNonPayloadAction());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 };

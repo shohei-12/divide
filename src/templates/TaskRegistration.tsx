@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { SecondaryButton, TextInput } from "../components/UIkit";
-import { taskRegistration } from "../re-ducks/users/operations";
+import { registerTask } from "../re-ducks/users/operations";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
@@ -37,7 +37,7 @@ const TaskRegistration: React.FC = () => {
   );
 
   const dispatchTaskRegistration = () => {
-    dispatch(taskRegistration(contents, deadline));
+    dispatch(registerTask(contents, deadline));
   };
 
   return (

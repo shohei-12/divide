@@ -54,7 +54,7 @@ type Props = {
   contents: string;
   deadline: string | null;
   checked: boolean;
-  datetime: firebase.firestore.Timestamp;
+  datetime: string;
 };
 
 const SmallTask: React.FC<Props> = (props) => {
@@ -80,7 +80,7 @@ const SmallTask: React.FC<Props> = (props) => {
       <CardContent className={classes.content}>
         <div className={classes.flex}>
           <Typography className={classes.datetime} color="textSecondary">
-            {formatDatetime(props.datetime.toDate())}
+            {formatDatetime(new Date(props.datetime))}
           </Typography>
           <div className={classes.flex + " " + classes.alignRight}>
             {props.deadline && <Deadline deadline={props.deadline} />}

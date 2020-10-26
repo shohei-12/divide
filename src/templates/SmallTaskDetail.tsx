@@ -5,7 +5,7 @@ import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { SmallTask } from "../components/Tasks";
-import { taskDivision } from "../re-ducks/users/operations";
+import { divideTask } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -69,7 +69,7 @@ const SmallTaskDetail: React.FC = () => {
   );
 
   const dispatchTaskDivision = () => {
-    dispatch(taskDivision(contents, taskId, smallTaskId, taskIndex, deadline));
+    dispatch(divideTask(contents, taskId, smallTaskId, deadline));
     reset();
     setDeadline(null);
   };

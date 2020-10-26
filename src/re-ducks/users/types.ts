@@ -23,8 +23,8 @@ export type SmallTaskState = {
   checked: boolean;
   priority: number;
   parentId: string | null;
-  updated_at: firebase.firestore.Timestamp;
-  created_at?: firebase.firestore.Timestamp;
+  updated_at: string;
+  created_at?: string;
 };
 
 export type DispatchAction = {

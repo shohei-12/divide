@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { State } from "../re-ducks/store/types";
 import { getTasks } from "../re-ducks/users/selectors";
-import { taskUpdate } from "../re-ducks/users/operations";
+import { updateTask } from "../re-ducks/users/operations";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
@@ -46,7 +46,7 @@ const TaskEdit: React.FC = () => {
   );
 
   const dispatchTaskUpdate = () => {
-    dispatch(taskUpdate(contents, taskId, deadline));
+    dispatch(updateTask(contents, taskId, deadline));
   };
 
   return (
