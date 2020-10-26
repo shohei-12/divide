@@ -17,8 +17,8 @@ const TaskEdit: React.FC = () => {
   const selector = useSelector((state: State) => state);
   const tasks = getTasks(selector);
   const taskId = window.location.pathname.split("/")[3];
-  const taskIndex = tasks.findIndex((element) => element.id === taskId);
-  const task = tasks[taskIndex];
+  const task = tasks.find((ele) => ele.id === taskId)!;
+  const taskDeadline = task?.deadline;
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
@@ -27,8 +27,9 @@ const TaskEdit: React.FC = () => {
   });
 
   const [contents, setContents] = useState(task?.contents);
-  const [deadline, setDeadline] = useState(new Date(task?.deadline as string));
-  const [deadlineNull, setDeadlineNull] = useState(null);
+  const [deadline, setDeadline] = useState(
+    taskDeadline ? new Date(taskDeadline) : null
+  );
 
   const inputContents = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,23 +39,14 @@ const TaskEdit: React.FC = () => {
   );
 
   const inputDeadline = useCallback(
-    (date: any) => {
+    (date: Date | null) => {
       setDeadline(date);
     },
     [setDeadline]
   );
 
-  const inputDeadlineNull = useCallback(
-    (date: any) => {
-      setDeadlineNull(date);
-    },
-    [setDeadlineNull]
-  );
-
   const dispatchTaskUpdate = () => {
-    task.deadline
-      ? dispatch(taskUpdate(contents, taskId, taskIndex, deadline))
-      : dispatch(taskUpdate(contents, taskId, taskIndex, deadlineNull));
+    dispatch(taskUpdate(contents, taskId, deadline));
   };
 
   return (
@@ -82,33 +74,18 @@ const TaskEdit: React.FC = () => {
             onChange={inputContents}
           />
           <div className="space-m"></div>
-          {task.deadline ? (
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <DateTimePicker
-                clearable
-                autoOk
-                ampm={false}
-                disablePast
-                value={deadline}
-                onChange={inputDeadline}
-                format="yyyy/MM/dd HH:mm"
-                label="タスクの期限"
-              />
-            </MuiPickersUtilsProvider>
-          ) : (
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <DateTimePicker
-                clearable
-                autoOk
-                ampm={false}
-                disablePast
-                value={deadlineNull}
-                onChange={inputDeadlineNull}
-                format="yyyy/MM/dd HH:mm"
-                label="タスクの期限"
-              />
-            </MuiPickersUtilsProvider>
-          )}
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <DateTimePicker
+              clearable
+              autoOk
+              ampm={false}
+              disablePast
+              value={deadline}
+              onChange={inputDeadline}
+              format="yyyy/MM/dd HH:mm"
+              label="タスクの期限"
+            />
+          </MuiPickersUtilsProvider>
           <div className="space-m"></div>
           <SecondaryButton
             text="更新する"

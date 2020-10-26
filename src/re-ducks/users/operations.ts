@@ -11,6 +11,8 @@ import firebase from "firebase/app";
 
 const usersRef = db.collection("users");
 
+const getTasksRef = (uid: string) => usersRef.doc(uid).collection("tasks");
+
 const dispatchSignInAction = (user: firebase.User, dispatch: any) => {
   const uid = user.uid;
 
@@ -159,7 +161,7 @@ export const taskRegistration = (contents: string, deadline: Date | null) => {
   return async (dispatch: any, getState: any) => {
     const timestamp = FirebaseTimestamp.now().toDate().toString();
     const uid = getState().users.uid as string;
-    const tasksRef = usersRef.doc(uid).collection("tasks");
+    const tasksRef = getTasksRef(uid);
     const id = tasksRef.doc().id;
 
     const saveTaskData = (val: string | null) => {
@@ -299,17 +301,17 @@ export const taskDivision = (
 export const taskUpdate = (
   contents: string,
   taskId: string,
-  taskIndex: number,
   deadline: Date | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const timestamp = FirebaseTimestamp.now();
+    const timestamp = FirebaseTimestamp.now().toDate().toString();
     const uid = getState().users.uid as string;
-    const task = getState().users.tasks[taskIndex] as TaskState;
-    const tasksRef = usersRef.doc(uid).collection("tasks");
+    const tasks = getState().users.tasks as TaskState[];
+    const task = tasks.find((ele) => ele.id === taskId)!;
+    const tasksRef = getTasksRef(uid);
 
     task.contents = contents;
-    task.updated_at = timestamp.toDate().toString();
+    task.updated_at = timestamp;
 
     const updateTaskData = (val: string | null) => {
       task.deadline = val;
