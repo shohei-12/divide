@@ -54,6 +54,12 @@ const SmallTask: React.FC<Props> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const smallTask = props.smallTask;
+  const taskId = props.taskId;
+  const smallTaskId = smallTask.id;
+  const contents = smallTask.contents;
+  const checked = smallTask.checked;
+  const deadline = smallTask.deadline;
+  const updatedAt = smallTask.updated_at;
 
   const [open, setOpen] = useState(false);
 
@@ -66,7 +72,7 @@ const SmallTask: React.FC<Props> = (props) => {
   }, [setOpen]);
 
   const formatDatetime = useMemo(() => {
-    const datetime = new Date(smallTask.updated_at);
+    const datetime = new Date(updatedAt);
     return (
       datetime.getFullYear() +
       "-" +
@@ -78,7 +84,21 @@ const SmallTask: React.FC<Props> = (props) => {
       ":" +
       ("00" + datetime.getMinutes()).slice(-2)
     );
-  }, [smallTask.updated_at]);
+  }, [updatedAt]);
+
+  const dispatchToggleTaskCheck = useCallback(() => {
+    dispatch(toggleTaskCheck(!checked, taskId, smallTaskId));
+  }, [dispatch, taskId, checked, smallTaskId]);
+
+  const goDividePage = useCallback(() => {
+    dispatch(push(`/small-task/detail/${taskId}/${smallTaskId}`));
+  }, [dispatch, taskId, smallTaskId]);
+
+  const dispatchDeleteTask = useCallback(() => {
+    if (window.confirm("タスクを削除しますか？")) {
+      dispatch(deleteTask(taskId, smallTaskId));
+    }
+  }, [dispatch, taskId, smallTaskId]);
 
   return (
     <>
@@ -89,36 +109,22 @@ const SmallTask: React.FC<Props> = (props) => {
               {formatDatetime}
             </Typography>
             <div className={classes.flex + " " + classes.alignRight}>
-              {smallTask.deadline && <Deadline deadline={smallTask.deadline} />}
+              {deadline && <Deadline deadline={deadline} />}
               <Tooltip title="タスクの完了">
                 <Checkbox
-                  checked={smallTask.checked}
+                  checked={checked}
                   color="primary"
                   inputProps={{ "aria-label": "タスクの完了" }}
-                  onClick={() => {
-                    dispatch(
-                      toggleTaskCheck(
-                        !smallTask.checked,
-                        props.taskId,
-                        smallTask.id
-                      )
-                    );
-                  }}
+                  onClick={dispatchToggleTaskCheck}
                 />
               </Tooltip>
             </div>
           </div>
           <Typography className={classes.contents} variant="h5" component="h3">
-            {smallTask.contents}
+            {contents}
           </Typography>
           <Tooltip title="分割">
-            <IconButton
-              onClick={() =>
-                dispatch(
-                  push(`/small-task/detail/${props.taskId}/${smallTask.id}`)
-                )
-              }
-            >
+            <IconButton onClick={goDividePage}>
               <Badge badgeContent={props.tinyTaskLength} color="primary">
                 <ViewModuleIcon />
               </Badge>
@@ -130,23 +136,17 @@ const SmallTask: React.FC<Props> = (props) => {
             </IconButton>
           </Tooltip>
           <Tooltip title="削除">
-            <IconButton
-              onClick={() => {
-                if (window.confirm("タスクを削除しますか？")) {
-                  dispatch(deleteTask(props.taskId, smallTask.id));
-                }
-              }}
-            >
+            <IconButton onClick={dispatchDeleteTask}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          <PriorityButton taskId={props.taskId} smallTaskId={smallTask.id} />
+          <PriorityButton taskId={taskId} smallTaskId={smallTaskId} />
         </CardContent>
       </Card>
       <Modal open={open} onClose={handleClose}>
         <SmallTaskEdit
           smallTask={smallTask}
-          taskId={props.taskId}
+          taskId={taskId}
           handleClose={handleClose}
         />
       </Modal>

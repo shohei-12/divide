@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { getIsSignedIn, getTheme } from "../../re-ducks/users/selectors";
 import { State } from "../../re-ducks/store/types";
-import { signOut, themeToggle } from "../../re-ducks/users/operations";
+import { signOut, toggleTheme } from "../../re-ducks/users/operations";
 import { DrawerMenuListItem } from ".";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -107,6 +107,31 @@ const DrawerMenu: React.FC = () => {
     setMobileOpen(!mobileOpen);
   }, [setMobileOpen, mobileOpen]);
 
+  const goTopPage = useCallback(() => {
+    dispatch(push("/"));
+  }, [dispatch]);
+
+  const dispatchToggleThemeDark = useCallback(() => {
+    dispatch(toggleTheme("dark"));
+    if (window.innerWidth < 600) {
+      handleDrawerToggle();
+    }
+  }, [dispatch, handleDrawerToggle]);
+
+  const dispatchToggleThemeLight = useCallback(() => {
+    dispatch(toggleTheme("light"));
+    if (window.innerWidth < 600) {
+      handleDrawerToggle();
+    }
+  }, [dispatch, handleDrawerToggle]);
+
+  const dispatchSignOut = useCallback(() => {
+    dispatch(signOut());
+    if (window.innerWidth < 600) {
+      handleDrawerToggle();
+    }
+  }, [dispatch, handleDrawerToggle]);
+
   const signInList = [
     {
       text: "タスクの登録",
@@ -176,30 +201,14 @@ const DrawerMenu: React.FC = () => {
   const themeListItem = (
     <>
       {theme === "light" ? (
-        <ListItem
-          button
-          onClick={() => {
-            dispatch(themeToggle("dark"));
-            if (window.innerWidth < 600) {
-              handleDrawerToggle();
-            }
-          }}
-        >
+        <ListItem button onClick={dispatchToggleThemeDark}>
           <ListItemIcon className={classes.icon}>
             <Brightness3Icon />
           </ListItemIcon>
           <ListItemText primary="ダークモード" />
         </ListItem>
       ) : (
-        <ListItem
-          button
-          onClick={() => {
-            dispatch(themeToggle("light"));
-            if (window.innerWidth < 600) {
-              handleDrawerToggle();
-            }
-          }}
-        >
+        <ListItem button onClick={dispatchToggleThemeLight}>
           <ListItemIcon className={classes.icon}>
             <BrightnessHighIcon />
           </ListItemIcon>
@@ -223,15 +232,7 @@ const DrawerMenu: React.FC = () => {
             />
           ))}
 
-          <ListItem
-            button
-            onClick={() => {
-              dispatch(signOut());
-              if (window.innerWidth < 600) {
-                handleDrawerToggle();
-              }
-            }}
-          >
+          <ListItem button onClick={dispatchSignOut}>
             <ListItemIcon className={classes.icon}>
               <ExitToAppIcon />
             </ListItemIcon>
@@ -279,7 +280,7 @@ const DrawerMenu: React.FC = () => {
                 alt="App Logo"
                 width="35px"
                 height="35px"
-                onClick={() => dispatch(push("/"))}
+                onClick={goTopPage}
               />
             ) : (
               <img
@@ -288,14 +289,10 @@ const DrawerMenu: React.FC = () => {
                 alt="App Logo"
                 width="35px"
                 height="35px"
-                onClick={() => dispatch(push("/"))}
+                onClick={goTopPage}
               />
             )}
-            <Typography
-              className="pointer-h"
-              variant="h6"
-              onClick={() => dispatch(push("/"))}
-            >
+            <Typography className="pointer-h" variant="h6" onClick={goTopPage}>
               DIVIDE
             </Typography>
           </Toolbar>
@@ -316,10 +313,7 @@ const DrawerMenu: React.FC = () => {
             }}
           >
             <div className={classes.toolbar} />
-            <IconButton
-              className={classes.close}
-              onClick={() => handleDrawerToggle()}
-            >
+            <IconButton className={classes.close} onClick={handleDrawerToggle}>
               <CloseIcon />
             </IconButton>
             <List>{listChild}</List>
@@ -336,7 +330,7 @@ const DrawerMenu: React.FC = () => {
             <Typography
               className={classes.appName}
               variant="h6"
-              onClick={() => dispatch(push("/"))}
+              onClick={goTopPage}
             >
               {theme === "light" ? (
                 <img

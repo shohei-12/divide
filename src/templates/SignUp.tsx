@@ -47,9 +47,9 @@ const SignUp: React.FC = () => {
     [setConfirmPassword]
   );
 
-  const dispatchSignUp = () => {
-    dispatch(signUp(email, password));
-  };
+  const goSignInPage = useCallback(() => {
+    dispatch(push("/signin"));
+  }, [dispatch]);
 
   return (
     <div className="c-mw700">
@@ -122,13 +122,12 @@ const SignUp: React.FC = () => {
       <SecondaryButton
         text="登録する"
         disabled={email && password && confirmPassword ? false : true}
-        onClick={handleSubmit(() => dispatchSignUp())}
+        onClick={handleSubmit(() => {
+          dispatch(signUp(email, password));
+        })}
       />
       <div className="space-s"></div>
-      <p
-        className="inline-block pointer-h"
-        onClick={() => dispatch(push("/signin"))}
-      >
+      <p className="inline-block pointer-h" onClick={goSignInPage}>
         ユーザー登録がお済みの方はこちら
       </p>
     </div>

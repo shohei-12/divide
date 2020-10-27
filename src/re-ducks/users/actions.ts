@@ -31,10 +31,10 @@ export const taskNonPayloadAction = () => {
   };
 };
 
-export const THEME_TOGGLE = "THEME_TOGGLE";
-export const themeToggleAction = (themeState: DispatchAction) => {
+export const TOGGLE_THEME = "TOGGLE_THEME";
+export const toggleThemeAction = (themeState: DispatchAction) => {
   return {
-    type: "THEME_TOGGLE",
+    type: "TOGGLE_THEME",
     payload: {
       ...themeState,
     },

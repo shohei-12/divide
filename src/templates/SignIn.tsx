@@ -37,9 +37,17 @@ const SignIn: React.FC = () => {
     [setPassword]
   );
 
-  const dispatchSignIn = () => {
-    dispatch(signIn(email, password));
-  };
+  const signInAsGuestUser = useCallback(() => {
+    dispatch(signIn("guest@example.com", "password"));
+  }, [dispatch]);
+
+  const goSignUpPage = useCallback(() => {
+    dispatch(push("/signup"));
+  }, [dispatch]);
+
+  const goPasswordResetPage = useCallback(() => {
+    dispatch(push("/password/reset"));
+  }, [dispatch]);
 
   return (
     <div className="c-mw700">
@@ -91,25 +99,21 @@ const SignIn: React.FC = () => {
       <SecondaryButton
         text="ログインする"
         disabled={email && password ? false : true}
-        onClick={handleSubmit(() => dispatchSignIn())}
+        onClick={handleSubmit(() => {
+          dispatch(signIn(email, password));
+        })}
       />
       <div className="space-m"></div>
       <SecondaryButton
         text="ゲストユーザーでログインする"
-        onClick={() => dispatch(signIn("guest@example.com", "password"))}
+        onClick={signInAsGuestUser}
       />
       <div className="space-s"></div>
-      <p
-        className="inline-block pointer-h"
-        onClick={() => dispatch(push("/signup"))}
-      >
+      <p className="inline-block pointer-h" onClick={goSignUpPage}>
         ユーザー登録がお済みでない方はこちら
       </p>
       <br />
-      <p
-        className="inline-block pointer-h"
-        onClick={() => dispatch(push("/password/reset"))}
-      >
+      <p className="inline-block pointer-h" onClick={goPasswordResetPage}>
         パスワードを忘れた方はこちら
       </p>
     </div>

@@ -36,10 +36,6 @@ const TaskRegistration: React.FC = () => {
     [setDeadline]
   );
 
-  const dispatchTaskRegistration = () => {
-    dispatch(registerTask(contents, deadline));
-  };
-
   return (
     <div className="c-mw700">
       <h2>タスクの登録</h2>
@@ -79,7 +75,9 @@ const TaskRegistration: React.FC = () => {
       <SecondaryButton
         text="登録する"
         disabled={contents ? false : true}
-        onClick={handleSubmit(() => dispatchTaskRegistration())}
+        onClick={handleSubmit(() => {
+          dispatch(registerTask(contents, deadline));
+        })}
       />
     </div>
   );

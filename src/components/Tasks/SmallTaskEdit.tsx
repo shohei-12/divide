@@ -74,10 +74,6 @@ const SmallTaskEdit: React.FC<Props> = (props) => {
     [setDeadline]
   );
 
-  const dispatchUpdateTask = () => {
-    dispatch(updateTask(contents, taskId, smallTask.id, deadline));
-  };
-
   return (
     <div className={classes.modal}>
       {smallTask && (
@@ -123,7 +119,7 @@ const SmallTaskEdit: React.FC<Props> = (props) => {
             text="更新する"
             disabled={contents ? false : true}
             onClick={handleSubmit(() => {
-              dispatchUpdateTask();
+              dispatch(updateTask(contents, taskId, smallTask.id, deadline));
               props.handleClose();
             })}
           />

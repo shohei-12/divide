@@ -44,6 +44,10 @@ const PasswordReset: React.FC = () => {
     dispatch(push("/signin"));
   };
 
+  const goSignInPage = useCallback(() => {
+    dispatch(push("/signin"));
+  }, [dispatch]);
+
   return (
     <div className="c-mw700">
       <h2>パスワードのリセット</h2>
@@ -73,10 +77,7 @@ const PasswordReset: React.FC = () => {
         onClick={handleSubmit(() => resetPassword(email))}
       />
       <div className="space-s"></div>
-      <p
-        className="inline-block pointer-h"
-        onClick={() => dispatch(push("/signin"))}
-      >
+      <p className="inline-block pointer-h" onClick={goSignInPage}>
         ログインページに戻る
       </p>
     </div>

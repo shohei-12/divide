@@ -72,10 +72,6 @@ const TaskEdit: React.FC<Props> = (props) => {
     [setDeadline]
   );
 
-  const dispatchUpdateTask = () => {
-    dispatch(updateTask(contents, task.id, null, deadline));
-  };
-
   return (
     <div className={classes.modal}>
       {task && (
@@ -114,11 +110,6 @@ const TaskEdit: React.FC<Props> = (props) => {
               onChange={inputDeadline}
               format="yyyy/MM/dd HH:mm"
               label="タスクの期限"
-              onClick={(
-                event: React.MouseEvent<HTMLDivElement, MouseEvent>
-              ) => {
-                event.stopPropagation();
-              }}
             />
           </MuiPickersUtilsProvider>
           <div className="space-m"></div>
@@ -126,7 +117,7 @@ const TaskEdit: React.FC<Props> = (props) => {
             text="更新する"
             disabled={contents ? false : true}
             onClick={handleSubmit(() => {
-              dispatchUpdateTask();
+              dispatch(updateTask(contents, task.id, null, deadline));
               props.handleClose();
             })}
           />

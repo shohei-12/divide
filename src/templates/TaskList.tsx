@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
@@ -86,9 +86,16 @@ const TaskList: React.FC = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    dispatch(fetchTasksOnPageN(uid, value));
-  };
+  const goTaskRegistration = useCallback(() => {
+    dispatch(push("/task/registration"));
+  }, [dispatch]);
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<unknown>, value: number) => {
+      dispatch(fetchTasksOnPageN(uid, value));
+    },
+    [dispatch, uid]
+  );
 
   useEffect(() => {
     dispatch(fetchTasksOnPage1(uid));
@@ -122,7 +129,7 @@ const TaskList: React.FC = () => {
             className={classes.fab}
             color="primary"
             aria-label="タスクの登録"
-            onClick={() => dispatch(push("/task/registration"))}
+            onClick={goTaskRegistration}
           >
             <AddIcon />
           </Fab>

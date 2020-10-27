@@ -32,10 +32,6 @@ const UserEdit: React.FC = () => {
     [setEmail]
   );
 
-  const dispatchUserUpdate = () => {
-    dispatch(userUpdate(uid, email));
-  };
-
   return (
     <div className="c-mw700">
       <h2>メールアドレスの変更</h2>
@@ -65,7 +61,9 @@ const UserEdit: React.FC = () => {
         disabled={
           uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : email ? false : true
         }
-        onClick={handleSubmit(() => dispatchUserUpdate())}
+        onClick={handleSubmit(() => {
+          dispatch(userUpdate(uid, email));
+        })}
       />
     </div>
   );

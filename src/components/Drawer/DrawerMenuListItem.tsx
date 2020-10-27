@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,16 +23,15 @@ const DrawerMenuListItem: React.FC<Props> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const goPath = useCallback(() => {
+    dispatch(push(props.path));
+    if (window.innerWidth < 600) {
+      props.handleDrawerToggle();
+    }
+  }, [dispatch, props]);
+
   return (
-    <ListItem
-      button
-      onClick={() => {
-        dispatch(push(props.path));
-        if (window.innerWidth < 600) {
-          props.handleDrawerToggle();
-        }
-      }}
-    >
+    <ListItem button onClick={goPath}>
       <ListItemIcon className={classes.icon}>{props.icon}</ListItemIcon>
       <ListItemText primary={props.text} />
     </ListItem>

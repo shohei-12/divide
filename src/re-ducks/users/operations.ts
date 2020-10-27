@@ -3,7 +3,7 @@ import {
   signInAction,
   signOutAction,
   taskNonPayloadAction,
-  themeToggleAction,
+  toggleThemeAction,
 } from "./actions";
 import { auth, db, FirebaseTimestamp } from "../../firebase";
 import { TaskState, SmallTaskState } from "../users/types";
@@ -371,7 +371,7 @@ export const deleteTask = (taskId: string, smallTaskId: string | null) => {
     const tasksRef = getTasksRef(uid);
 
     if (smallTaskId) {
-      const task = tasks.find((element) => element.id === taskId)!;
+      const task = tasks.find((ele) => ele.id === taskId)!;
       const smallTasksRef = getSmallTasksRef(uid, taskId);
 
       task.small_tasks = task.small_tasks.filter(
@@ -413,7 +413,7 @@ export const toggleTaskCheck = (
     const timestamp = getTimestamp();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
-    const task = tasks.find((element) => element.id === taskId)!;
+    const task = tasks.find((ele) => ele.id === taskId)!;
 
     const taskData = {
       checked: check,
@@ -421,9 +421,7 @@ export const toggleTaskCheck = (
     };
 
     if (smallTaskId) {
-      const smallTask = task.small_tasks.find(
-        (element) => element.id === smallTaskId
-      )!;
+      const smallTask = task.small_tasks.find((ele) => ele.id === smallTaskId)!;
       const smallTasksRef = getSmallTasksRef(uid, taskId);
 
       smallTask.checked = check;
@@ -455,7 +453,7 @@ export const toggleTaskCheck = (
   };
 };
 
-export const themeToggle = (theme: string) => {
+export const toggleTheme = (theme: string) => {
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
 
@@ -468,13 +466,13 @@ export const themeToggle = (theme: string) => {
         .doc(uid)
         .set(themeData, { merge: true })
         .then(() => {
-          dispatch(themeToggleAction(themeData));
+          dispatch(toggleThemeAction(themeData));
         })
         .catch((error) => {
           throw new Error(error);
         });
     } else {
-      dispatch(themeToggleAction(themeData));
+      dispatch(toggleThemeAction(themeData));
     }
   };
 };
@@ -487,21 +485,15 @@ export const setPriority = (
   return async (dispatch: any, getState: any) => {
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
-    const task = tasks.find((element) => element.id === taskId)!;
+    const task = tasks.find((ele) => ele.id === taskId)!;
 
     const taskData = {
       priority,
     };
 
     if (smallTaskId) {
-      const smallTask = task.small_tasks.find(
-        (element) => element.id === smallTaskId
-      )!;
-      const smallTasksRef = usersRef
-        .doc(uid)
-        .collection("tasks")
-        .doc(taskId)
-        .collection("small_tasks");
+      const smallTask = task.small_tasks.find((ele) => ele.id === smallTaskId)!;
+      const smallTasksRef = getSmallTasksRef(uid, taskId);
 
       smallTask.priority = priority;
 
@@ -515,7 +507,7 @@ export const setPriority = (
           throw new Error(error);
         });
     } else {
-      const tasksRef = usersRef.doc(uid).collection("tasks");
+      const tasksRef = getTasksRef(uid);
 
       task.priority = priority;
 
