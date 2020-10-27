@@ -46,12 +46,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const TaskList: React.FC = () => {
+const PriorityFilteredTaskList: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const uid = getUserId(selector);
   const tasks = getTasks(selector);
+  let priority: number = -1;
+
+  switch (window.location.pathname.split("/")[3]) {
+    case "none":
+      priority = 0;
+      break;
+    case "high":
+      priority = 1;
+      break;
+    case "medium":
+      priority = 2;
+      break;
+    case "low":
+      priority = 3;
+  }
 
   const [taskCount, setTaskCount] = useState(0);
 
@@ -69,24 +84,52 @@ const TaskList: React.FC = () => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<unknown>, value: number) => {
-      dispatch(fetchTasksOnPageN(uid, value, null, null));
+      dispatch(fetchTasksOnPageN(uid, value, null, priority));
     },
-    [dispatch, uid]
+    [dispatch, uid, priority]
   );
 
   useEffect(() => {
-    dispatch(fetchTasksOnPageN(uid, 1, null, null));
+    dispatch(fetchTasksOnPageN(uid, 1, null, priority));
     db.collection("users")
       .doc(uid)
       .collection("tasks")
       .get()
       .then((snapshots) => {
-        setTaskCount(snapshots.size);
+        switch (priority) {
+          case 0:
+            setTaskCount(
+              snapshots.docs.filter(
+                (snapshot) => snapshot.data().priority === 0
+              ).length
+            );
+            break;
+          case 1:
+            setTaskCount(
+              snapshots.docs.filter(
+                (snapshot) => snapshot.data().priority === 1
+              ).length
+            );
+            break;
+          case 2:
+            setTaskCount(
+              snapshots.docs.filter(
+                (snapshot) => snapshot.data().priority === 2
+              ).length
+            );
+            break;
+          case 3:
+            setTaskCount(
+              snapshots.docs.filter(
+                (snapshot) => snapshot.data().priority === 3
+              ).length
+            );
+        }
       })
       .catch((error) => {
         throw new Error(error);
       });
-  }, [dispatch, uid]);
+  }, [dispatch, uid, priority]);
 
   return (
     <div className={classes.wrap}>
@@ -127,4 +170,4 @@ const TaskList: React.FC = () => {
   );
 };
 
-export default TaskList;
+export default PriorityFilteredTaskList;

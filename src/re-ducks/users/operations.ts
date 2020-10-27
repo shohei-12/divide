@@ -529,18 +529,64 @@ const fetchSomeTasks = (
   start: number,
   end: number,
   dispatch: any,
-  getState: any
+  getState: any,
+  checked: boolean | null,
+  priority: number | null
 ) => {
   const tasks: TaskState[] = [];
   const tasksRef = getTasksRef(uid);
   const smallTasks: SmallTaskState[] = [];
   const array: any[] = [];
+  let filteredTaskDocs: firebase.firestore.QueryDocumentSnapshot<
+    firebase.firestore.DocumentData
+  >[] = [];
 
   tasksRef
     .orderBy("created_at", "desc")
     .get()
     .then(async (snapshots) => {
-      const taskDocsOnPageN = snapshots.docs.slice(start, end);
+      if (checked !== null) {
+        switch (checked) {
+          case true:
+            filteredTaskDocs = snapshots.docs.filter(
+              (snapshot) => snapshot.data().checked === true
+            );
+            break;
+          case false:
+            filteredTaskDocs = snapshots.docs.filter(
+              (snapshot) => snapshot.data().checked === false
+            );
+        }
+      }
+
+      if (priority !== null) {
+        switch (priority) {
+          case 0:
+            filteredTaskDocs = snapshots.docs.filter(
+              (snapshot) => snapshot.data().priority === 0
+            );
+            break;
+          case 1:
+            filteredTaskDocs = snapshots.docs.filter(
+              (snapshot) => snapshot.data().priority === 1
+            );
+            break;
+          case 2:
+            filteredTaskDocs = snapshots.docs.filter(
+              (snapshot) => snapshot.data().priority === 2
+            );
+            break;
+          case 3:
+            filteredTaskDocs = snapshots.docs.filter(
+              (snapshot) => snapshot.data().priority === 3
+            );
+        }
+      }
+
+      const taskDocsOnPageN =
+        checked === null && priority === null
+          ? snapshots.docs.slice(start, end)
+          : filteredTaskDocs.slice(start, end);
 
       for (const snapshot of taskDocsOnPageN) {
         await snapshot.ref
@@ -601,15 +647,22 @@ const fetchSomeTasks = (
     });
 };
 
-export const fetchTasksOnPageN = (uid: string, value: number) => {
+export const fetchTasksOnPageN = (
+  uid: string,
+  value: number,
+  checked: boolean | null,
+  priority: number | null
+) => {
   return async (dispatch: any, getState: any) => {
     const firstTaskNum = value * 6 - 5;
-    fetchSomeTasks(uid, firstTaskNum - 1, firstTaskNum + 5, dispatch, getState);
-  };
-};
-
-export const fetchTasksOnPage1 = (uid: string) => {
-  return async (dispatch: any, getState: any) => {
-    fetchSomeTasks(uid, 0, 6, dispatch, getState);
+    fetchSomeTasks(
+      uid,
+      firstTaskNum - 1,
+      firstTaskNum + 5,
+      dispatch,
+      getState,
+      checked,
+      priority
+    );
   };
 };

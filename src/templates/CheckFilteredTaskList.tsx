@@ -46,12 +46,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const TaskList: React.FC = () => {
+const CheckFilteredTaskList: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const uid = getUserId(selector);
   const tasks = getTasks(selector);
+  const checked =
+    window.location.pathname.split("/")[3] === "finished" ? true : false;
 
   const [taskCount, setTaskCount] = useState(0);
 
@@ -69,24 +71,36 @@ const TaskList: React.FC = () => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<unknown>, value: number) => {
-      dispatch(fetchTasksOnPageN(uid, value, null, null));
+      dispatch(fetchTasksOnPageN(uid, value, checked, null));
     },
-    [dispatch, uid]
+    [dispatch, uid, checked]
   );
 
   useEffect(() => {
-    dispatch(fetchTasksOnPageN(uid, 1, null, null));
+    dispatch(fetchTasksOnPageN(uid, 1, checked, null));
     db.collection("users")
       .doc(uid)
       .collection("tasks")
       .get()
       .then((snapshots) => {
-        setTaskCount(snapshots.size);
+        if (checked) {
+          setTaskCount(
+            snapshots.docs.filter(
+              (snapshot) => snapshot.data().checked === true
+            ).length
+          );
+        } else {
+          setTaskCount(
+            snapshots.docs.filter(
+              (snapshot) => snapshot.data().checked === false
+            ).length
+          );
+        }
       })
       .catch((error) => {
         throw new Error(error);
       });
-  }, [dispatch, uid]);
+  }, [dispatch, uid, checked]);
 
   return (
     <div className={classes.wrap}>
@@ -127,4 +141,4 @@ const TaskList: React.FC = () => {
   );
 };
 
-export default TaskList;
+export default CheckFilteredTaskList;

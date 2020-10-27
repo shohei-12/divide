@@ -1,4 +1,6 @@
+export { default as CheckFilteredTaskList } from "./CheckFilteredTaskList";
 export { default as PasswordReset } from "./PasswordReset";
+export { default as PriorityFilteredTaskList } from "./PriorityFilteredTaskList";
 export { default as SignIn } from "./SignIn";
 export { default as SignUp } from "./SignUp";
 export { default as SmallTaskDetail } from "./SmallTaskDetail";
