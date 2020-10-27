@@ -120,11 +120,6 @@ const TaskDetail: React.FC = () => {
               }
               smallTask={smallTasks[0]}
               taskId={task.id}
-              smallTaskId={smallTasks[0].id}
-              contents={smallTasks[0].contents}
-              deadline={smallTasks[0].deadline}
-              checked={smallTasks[0].checked}
-              datetime={smallTasks[0].updated_at}
             />
           )}
           {smallTasks.length === 2 && (
@@ -137,11 +132,6 @@ const TaskDetail: React.FC = () => {
                 }
                 smallTask={smallTasks[0]}
                 taskId={task.id}
-                smallTaskId={smallTasks[0].id}
-                contents={smallTasks[0].contents}
-                deadline={smallTasks[0].deadline}
-                checked={smallTasks[0].checked}
-                datetime={smallTasks[0].updated_at}
               />
               <AddIcon className={classes.icon} color="primary" />
               <SmallTask
@@ -152,11 +142,6 @@ const TaskDetail: React.FC = () => {
                 }
                 smallTask={smallTasks[1]}
                 taskId={task.id}
-                smallTaskId={smallTasks[1].id}
-                contents={smallTasks[1].contents}
-                deadline={smallTasks[1].deadline}
-                checked={smallTasks[1].checked}
-                datetime={smallTasks[1].updated_at}
               />
             </>
           )}
@@ -172,11 +157,6 @@ const TaskDetail: React.FC = () => {
                     }
                     smallTask={smallTask}
                     taskId={task.id}
-                    smallTaskId={smallTask.id}
-                    contents={smallTask.contents}
-                    deadline={smallTask.deadline}
-                    checked={smallTask.checked}
-                    datetime={smallTask.updated_at}
                   />
                   <AddIcon className={classes.icon} color="primary" />
                 </React.Fragment>
@@ -190,11 +170,6 @@ const TaskDetail: React.FC = () => {
                 }
                 smallTask={smallTasks.slice(-1)[0]}
                 taskId={task.id}
-                smallTaskId={smallTasks.slice(-1)[0].id}
-                contents={smallTasks.slice(-1)[0].contents}
-                deadline={smallTasks.slice(-1)[0].deadline}
-                checked={smallTasks.slice(-1)[0].checked}
-                datetime={smallTasks.slice(-1)[0].updated_at}
               />
             </>
           )}
@@ -202,15 +177,7 @@ const TaskDetail: React.FC = () => {
             <ArrowDownwardIcon className={classes.icon} color="primary" />
           )}
           <div className="space-l"></div>
-          <Task
-            smallTaskLength={smallTasks.length}
-            task={task}
-            taskId={taskId}
-            contents={task.contents}
-            deadline={task.deadline}
-            checked={task.checked}
-            datetime={task.updated_at}
-          />
+          <Task smallTaskLength={smallTasks.length} task={task} />
         </>
       )}
     </div>

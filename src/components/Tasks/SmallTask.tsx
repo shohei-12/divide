@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Deadline, PriorityButton, SmallTaskEdit } from ".";
@@ -48,16 +48,12 @@ type Props = {
   tinyTaskLength: number;
   smallTask: SmallTaskState;
   taskId: string;
-  smallTaskId: string;
-  contents: string;
-  deadline: string | null;
-  checked: boolean;
-  datetime: string;
 };
 
 const SmallTask: React.FC<Props> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const smallTask = props.smallTask;
 
   const [open, setOpen] = useState(false);
 
@@ -69,7 +65,8 @@ const SmallTask: React.FC<Props> = (props) => {
     setOpen(false);
   }, [setOpen]);
 
-  const formatDatetime = (datetime: Date) => {
+  const formatDatetime = useMemo(() => {
+    const datetime = new Date(smallTask.updated_at);
     return (
       datetime.getFullYear() +
       "-" +
@@ -81,7 +78,7 @@ const SmallTask: React.FC<Props> = (props) => {
       ":" +
       ("00" + datetime.getMinutes()).slice(-2)
     );
-  };
+  }, [smallTask.updated_at]);
 
   return (
     <>
@@ -89,21 +86,21 @@ const SmallTask: React.FC<Props> = (props) => {
         <CardContent className={classes.content}>
           <div className={classes.flex}>
             <Typography className={classes.datetime} color="textSecondary">
-              {formatDatetime(new Date(props.datetime))}
+              {formatDatetime}
             </Typography>
             <div className={classes.flex + " " + classes.alignRight}>
-              {props.deadline && <Deadline deadline={props.deadline} />}
+              {smallTask.deadline && <Deadline deadline={smallTask.deadline} />}
               <Tooltip title="タスクの完了">
                 <Checkbox
-                  checked={props.checked}
+                  checked={smallTask.checked}
                   color="primary"
                   inputProps={{ "aria-label": "タスクの完了" }}
                   onClick={() => {
                     dispatch(
                       toggleTaskCheck(
-                        !props.checked,
+                        !smallTask.checked,
                         props.taskId,
-                        props.smallTaskId
+                        smallTask.id
                       )
                     );
                   }}
@@ -112,15 +109,13 @@ const SmallTask: React.FC<Props> = (props) => {
             </div>
           </div>
           <Typography className={classes.contents} variant="h5" component="h3">
-            {props.contents}
+            {smallTask.contents}
           </Typography>
           <Tooltip title="分割">
             <IconButton
               onClick={() =>
                 dispatch(
-                  push(
-                    `/small-task/detail/${props.taskId}/${props.smallTaskId}`
-                  )
+                  push(`/small-task/detail/${props.taskId}/${smallTask.id}`)
                 )
               }
             >
@@ -130,11 +125,7 @@ const SmallTask: React.FC<Props> = (props) => {
             </IconButton>
           </Tooltip>
           <Tooltip title="編集">
-            <IconButton
-              onClick={() => {
-                handleOpen();
-              }}
-            >
+            <IconButton onClick={handleOpen}>
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -142,22 +133,19 @@ const SmallTask: React.FC<Props> = (props) => {
             <IconButton
               onClick={() => {
                 if (window.confirm("タスクを削除しますか？")) {
-                  dispatch(deleteTask(props.taskId, props.smallTaskId));
+                  dispatch(deleteTask(props.taskId, smallTask.id));
                 }
               }}
             >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          <PriorityButton
-            taskId={props.taskId}
-            smallTaskId={props.smallTaskId}
-          />
+          <PriorityButton taskId={props.taskId} smallTaskId={smallTask.id} />
         </CardContent>
       </Card>
       <Modal open={open} onClose={handleClose}>
         <SmallTaskEdit
-          smallTask={props.smallTask}
+          smallTask={smallTask}
           taskId={props.taskId}
           handleClose={handleClose}
         />

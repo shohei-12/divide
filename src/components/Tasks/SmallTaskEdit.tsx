@@ -12,8 +12,14 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    title: {
-      marginTop: 0,
+    modal: {
+      position: "relative",
+      backgroundColor: theme.palette.background.paper,
+      width: "85%",
+      maxWidth: 700,
+      padding: "30px 20px",
+      margin: "60px auto 0",
+      borderRadius: 4,
     },
     close: {
       position: "absolute",
@@ -21,13 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 4,
       padding: 4,
     },
-    modal: {
-      position: "relative",
-      backgroundColor: theme.palette.background.paper,
-      width: 700,
-      padding: "30px 20px",
-      margin: "60px auto 0",
-      borderRadius: 4,
+    title: {
+      marginTop: 0,
     },
   })
 );
@@ -47,8 +48,6 @@ const SmallTaskEdit: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
   const taskId = props.taskId;
   const smallTask = props.smallTask;
-  const smallTaskId = smallTask.id;
-  const smallTaskDeadline = smallTask.deadline;
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
@@ -58,7 +57,7 @@ const SmallTaskEdit: React.FC<Props> = (props) => {
 
   const [contents, setContents] = useState(smallTask.contents);
   const [deadline, setDeadline] = useState(
-    smallTaskDeadline ? new Date(smallTaskDeadline) : null
+    smallTask.deadline ? new Date(smallTask.deadline) : null
   );
 
   const inputContents = useCallback(
@@ -76,7 +75,7 @@ const SmallTaskEdit: React.FC<Props> = (props) => {
   );
 
   const dispatchUpdateTask = () => {
-    dispatch(updateTask(contents, taskId, smallTaskId, deadline));
+    dispatch(updateTask(contents, taskId, smallTask.id, deadline));
   };
 
   return (

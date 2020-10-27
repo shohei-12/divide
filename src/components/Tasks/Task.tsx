@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Deadline, PriorityButton, TaskEdit } from ".";
@@ -47,16 +47,12 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   smallTaskLength: number;
   task: TaskState;
-  taskId: string;
-  contents: string;
-  deadline: string | null;
-  checked: boolean;
-  datetime: string;
 };
 
 const Task: React.FC<Props> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const task = props.task;
 
   const [open, setOpen] = useState(false);
 
@@ -68,7 +64,8 @@ const Task: React.FC<Props> = (props) => {
     setOpen(false);
   }, [setOpen]);
 
-  const formatDatetime = (datetime: Date) => {
+  const formatDatetime = useMemo(() => {
+    const datetime = new Date(task.updated_at);
     return (
       datetime.getFullYear() +
       "-" +
@@ -80,7 +77,7 @@ const Task: React.FC<Props> = (props) => {
       ":" +
       ("00" + datetime.getMinutes()).slice(-2)
     );
-  };
+  }, [task.updated_at]);
 
   return (
     <>
@@ -88,30 +85,28 @@ const Task: React.FC<Props> = (props) => {
         <CardContent className={classes.content}>
           <div className={classes.flex}>
             <Typography className={classes.datetime} color="textSecondary">
-              {formatDatetime(new Date(props.datetime))}
+              {formatDatetime}
             </Typography>
             <div className={classes.flex + " " + classes.alignRight}>
-              {props.deadline && <Deadline deadline={props.deadline} />}
+              {task.deadline && <Deadline deadline={task.deadline} />}
               <Tooltip title="タスクの完了">
                 <Checkbox
-                  checked={props.checked}
+                  checked={task.checked}
                   color="primary"
                   inputProps={{ "aria-label": "タスクの完了" }}
                   onClick={() => {
-                    dispatch(
-                      toggleTaskCheck(!props.checked, props.taskId, null)
-                    );
+                    dispatch(toggleTaskCheck(!task.checked, task.id, null));
                   }}
                 />
               </Tooltip>
             </div>
           </div>
           <Typography className={classes.contents} variant="h5" component="h3">
-            {props.contents}
+            {task.contents}
           </Typography>
           <Tooltip title="分割">
             <IconButton
-              onClick={() => dispatch(push(`/task/detail/${props.taskId}`))}
+              onClick={() => dispatch(push(`/task/detail/${task.id}`))}
             >
               <Badge badgeContent={props.smallTaskLength} color="primary">
                 <ViewModuleIcon />
@@ -119,11 +114,7 @@ const Task: React.FC<Props> = (props) => {
             </IconButton>
           </Tooltip>
           <Tooltip title="編集">
-            <IconButton
-              onClick={() => {
-                handleOpen();
-              }}
-            >
+            <IconButton onClick={handleOpen}>
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -131,18 +122,18 @@ const Task: React.FC<Props> = (props) => {
             <IconButton
               onClick={() => {
                 if (window.confirm("タスクを削除しますか？")) {
-                  dispatch(deleteTask(props.taskId, null));
+                  dispatch(deleteTask(task.id, null));
                 }
               }}
             >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          <PriorityButton taskId={props.taskId} />
+          <PriorityButton taskId={task.id} />
         </CardContent>
       </Card>
       <Modal open={open} onClose={handleClose}>
-        <TaskEdit task={props.task} handleClose={handleClose} />
+        <TaskEdit task={task} handleClose={handleClose} />
       </Modal>
     </>
   );

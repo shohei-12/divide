@@ -12,8 +12,14 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    title: {
-      marginTop: 0,
+    modal: {
+      position: "relative",
+      backgroundColor: theme.palette.background.paper,
+      width: "85%",
+      maxWidth: 700,
+      padding: "30px 20px",
+      margin: "60px auto 0",
+      borderRadius: 4,
     },
     close: {
       position: "absolute",
@@ -21,13 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 4,
       padding: 4,
     },
-    modal: {
-      position: "relative",
-      backgroundColor: theme.palette.background.paper,
-      width: 700,
-      padding: "30px 20px",
-      margin: "60px auto 0",
-      borderRadius: 4,
+    title: {
+      marginTop: 0,
     },
   })
 );
@@ -45,8 +46,6 @@ const TaskEdit: React.FC<Props> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const task = props.task;
-  const taskId = task.id;
-  const taskDeadline = task.deadline;
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
@@ -56,7 +55,7 @@ const TaskEdit: React.FC<Props> = (props) => {
 
   const [contents, setContents] = useState(task.contents);
   const [deadline, setDeadline] = useState(
-    taskDeadline ? new Date(taskDeadline) : null
+    task.deadline ? new Date(task.deadline) : null
   );
 
   const inputContents = useCallback(
@@ -74,7 +73,7 @@ const TaskEdit: React.FC<Props> = (props) => {
   );
 
   const dispatchUpdateTask = () => {
-    dispatch(updateTask(contents, taskId, null, deadline));
+    dispatch(updateTask(contents, task.id, null, deadline));
   };
 
   return (
