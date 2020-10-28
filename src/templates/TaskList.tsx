@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: 60,
     },
     tasks: {
-      position: "relative",
       display: "flex",
       flexWrap: "wrap",
     },
@@ -36,11 +35,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     pagination: {
-      position: "absolute",
-      bottom: -60,
+      marginTop: 30,
     },
     noTask: {
-      margin: "40px auto 0",
+      marginTop: 40,
       textAlign: "center",
     },
     logo: {
@@ -50,8 +48,10 @@ const useStyles = makeStyles((theme: Theme) =>
       left: -3,
     },
     taskRegistration: {
+      display: "inline-block",
       color: "#0044CC",
       fontSize: 40,
+      textDecoration: "underline",
     },
     fab: {
       position: "fixed",
@@ -137,9 +137,12 @@ const TaskList: React.FC = () => {
             width="350px"
             height="350px"
           />
-          <a className={classes.taskRegistration} href="/task/registration">
+          <p
+            className={`${classes.taskRegistration} pointer-h`}
+            onClick={goTaskRegistration}
+          >
             タスクを登録する
-          </a>
+          </p>
         </div>
       )}
       <Hidden smUp>
