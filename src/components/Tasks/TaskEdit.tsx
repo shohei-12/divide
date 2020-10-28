@@ -12,15 +12,6 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    modal: {
-      position: "relative",
-      backgroundColor: theme.palette.background.paper,
-      width: "85%",
-      maxWidth: 700,
-      padding: "30px 20px",
-      margin: "60px auto 0",
-      borderRadius: 4,
-    },
     close: {
       position: "absolute",
       top: 4,
@@ -73,7 +64,7 @@ const TaskEdit: React.FC<Props> = (props) => {
   );
 
   return (
-    <div className={classes.modal}>
+    <>
       {task && (
         <>
           <IconButton className={classes.close} onClick={props.handleClose}>
@@ -123,7 +114,7 @@ const TaskEdit: React.FC<Props> = (props) => {
           />
         </>
       )}
-    </div>
+    </>
   );
 };
 

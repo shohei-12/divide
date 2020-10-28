@@ -41,6 +41,15 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 20,
       },
     },
+    modal: {
+      position: "relative",
+      backgroundColor: theme.palette.background.paper,
+      width: "85%",
+      maxWidth: 700,
+      padding: "30px 20px",
+      margin: "60px auto 0",
+      borderRadius: 4,
+    },
   })
 );
 
@@ -142,7 +151,9 @@ const Task: React.FC<Props> = (props) => {
         </CardContent>
       </Card>
       <Modal open={open} onClose={handleClose}>
-        <TaskEdit task={task} handleClose={handleClose} />
+        <div className={classes.modal}>
+          <TaskEdit task={task} handleClose={handleClose} />
+        </div>
       </Modal>
     </>
   );
