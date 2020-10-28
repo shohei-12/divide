@@ -11,6 +11,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const useStyles = makeStyles({
   icon: {
@@ -187,6 +188,7 @@ const SmallTaskDetail: React.FC = () => {
             tinyTaskLength={tinyTasks.length}
             smallTask={smallTask}
             taskId={task.id}
+            backIcon={<ArrowBackIcon />}
           />
         </>
       )}

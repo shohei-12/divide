@@ -150,7 +150,12 @@ const Task: React.FC<Props> = (props) => {
           <PriorityButton taskId={id} />
         </CardContent>
       </Card>
-      <Modal open={open} onClose={handleClose}>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        disableEnforceFocus
+        disableAutoFocus
+      >
         <div className={classes.modal}>
           <TaskEdit task={task} handleClose={handleClose} />
         </div>

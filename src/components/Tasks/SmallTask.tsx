@@ -57,6 +57,7 @@ type Props = {
   tinyTaskLength: number;
   smallTask: SmallTaskState;
   taskId: string;
+  backIcon?: JSX.Element;
 };
 
 const SmallTask: React.FC<Props> = (props) => {
@@ -68,6 +69,7 @@ const SmallTask: React.FC<Props> = (props) => {
   const contents = smallTask.contents;
   const checked = smallTask.checked;
   const deadline = smallTask.deadline;
+  const parentId = smallTask.parentId;
   const updatedAt = smallTask.updated_at;
 
   const [open, setOpen] = useState(false);
@@ -108,6 +110,14 @@ const SmallTask: React.FC<Props> = (props) => {
       dispatch(deleteTask(taskId, smallTaskId));
     }
   }, [dispatch, taskId, smallTaskId]);
+
+  const goBack = useCallback(() => {
+    if (parentId === null) {
+      dispatch(push(`/task/detail/${taskId}`));
+    } else {
+      dispatch(push(`/small-task/detail/${taskId}/${parentId}`));
+    }
+  }, [dispatch, taskId, parentId]);
 
   return (
     <>
@@ -150,9 +160,19 @@ const SmallTask: React.FC<Props> = (props) => {
             </IconButton>
           </Tooltip>
           <PriorityButton taskId={taskId} smallTaskId={smallTaskId} />
+          {props.backIcon && (
+            <Tooltip title="戻る">
+              <IconButton onClick={goBack}>{props.backIcon}</IconButton>
+            </Tooltip>
+          )}
         </CardContent>
       </Card>
-      <Modal open={open} onClose={handleClose}>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        disableEnforceFocus
+        disableAutoFocus
+      >
         <div className={classes.modal}>
           <SmallTaskEdit
             smallTask={smallTask}
