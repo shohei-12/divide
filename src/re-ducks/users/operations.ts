@@ -118,6 +118,23 @@ export const updateUser = (uid: string, email: string) => {
   };
 };
 
+export const deleteUser = () => {
+  return async (dispatch: any, getState: any) => {
+    const uid = getState().users.uid as string;
+
+    usersRef
+      .doc(uid)
+      .delete()
+      .then(() => {
+        dispatch(signOutAction());
+        auth.currentUser!.delete();
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+};
+
 export const divideTask = (
   contents: string,
   taskId: string,

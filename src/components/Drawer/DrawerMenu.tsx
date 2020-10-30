@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { getIsSignedIn, getTheme } from "../../re-ducks/users/selectors";
 import { State } from "../../re-ducks/store/types";
-import { signOut, toggleTheme } from "../../re-ducks/users/operations";
+import {
+  signOut,
+  toggleTheme,
+  deleteUser,
+} from "../../re-ducks/users/operations";
 import { DrawerMenuListItem } from ".";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -18,6 +22,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import EmailIcon from "@material-ui/icons/Email";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import WarningIcon from "@material-ui/icons/Warning";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LockIcon from "@material-ui/icons/Lock";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
@@ -125,6 +130,15 @@ const DrawerMenu: React.FC = () => {
     dispatch(signOut());
     if (window.innerWidth < 600) {
       handleDrawerToggle();
+    }
+  }, [dispatch, handleDrawerToggle]);
+
+  const dispatchDeleteUser = useCallback(() => {
+    if (window.confirm("本当にアカウントを削除しますか？")) {
+      dispatch(deleteUser());
+      if (window.innerWidth < 600) {
+        handleDrawerToggle();
+      }
     }
   }, [dispatch, handleDrawerToggle]);
 
@@ -236,6 +250,13 @@ const DrawerMenu: React.FC = () => {
           </ListItem>
 
           {themeListItem}
+
+          <ListItem button onClick={dispatchDeleteUser}>
+            <ListItemIcon className={classes.icon}>
+              <WarningIcon />
+            </ListItemIcon>
+            <ListItemText primary="アカウントの削除" />
+          </ListItem>
         </>
       ) : (
         <>
