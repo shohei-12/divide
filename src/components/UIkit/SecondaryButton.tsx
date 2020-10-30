@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Button from "@material-ui/core/Button";
 
 type Props = {
@@ -8,12 +8,16 @@ type Props = {
 };
 
 const SecondaryButton: React.FC<Props> = (props) => {
+  const handleSubmit = useCallback(() => {
+    props.onClick();
+  }, [props]);
+
   return (
     <Button
       color="secondary"
       variant="contained"
       disabled={props.disabled}
-      onClick={props.onClick}
+      onClick={handleSubmit}
     >
       {props.text}
     </Button>

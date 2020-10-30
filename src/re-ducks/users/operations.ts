@@ -56,7 +56,7 @@ export const signIn = (email: string, password: string) => {
   return async (dispatch: any) => {
     auth
       .signInWithEmailAndPassword(email, password)
-      .then(async (result) => {
+      .then((result) => {
         const user = result.user;
         if (user) {
           dispatchSignInAction(user, dispatch);
@@ -84,65 +84,21 @@ export const signOut = () => {
   };
 };
 
-export const signUp = (email: string, password: string) => {
-  return async (dispatch: any, getState: any) => {
-    const theme = getState().users.theme as string;
-
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        const user = result.user;
-
-        if (user) {
-          const uid = user.uid;
-          const timestamp = FirebaseTimestamp.now();
-          const userInitialData = {
-            uid,
-            email,
-            theme,
-            created_at: timestamp,
-            updated_at: timestamp,
-          };
-
-          usersRef
-            .doc(uid)
-            .set(userInitialData)
-            .then(() => {
-              dispatch(
-                signInAction({
-                  uid,
-                  email,
-                })
-              );
-
-              dispatch(push("/"));
-            })
-            .catch((error) => {
-              throw new Error(error);
-            });
-        }
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  };
-};
-
-export const userUpdate = (uid: string, email: string) => {
+export const updateUser = (uid: string, email: string) => {
   return async (dispatch: any) => {
-    const timestamp = FirebaseTimestamp.now();
+    const timestamp = getTimestamp();
 
     auth
       .currentUser!.updateEmail(email)
       .then(() => {
-        const data = {
+        const userUpdateData = {
           email,
           updated_at: timestamp,
         };
 
         usersRef
           .doc(uid)
-          .set(data, { merge: true })
+          .set(userUpdateData, { merge: true })
           .then(() => {
             dispatch(
               signInAction({
@@ -159,54 +115,6 @@ export const userUpdate = (uid: string, email: string) => {
       .catch((error) => {
         throw new Error(error);
       });
-  };
-};
-
-export const registerTask = (contents: string, deadline: Date | null) => {
-  return async (dispatch: any, getState: any) => {
-    const timestamp = getTimestamp();
-    const uid = getState().users.uid as string;
-    const tasksRef = getTasksRef(uid);
-    const id = tasksRef.doc().id;
-
-    const saveTaskData = (val: string | null) => {
-      const taskInitialData = {
-        id,
-        contents,
-        deadline: val,
-        checked: false,
-        priority: 0,
-        created_at: timestamp,
-        updated_at: timestamp,
-      };
-
-      getState().users.tasks = {
-        id,
-        contents,
-        small_tasks: [],
-        deadline: val,
-        checked: false,
-        priority: 0,
-        updated_at: timestamp,
-      };
-
-      tasksRef
-        .doc(id)
-        .set(taskInitialData)
-        .then(() => {
-          dispatch(taskNonPayloadAction);
-          dispatch(push("/"));
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
-    };
-
-    if (deadline) {
-      saveTaskData(deadline.toString());
-    } else {
-      saveTaskData(deadline);
-    }
   };
 };
 
@@ -530,7 +438,7 @@ const fetchSomeTasks = (
   end: number,
   dispatch: any,
   getState: any,
-  checked: boolean | null,
+  checked: boolean | null | undefined,
   priority: number | null
 ) => {
   const tasks: TaskState[] = [];
@@ -649,12 +557,12 @@ const fetchSomeTasks = (
 
 export const fetchTasksOnPageN = (
   uid: string,
-  value: number,
-  checked: boolean | null,
+  page: number,
+  checked: boolean | null | undefined,
   priority: number | null
 ) => {
   return async (dispatch: any, getState: any) => {
-    const firstTaskNum = value * 6 - 5;
+    const firstTaskNum = page * 6 - 5;
     fetchSomeTasks(
       uid,
       firstTaskNum - 1,

@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { getUserId, getEmail } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
-import { userUpdate } from "../re-ducks/users/operations";
+import { updateUser } from "../re-ducks/users/operations";
 
 type Inputs = {
-  username: string;
   email: string;
 };
 
@@ -62,7 +61,7 @@ const UserEdit: React.FC = () => {
           uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : email ? false : true
         }
         onClick={handleSubmit(() => {
-          dispatch(userUpdate(uid, email));
+          dispatch(updateUser(uid, email));
         })}
       />
     </div>

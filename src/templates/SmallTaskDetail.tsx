@@ -1,14 +1,12 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
-import { SecondaryButton, TextInput } from "../components/UIkit";
-import { SmallTask } from "../components/Tasks";
+import { SecondaryButton } from "../components/UIkit";
+import { SmallTask, TaskForm } from "../components/Tasks";
 import { divideTask } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
-import DateFnsUtils from "@date-io/date-fns";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -40,34 +38,17 @@ const SmallTaskDetail: React.FC = () => {
   const tasks = getTasks(selector);
   const taskId = window.location.pathname.split("/")[3];
   const smallTaskId = window.location.pathname.split("/")[4];
-  const taskIndex = tasks.findIndex((element) => element.id === taskId);
-  const task = tasks[taskIndex];
-  const smallTask = task?.small_tasks.find(
-    (element) => element.id === smallTaskId
-  );
+  const task = tasks.find((ele) => ele.id === taskId)!;
+  const smallTask = task?.small_tasks.find((ele) => ele.id === smallTaskId);
   const tinyTasks = task?.small_tasks.filter(
-    (element) => element.parentId === smallTask?.id
+    (ele) => ele.parentId === smallTask?.id
   );
   const smallTasksExcludeNull = task?.small_tasks.filter(
-    (element) => element.parentId !== null
+    (ele) => ele.parentId !== null
   );
 
   const [contents, setContents] = useState("");
-  const [deadline, setDeadline] = useState(null);
-
-  const inputContents = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setContents(event.target.value);
-    },
-    [setContents]
-  );
-
-  const inputDeadline = useCallback(
-    (date: any) => {
-      setDeadline(date);
-    },
-    [setDeadline]
-  );
+  const [deadline, setDeadline] = useState<Date | null>(null);
 
   const dispatchTaskDivision = () => {
     dispatch(divideTask(contents, taskId, smallTaskId, deadline));
@@ -80,38 +61,19 @@ const SmallTaskDetail: React.FC = () => {
       {smallTask && (
         <>
           <h2>タスクの分割</h2>
-          <TextInput
-            fullWidth={true}
-            label="内容"
-            multiline={true}
-            required={true}
-            rows="5"
-            type="text"
-            name="contents"
-            inputRef={register({
+          <TaskForm
+            deadline={deadline}
+            setContents={setContents}
+            setDeadline={setDeadline}
+            contentsErrors={errors.contents}
+            contentsValidation={register({
               required: "入力必須です。",
               maxLength: {
                 value: 50,
                 message: "50文字以内で入力してください。",
               },
             })}
-            error={Boolean(errors.contents)}
-            helperText={errors.contents && errors.contents.message}
-            onChange={inputContents}
           />
-          <div className="space-m"></div>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DateTimePicker
-              clearable
-              autoOk
-              ampm={false}
-              disablePast
-              value={deadline}
-              onChange={inputDeadline}
-              format="yyyy/MM/dd HH:mm"
-              label="タスクの期限"
-            />
-          </MuiPickersUtilsProvider>
           <div className="space-m"></div>
           <SecondaryButton
             text="分割"

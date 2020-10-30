@@ -1,10 +1,12 @@
-import React, { useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import { useForm } from "react-hook-form";
-import { SecondaryButton, TextInput } from "../components/UIkit";
-import { registerTask } from "../re-ducks/users/operations";
-import DateFnsUtils from "@date-io/date-fns";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { SecondaryButton } from "../components/UIkit";
+import { TaskForm } from "../components/Tasks";
+import { getUserId } from "../re-ducks/users/selectors";
+import { State } from "../re-ducks/store/types";
+import { db, FirebaseTimestamp } from "../firebase";
 
 type Inputs = {
   contents: string;
@@ -18,66 +20,67 @@ const TaskRegistration: React.FC = () => {
   });
 
   const dispatch = useDispatch();
+  const selector = useSelector((state: State) => state);
+  const uid = getUserId(selector);
 
   const [contents, setContents] = useState("");
   const [deadline, setDeadline] = useState<Date | null>(null);
 
-  const inputContents = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setContents(event.target.value);
-    },
-    [setContents]
-  );
+  const registerTask = (contents: string, deadline: Date | null) => {
+    const timestamp = FirebaseTimestamp.now().toDate().toString();
+    const tasksRef = db.collection("users").doc(uid).collection("tasks");
+    const id = tasksRef.doc().id;
 
-  const inputDeadline = useCallback(
-    (date: Date | null) => {
-      setDeadline(date);
-    },
-    [setDeadline]
-  );
+    const saveTaskData = (val: string | null) => {
+      const taskInitialData = {
+        id,
+        contents,
+        deadline: val,
+        checked: false,
+        priority: 0,
+        created_at: timestamp,
+        updated_at: timestamp,
+      };
+
+      tasksRef
+        .doc(id)
+        .set(taskInitialData)
+        .then(() => {
+          dispatch(push("/"));
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    };
+
+    if (deadline) {
+      saveTaskData(deadline.toString());
+    } else {
+      saveTaskData(deadline);
+    }
+  };
 
   return (
     <div className="c-mw700">
       <h2>タスクの登録</h2>
-      <TextInput
-        fullWidth={true}
-        label="内容"
-        multiline={true}
-        required={true}
-        rows="5"
-        type="text"
-        name="contents"
-        inputRef={register({
+      <TaskForm
+        deadline={deadline}
+        setContents={setContents}
+        setDeadline={setDeadline}
+        contentsErrors={errors.contents}
+        contentsValidation={register({
           required: "入力必須です。",
           maxLength: {
             value: 50,
             message: "50文字以内で入力してください。",
           },
         })}
-        error={Boolean(errors.contents)}
-        helperText={errors.contents && errors.contents.message}
-        onChange={inputContents}
       />
-      <div className="space-m"></div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <DateTimePicker
-          clearable
-          autoOk
-          ampm={false}
-          disablePast
-          value={deadline}
-          onChange={inputDeadline}
-          format="yyyy/MM/dd HH:mm"
-          label="タスクの期限"
-        />
-      </MuiPickersUtilsProvider>
       <div className="space-m"></div>
       <SecondaryButton
         text="登録する"
         disabled={contents ? false : true}
-        onClick={handleSubmit(() => {
-          dispatch(registerTask(contents, deadline));
-        })}
+        onClick={handleSubmit(() => registerTask(contents, deadline))}
       />
     </div>
   );

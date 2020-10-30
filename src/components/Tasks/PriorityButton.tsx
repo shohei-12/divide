@@ -3,24 +3,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { State } from "../../re-ducks/store/types";
 import { getTasks } from "../../re-ducks/users/selectors";
 import { setPriority } from "../../re-ducks/users/operations";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import Tooltip from "@material-ui/core/Tooltip";
 
-const useStyles = makeStyles({
-  red: {
-    color: "#ff1744",
-  },
-  yellow: {
-    color: "#ffea00",
-  },
-  green: {
-    color: "#00e676",
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    red: {
+      color: "#ff1744",
+    },
+    yellow: {
+      color: "#ffea00",
+    },
+    green: {
+      color: "#00e676",
+    },
+  })
+);
 
 type Props = {
   taskId: string;

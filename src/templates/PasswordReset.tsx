@@ -27,21 +27,20 @@ const PasswordReset: React.FC = () => {
     [setEmail]
   );
 
-  const resetPassword = async (email: string) => {
-    await auth
+  const resetPassword = (email: string) => {
+    auth
       .sendPasswordResetEmail(email)
       .then(() => {
         alert(
           "入力されたメールアドレスにパスワードリセット用のメールを送信しました。"
         );
+        dispatch(push("/signin"));
       })
       .catch(() => {
         alert(
           "入力されたメールアドレスにパスワードリセット用のメールを送信できませんでした。メールアドレスが正しいかどうかご確認くださいませ。"
         );
       });
-
-    dispatch(push("/signin"));
   };
 
   const goSignInPage = useCallback(() => {

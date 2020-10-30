@@ -31,8 +31,6 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import LogoLight from "../../assets/img/icons/logo-light.png";
 import LogoDark from "../../assets/img/icons/logo-dark.png";
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -40,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawer: {
       [theme.breakpoints.up("sm")]: {
-        width: drawerWidth,
+        width: 240,
         flexShrink: 0,
       },
     },
@@ -52,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
-      width: drawerWidth,
+      width: 240,
     },
     icon: {
       minWidth: 30,
@@ -72,9 +70,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: 51,
       lineHeight: "60px",
       color: "#092122",
-      "&:hover": {
-        cursor: "pointer",
-      },
     },
     red: {
       color: "#ff1744",
@@ -101,6 +96,7 @@ const DrawerMenu: React.FC = () => {
   const selector = useSelector((state: State) => state);
   const isSignedIn = getIsSignedIn(selector);
   const theme = getTheme(selector);
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = useCallback(() => {
@@ -328,7 +324,7 @@ const DrawerMenu: React.FC = () => {
             open
           >
             <Typography
-              className={classes.appName}
+              className={`${classes.appName} pointer-h`}
               variant="h6"
               onClick={goTopPage}
             >

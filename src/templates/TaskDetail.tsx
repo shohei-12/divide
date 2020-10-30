@@ -1,14 +1,12 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { getTasks } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
-import { SecondaryButton, TextInput } from "../components/UIkit";
-import { SmallTask, Task } from "../components/Tasks";
+import { SecondaryButton } from "../components/UIkit";
+import { SmallTask, Task, TaskForm } from "../components/Tasks";
 import { divideTask } from "../re-ducks/users/operations";
 import { makeStyles } from "@material-ui/core/styles";
-import DateFnsUtils from "@date-io/date-fns";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 
@@ -47,21 +45,7 @@ const TaskDetail: React.FC = () => {
   const [contents, setContents] = useState("");
   const [deadline, setDeadline] = useState<Date | null>(null);
 
-  const inputContents = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setContents(event.target.value);
-    },
-    [setContents]
-  );
-
-  const inputDeadline = useCallback(
-    (date: Date | null) => {
-      setDeadline(date);
-    },
-    [setDeadline]
-  );
-
-  const dispatchTaskDivision = () => {
+  const dispatchDivideTask = () => {
     dispatch(divideTask(contents, taskId, null, deadline));
     reset();
     setDeadline(null);
@@ -72,43 +56,24 @@ const TaskDetail: React.FC = () => {
       {task && (
         <>
           <h2>タスクの分割</h2>
-          <TextInput
-            fullWidth={true}
-            label="内容"
-            multiline={true}
-            required={true}
-            rows="5"
-            type="text"
-            name="contents"
-            inputRef={register({
+          <TaskForm
+            deadline={deadline}
+            setContents={setContents}
+            setDeadline={setDeadline}
+            contentsErrors={errors.contents}
+            contentsValidation={register({
               required: "入力必須です。",
               maxLength: {
                 value: 50,
                 message: "50文字以内で入力してください。",
               },
             })}
-            error={Boolean(errors.contents)}
-            helperText={errors.contents && errors.contents.message}
-            onChange={inputContents}
           />
-          <div className="space-m"></div>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DateTimePicker
-              clearable
-              autoOk
-              ampm={false}
-              disablePast
-              value={deadline}
-              onChange={inputDeadline}
-              format="yyyy/MM/dd HH:mm"
-              label="タスクの期限"
-            />
-          </MuiPickersUtilsProvider>
           <div className="space-m"></div>
           <SecondaryButton
             text="分割"
             disabled={contents ? false : true}
-            onClick={handleSubmit(() => dispatchTaskDivision())}
+            onClick={handleSubmit(() => dispatchDivideTask())}
           />
           <div className="space-l"></div>
           {smallTasks.length === 1 && (
