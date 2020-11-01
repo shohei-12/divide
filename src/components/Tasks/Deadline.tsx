@@ -8,12 +8,11 @@ const Deadline: React.FC<Props> = (props) => {
   const timeRemaining =
     new Date(props.deadline).getTime() - new Date().getTime();
 
-  const daysRemaining = (() =>
-    Math.floor(timeRemaining / (1000 * 60 * 60 * 24)))();
+  const daysRemaining = (() => (timeRemaining / (1000 * 60 * 60 * 24)) | 0)();
 
-  const hoursRemaining = (() => Math.floor(timeRemaining / (1000 * 60 * 60)))();
+  const hoursRemaining = (() => (timeRemaining / (1000 * 60 * 60)) | 0)();
 
-  const minutesRemaining = (() => Math.floor(timeRemaining / (1000 * 60)))();
+  const minutesRemaining = (() => (timeRemaining / (1000 * 60)) | 0)();
 
   return (
     <>

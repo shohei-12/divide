@@ -76,7 +76,6 @@ export const signOut = () => {
       .signOut()
       .then(() => {
         dispatch(signOutAction());
-        dispatch(push("/signin"));
       })
       .catch((error) => {
         throw new Error(error);
@@ -350,6 +349,7 @@ export const toggleTaskCheck = (
       const smallTasksRef = getSmallTasksRef(uid, taskId);
 
       smallTask.checked = check;
+      smallTask.updated_at = timestamp;
 
       smallTasksRef
         .doc(smallTaskId)
@@ -364,6 +364,7 @@ export const toggleTaskCheck = (
       const tasksRef = getTasksRef(uid);
 
       task.checked = check;
+      task.updated_at = timestamp;
 
       tasksRef
         .doc(taskId)
@@ -408,12 +409,14 @@ export const setPriority = (
   priority: number
 ) => {
   return async (dispatch: any, getState: any) => {
+    const timestamp = getTimestamp();
     const uid = getState().users.uid as string;
     const tasks = getState().users.tasks as TaskState[];
     const task = tasks.find((ele) => ele.id === taskId)!;
 
     const taskData = {
       priority,
+      updated_at: timestamp,
     };
 
     if (smallTaskId) {
@@ -421,6 +424,7 @@ export const setPriority = (
       const smallTasksRef = getSmallTasksRef(uid, taskId);
 
       smallTask.priority = priority;
+      smallTask.updated_at = timestamp;
 
       smallTasksRef
         .doc(smallTaskId)
@@ -435,6 +439,7 @@ export const setPriority = (
       const tasksRef = getTasksRef(uid);
 
       task.priority = priority;
+      task.updated_at = timestamp;
 
       tasksRef
         .doc(taskId)

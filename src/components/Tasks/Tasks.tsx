@@ -13,9 +13,6 @@ import Logo from "../../assets/img/icons/logo.png";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    wrap: {
-      paddingBottom: 60,
-    },
     tasks: {
       display: "flex",
       flexWrap: "wrap",
@@ -43,11 +40,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "block",
       margin: "0 auto",
       position: "relative",
-      left: -3,
+      left: -2,
+      width: 250,
+      height: 250,
+      [theme.breakpoints.up("sm")]: {
+        width: 350,
+        height: 350,
+      },
     },
     taskRegistration: {
       color: "#0044CC",
-      fontSize: 40,
+      fontSize: 32,
       textDecoration: "underline",
     },
     fab: {
@@ -84,7 +87,7 @@ const Tasks: React.FC<Props> = (props) => {
   };
 
   return (
-    <div className={classes.wrap}>
+    <>
       {tasks.length > 0 ? (
         <>
           <div className={classes.tasks}>
@@ -109,13 +112,7 @@ const Tasks: React.FC<Props> = (props) => {
         </>
       ) : (
         <div className={classes.noTask}>
-          <img
-            className={classes.logo}
-            src={Logo}
-            alt="App Logo"
-            width="350px"
-            height="350px"
-          />
+          <img className={classes.logo} src={Logo} alt="App Logo" />
           <p
             className={`${classes.taskRegistration} inline-block pointer-h`}
             onClick={goTaskRegistration}
@@ -134,7 +131,7 @@ const Tasks: React.FC<Props> = (props) => {
           <AddIcon />
         </Fab>
       </Hidden>
-    </div>
+    </>
   );
 };
 

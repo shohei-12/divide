@@ -42,7 +42,7 @@ const EditForm: React.FC<Props> = (props) => {
 
   const { register, handleSubmit, errors } = useForm<Inputs>({
     defaultValues: {
-      contents: props.task.contents,
+      contents: props.contents,
     },
   });
 

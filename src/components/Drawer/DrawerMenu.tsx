@@ -61,7 +61,6 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 30,
     },
     close: {
-      padding: 0,
       width: 48,
       height: 48,
       position: "absolute",
@@ -70,8 +69,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     appName: {
       backgroundColor: theme.palette.primary.main,
-      margin: 0,
-      height: 60,
       paddingLeft: 51,
       lineHeight: "60px",
       color: "#092122",

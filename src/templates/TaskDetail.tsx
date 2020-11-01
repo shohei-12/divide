@@ -80,7 +80,7 @@ const TaskDetail: React.FC = () => {
             <SmallTask
               tinyTaskLength={
                 smallTasksExcludeNull.filter(
-                  (smallTask) => smallTask.parentId === smallTasks[0].id
+                  (ele) => ele.parentId === smallTasks[0].id
                 ).length
               }
               smallTask={smallTasks[0]}
@@ -92,7 +92,7 @@ const TaskDetail: React.FC = () => {
               <SmallTask
                 tinyTaskLength={
                   smallTasksExcludeNull.filter(
-                    (smallTask) => smallTask.parentId === smallTasks[0].id
+                    (ele) => ele.parentId === smallTasks[0].id
                   ).length
                 }
                 smallTask={smallTasks[0]}
@@ -102,7 +102,7 @@ const TaskDetail: React.FC = () => {
               <SmallTask
                 tinyTaskLength={
                   smallTasksExcludeNull.filter(
-                    (smallTask) => smallTask.parentId === smallTasks[1].id
+                    (ele) => ele.parentId === smallTasks[1].id
                   ).length
                 }
                 smallTask={smallTasks[1]}
@@ -117,7 +117,7 @@ const TaskDetail: React.FC = () => {
                   <SmallTask
                     tinyTaskLength={
                       smallTasksExcludeNull.filter(
-                        (element) => element.parentId === smallTask.id
+                        (ele) => ele.parentId === smallTask.id
                       ).length
                     }
                     smallTask={smallTask}
@@ -129,8 +129,7 @@ const TaskDetail: React.FC = () => {
               <SmallTask
                 tinyTaskLength={
                   smallTasksExcludeNull.filter(
-                    (smallTask) =>
-                      smallTask.parentId === smallTasks.slice(-1)[0].id
+                    (ele) => ele.parentId === smallTasks.slice(-1)[0].id
                   ).length
                 }
                 smallTask={smallTasks.slice(-1)[0]}

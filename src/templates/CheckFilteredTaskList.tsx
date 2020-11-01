@@ -31,28 +31,30 @@ const CheckFilteredTaskList: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchTasksOnPageN(uid, 1, checked, null));
-    db.collection("users")
-      .doc(uid)
-      .collection("tasks")
-      .get()
-      .then((snapshots) => {
-        if (checked) {
-          setTaskCount(
-            snapshots.docs.filter(
-              (snapshot) => snapshot.data().checked === true
-            ).length
-          );
-        } else {
-          setTaskCount(
-            snapshots.docs.filter(
-              (snapshot) => snapshot.data().checked === false
-            ).length
-          );
-        }
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    if (checked !== undefined) {
+      db.collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .get()
+        .then((snapshots) => {
+          if (checked) {
+            setTaskCount(
+              snapshots.docs.filter(
+                (snapshot) => snapshot.data().checked === true
+              ).length
+            );
+          } else {
+            setTaskCount(
+              snapshots.docs.filter(
+                (snapshot) => snapshot.data().checked === false
+              ).length
+            );
+          }
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   }, [dispatch, uid, checked]);
 
   return <Tasks taskCount={taskCount} handleChange={handleChange} />;

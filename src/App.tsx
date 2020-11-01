@@ -13,7 +13,7 @@ import "./assets/style.css";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
-      padding: "76px 10px 20px",
+      padding: "76px 10px 30px",
       [theme.breakpoints.up("sm")]: {
         padding: "0 10px 40px 250px",
       },

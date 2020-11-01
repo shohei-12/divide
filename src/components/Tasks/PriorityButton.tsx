@@ -38,6 +38,7 @@ const PriorityButton: React.FC<Props> = (props) => {
   const smallTaskId = props.smallTaskId;
   const task = tasks.find((ele) => ele.id === taskId)!;
   const smallTask = task.small_tasks.find((ele) => ele.id === smallTaskId);
+  const priority = smallTaskId ? smallTask!.priority : task.priority;
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -57,26 +58,24 @@ const PriorityButton: React.FC<Props> = (props) => {
   }, [setAnchorEl]);
 
   const dispatchSetPriorityBind0 = useCallback(() => {
-    handleClose();
     dispatch(setPriorityBind(0));
+    handleClose();
   }, [dispatch, handleClose, setPriorityBind]);
 
   const dispatchSetPriorityBind1 = useCallback(() => {
-    handleClose();
     dispatch(setPriorityBind(1));
+    handleClose();
   }, [dispatch, handleClose, setPriorityBind]);
 
   const dispatchSetPriorityBind2 = useCallback(() => {
-    handleClose();
     dispatch(setPriorityBind(2));
+    handleClose();
   }, [dispatch, handleClose, setPriorityBind]);
 
   const dispatchSetPriorityBind3 = useCallback(() => {
-    handleClose();
     dispatch(setPriorityBind(3));
+    handleClose();
   }, [dispatch, handleClose, setPriorityBind]);
-
-  const priority = smallTaskId ? smallTask!.priority : task.priority;
 
   return (
     <>

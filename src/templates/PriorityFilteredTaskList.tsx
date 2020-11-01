@@ -37,44 +37,46 @@ const PriorityFilteredTaskList: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchTasksOnPageN(uid, 1, null, priority));
-    db.collection("users")
-      .doc(uid)
-      .collection("tasks")
-      .get()
-      .then((snapshots) => {
-        switch (priority) {
-          case 0:
-            setTaskCount(
-              snapshots.docs.filter(
-                (snapshot) => snapshot.data().priority === 0
-              ).length
-            );
-            break;
-          case 1:
-            setTaskCount(
-              snapshots.docs.filter(
-                (snapshot) => snapshot.data().priority === 1
-              ).length
-            );
-            break;
-          case 2:
-            setTaskCount(
-              snapshots.docs.filter(
-                (snapshot) => snapshot.data().priority === 2
-              ).length
-            );
-            break;
-          case 3:
-            setTaskCount(
-              snapshots.docs.filter(
-                (snapshot) => snapshot.data().priority === 3
-              ).length
-            );
-        }
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+    if (priority !== -1) {
+      db.collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .get()
+        .then((snapshots) => {
+          switch (priority) {
+            case 0:
+              setTaskCount(
+                snapshots.docs.filter(
+                  (snapshot) => snapshot.data().priority === 0
+                ).length
+              );
+              break;
+            case 1:
+              setTaskCount(
+                snapshots.docs.filter(
+                  (snapshot) => snapshot.data().priority === 1
+                ).length
+              );
+              break;
+            case 2:
+              setTaskCount(
+                snapshots.docs.filter(
+                  (snapshot) => snapshot.data().priority === 2
+                ).length
+              );
+              break;
+            case 3:
+              setTaskCount(
+                snapshots.docs.filter(
+                  (snapshot) => snapshot.data().priority === 3
+                ).length
+              );
+          }
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
   }, [dispatch, uid, priority]);
 
   return <Tasks taskCount={taskCount} handleChange={handleChange} />;
