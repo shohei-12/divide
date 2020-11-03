@@ -13,6 +13,7 @@ export type TaskState = {
   deadline: string | null;
   checked: boolean;
   priority: number;
+  demo?: boolean;
   updated_at: string;
 };
 

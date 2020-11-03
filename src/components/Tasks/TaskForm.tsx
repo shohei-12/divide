@@ -1,10 +1,12 @@
 import React, { useCallback } from "react";
 import { FieldError } from "react-hook-form";
 import { TextInput } from "../UIkit";
+import { TaskState } from "../../re-ducks/users/types";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 type Props = {
+  task?: TaskState;
   deadline: Date | null;
   setContents: (value: React.SetStateAction<string>) => void;
   setDeadline: (value: React.SetStateAction<Date | null>) => void;
@@ -40,6 +42,7 @@ const TaskForm: React.FC<Props> = (props) => {
         inputRef={props.contentsValidation}
         error={Boolean(props.contentsErrors)}
         helperText={props.contentsErrors && props.contentsErrors.message}
+        disabled={props.task?.demo === true ? true : false}
         onChange={inputContents}
       />
       <div className="space-m"></div>
@@ -53,6 +56,7 @@ const TaskForm: React.FC<Props> = (props) => {
           onChange={inputDeadline}
           format="yyyy/MM/dd HH:mm"
           label="タスクの期限"
+          disabled={props.task?.demo === true ? true : false}
         />
       </MuiPickersUtilsProvider>
     </>

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { EditForm } from ".";
+import { useSelector } from "react-redux";
+import { getTasks } from "../../re-ducks/users/selectors";
 import { SmallTaskState } from "../../re-ducks/users/types";
+import { State } from "../../re-ducks/store/types";
 import { updateTask } from "../../re-ducks/users/operations";
 
 type Props = {
@@ -10,7 +13,10 @@ type Props = {
 };
 
 const SmallTaskEdit: React.FC<Props> = (props) => {
+  const selector = useSelector((state: State) => state);
+  const tasks = getTasks(selector);
   const taskId = props.taskId;
+  const task = tasks.find((ele) => ele.id === taskId)!;
   const smallTask = props.smallTask;
 
   const [contents, setContents] = useState(smallTask.contents);
@@ -20,7 +26,7 @@ const SmallTaskEdit: React.FC<Props> = (props) => {
 
   return (
     <EditForm
-      task={smallTask}
+      task={task}
       handleClose={props.handleClose}
       contents={contents}
       deadline={deadline}

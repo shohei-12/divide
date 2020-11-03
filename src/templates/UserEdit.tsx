@@ -15,6 +15,7 @@ const UserEdit: React.FC = () => {
   const selector = useSelector((state: State) => state);
   const uid = getUserId(selector);
   const uemail = getEmail(selector);
+  const guestId = "XOuPHCtNr3MdYlVmEuCSlcsmIgG2";
 
   const [email, setEmail] = useState(uemail);
 
@@ -51,15 +52,13 @@ const UserEdit: React.FC = () => {
         })}
         error={Boolean(errors.email)}
         helperText={errors.email && errors.email.message}
-        disabled={uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : false}
+        disabled={uid === guestId ? true : false}
         onChange={inputEmail}
       />
       <div className="space-m"></div>
       <SecondaryButton
         text="変更する"
-        disabled={
-          uid === "XOuPHCtNr3MdYlVmEuCSlcsmIgG2" ? true : email ? false : true
-        }
+        disabled={uid === guestId ? true : email ? false : true}
         onClick={handleSubmit(() => {
           dispatch(updateUser(uid, email));
         })}

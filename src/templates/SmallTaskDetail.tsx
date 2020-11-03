@@ -62,6 +62,7 @@ const SmallTaskDetail: React.FC = () => {
         <>
           <h2>タスクの分割</h2>
           <TaskForm
+            task={task}
             deadline={deadline}
             setContents={setContents}
             setDeadline={setDeadline}

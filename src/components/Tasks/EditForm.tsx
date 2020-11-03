@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { SecondaryButton } from "../UIkit";
 import { TaskForm } from ".";
-import { TaskState, SmallTaskState } from "../../re-ducks/users/types";
+import { TaskState } from "../../re-ducks/users/types";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -27,7 +27,7 @@ type Inputs = {
 };
 
 type Props = {
-  task: TaskState | SmallTaskState;
+  task: TaskState;
   handleClose: () => void;
   contents: string;
   deadline: Date | null;
@@ -53,6 +53,7 @@ const EditForm: React.FC<Props> = (props) => {
       </IconButton>
       <h2 className={classes.title}>タスクの編集</h2>
       <TaskForm
+        task={props.task}
         deadline={props.deadline}
         setContents={props.setContents}
         setDeadline={props.setDeadline}
@@ -68,7 +69,9 @@ const EditForm: React.FC<Props> = (props) => {
       <div className="space-m"></div>
       <SecondaryButton
         text="更新する"
-        disabled={props.contents ? false : true}
+        disabled={
+          props.task.demo === true ? true : props.contents ? false : true
+        }
         onClick={handleSubmit(() => {
           dispatch(props.updateTask);
           props.handleClose();

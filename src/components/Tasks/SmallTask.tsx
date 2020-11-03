@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { PriorityButton, SmallTaskEdit, TaskContent } from ".";
 import { toggleTaskCheck, deleteTask } from "../../re-ducks/users/operations";
+import { getTasks } from "../../re-ducks/users/selectors";
 import { SmallTaskState } from "../../re-ducks/users/types";
+import { State } from "../../re-ducks/store/types";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -40,8 +42,11 @@ type Props = {
 const SmallTask: React.FC<Props> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const smallTask = props.smallTask;
+  const selector = useSelector((state: State) => state);
+  const tasks = getTasks(selector);
   const taskId = props.taskId;
+  const task = tasks.find((ele) => ele.id === taskId)!;
+  const smallTask = props.smallTask;
   const smallTaskId = smallTask.id;
   const contents = smallTask.contents;
   const checked = smallTask.checked;
@@ -56,8 +61,12 @@ const SmallTask: React.FC<Props> = (props) => {
   }, [setOpen]);
 
   const dispatchToggleTaskCheck = useCallback(() => {
-    dispatch(toggleTaskCheck(!checked, taskId, smallTaskId));
-  }, [dispatch, taskId, checked, smallTaskId]);
+    if (task.demo !== true) {
+      dispatch(toggleTaskCheck(!checked, taskId, smallTaskId));
+    } else {
+      alert("デモデータはチェックの切り替えができません！");
+    }
+  }, [dispatch, taskId, checked, smallTaskId, task.demo]);
 
   const goDividePage = useCallback(() => {
     dispatch(push(`/small-task/detail/${taskId}/${smallTaskId}`));
@@ -65,9 +74,13 @@ const SmallTask: React.FC<Props> = (props) => {
 
   const dispatchDeleteTask = useCallback(() => {
     if (window.confirm("タスクを削除しますか？")) {
-      dispatch(deleteTask(taskId, smallTaskId));
+      if (task.demo !== true) {
+        dispatch(deleteTask(taskId, smallTaskId));
+      } else {
+        alert("デモデータは削除できません！");
+      }
     }
-  }, [dispatch, taskId, smallTaskId]);
+  }, [dispatch, taskId, smallTaskId, task.demo]);
 
   const goBack = useCallback(() => {
     if (parentId === null) {

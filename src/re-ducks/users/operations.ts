@@ -546,6 +546,7 @@ const fetchSomeTasks = (
                 deadline: taskData.deadline,
                 checked: taskData.checked,
                 priority: taskData.priority,
+                demo: taskData.demo,
                 updated_at: taskData.updated_at,
               } as TaskState;
               tasks.push(task);
@@ -559,6 +560,7 @@ const fetchSomeTasks = (
                 deadline: taskData.deadline,
                 checked: taskData.checked,
                 priority: taskData.priority,
+                demo: taskData.demo,
                 updated_at: taskData.updated_at,
               } as TaskState;
               tasks.push(task);

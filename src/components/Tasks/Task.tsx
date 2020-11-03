@@ -50,8 +50,12 @@ const Task: React.FC<Props> = (props) => {
   }, [setOpen]);
 
   const dispatchToggleTaskCheck = useCallback(() => {
-    dispatch(toggleTaskCheck(!checked, id, null));
-  }, [dispatch, checked, id]);
+    if (task.demo !== true) {
+      dispatch(toggleTaskCheck(!checked, id, null));
+    } else {
+      alert("デモデータはチェックの切り替えができません！");
+    }
+  }, [dispatch, checked, id, task.demo]);
 
   const goDividePage = useCallback(() => {
     dispatch(push(`/task/detail/${id}`));
@@ -59,9 +63,13 @@ const Task: React.FC<Props> = (props) => {
 
   const dispatchDeleteTask = useCallback(() => {
     if (window.confirm("タスクを削除しますか？")) {
-      dispatch(deleteTask(id, null));
+      if (task.demo !== true) {
+        dispatch(deleteTask(id, null));
+      } else {
+        alert("デモデータは削除できません！");
+      }
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, task.demo]);
 
   return (
     <>

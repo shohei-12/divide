@@ -58,24 +58,40 @@ const PriorityButton: React.FC<Props> = (props) => {
   }, [setAnchorEl]);
 
   const dispatchSetPriorityBind0 = useCallback(() => {
-    dispatch(setPriorityBind(0));
+    if (task.demo !== true) {
+      dispatch(setPriorityBind(0));
+    } else {
+      alert("デモデータの優先度は変更できません！");
+    }
     handleClose();
-  }, [dispatch, handleClose, setPriorityBind]);
+  }, [dispatch, handleClose, setPriorityBind, task.demo]);
 
   const dispatchSetPriorityBind1 = useCallback(() => {
-    dispatch(setPriorityBind(1));
+    if (task.demo !== true) {
+      dispatch(setPriorityBind(1));
+    } else {
+      alert("デモデータの優先度は変更できません！");
+    }
     handleClose();
-  }, [dispatch, handleClose, setPriorityBind]);
+  }, [dispatch, handleClose, setPriorityBind, task.demo]);
 
   const dispatchSetPriorityBind2 = useCallback(() => {
-    dispatch(setPriorityBind(2));
+    if (task.demo !== true) {
+      dispatch(setPriorityBind(2));
+    } else {
+      alert("デモデータの優先度は変更できません！");
+    }
     handleClose();
-  }, [dispatch, handleClose, setPriorityBind]);
+  }, [dispatch, handleClose, setPriorityBind, task.demo]);
 
   const dispatchSetPriorityBind3 = useCallback(() => {
-    dispatch(setPriorityBind(3));
+    if (task.demo !== true) {
+      dispatch(setPriorityBind(3));
+    } else {
+      alert("デモデータの優先度は変更できません！");
+    }
     handleClose();
-  }, [dispatch, handleClose, setPriorityBind]);
+  }, [dispatch, handleClose, setPriorityBind, task.demo]);
 
   return (
     <>
