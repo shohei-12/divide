@@ -28,7 +28,17 @@ const Router: React.FC = () => {
         />
         <Route
           exact
+          path="/task/check/:val/page/:num"
+          component={CheckFilteredTaskList}
+        />
+        <Route
+          exact
           path="/task/priority/:val"
+          component={PriorityFilteredTaskList}
+        />
+        <Route
+          exact
+          path="/task/priority/:val/page/:num"
           component={PriorityFilteredTaskList}
         />
         <Route
@@ -38,6 +48,7 @@ const Router: React.FC = () => {
         />
         <Route exact path="/task/detail/:id" component={TaskDetail} />
         <Route exact path="/" component={TaskList} />
+        <Route exact path="/page/:num" component={TaskList} />
         <Route exact path="/task/registration" component={TaskRegistration} />
         <Route exact path="/user/edit" component={UserEdit} />
       </Auth>

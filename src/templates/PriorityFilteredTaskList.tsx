@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import { State } from "../re-ducks/store/types";
 import { getUserId } from "../re-ducks/users/selectors";
 import { fetchTasksOnPageN } from "../re-ducks/users/operations";
@@ -10,9 +11,12 @@ const PriorityFilteredTaskList: React.FC = () => {
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const uid = getUserId(selector);
+  const priorityStr = window.location.pathname.split("/")[3];
+  const pageStr = window.location.pathname.split("/")[5];
   let priority: number = -1;
+  const page = pageStr ? parseInt(pageStr) : 1;
 
-  switch (window.location.pathname.split("/")[3]) {
+  switch (priorityStr) {
     case "none":
       priority = 0;
       break;
@@ -30,13 +34,12 @@ const PriorityFilteredTaskList: React.FC = () => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<unknown>, page: number) => {
-      dispatch(fetchTasksOnPageN(uid, page, null, priority));
+      dispatch(push(`/task/priority/${priorityStr}/page/${page}`));
     },
-    [dispatch, uid, priority]
+    [dispatch, priorityStr]
   );
 
-  useEffect(() => {
-    dispatch(fetchTasksOnPageN(uid, 1, null, priority));
+  const countTask = useCallback(() => {
     if (priority !== -1) {
       db.collection("users")
         .doc(uid)
@@ -77,9 +80,21 @@ const PriorityFilteredTaskList: React.FC = () => {
           throw new Error(error);
         });
     }
-  }, [dispatch, uid, priority]);
+  }, [priority, uid]);
 
-  return <Tasks taskCount={taskCount} handleChange={handleChange} />;
+  useEffect(() => {
+    if (window.location.pathname.split("/")[4] === "page") {
+      dispatch(fetchTasksOnPageN(uid, page, null, priority));
+      countTask();
+    } else {
+      dispatch(fetchTasksOnPageN(uid, 1, null, priority));
+      countTask();
+    }
+  }, [dispatch, uid, priority, page, countTask]);
+
+  return (
+    <Tasks page={page} taskCount={taskCount} handleChange={handleChange} />
+  );
 };
 
 export default PriorityFilteredTaskList;

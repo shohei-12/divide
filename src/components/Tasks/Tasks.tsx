@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type Props = {
+  page: number;
   taskCount: number;
   handleChange: (event: React.ChangeEvent<unknown>, page: number) => void;
 };
@@ -106,6 +107,7 @@ const Tasks: React.FC<Props> = (props) => {
           <Pagination
             className={classes.pagination}
             count={calcPage(props.taskCount)}
+            page={props.page}
             color="primary"
             onChange={handleChange}
           />

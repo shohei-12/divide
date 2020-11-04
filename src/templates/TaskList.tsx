@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import { State } from "../re-ducks/store/types";
 import { getUserId } from "../re-ducks/users/selectors";
 import { fetchTasksOnPageN } from "../re-ducks/users/operations";
@@ -10,18 +11,19 @@ const TaskList: React.FC = () => {
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const uid = getUserId(selector);
+  const pageStr = window.location.pathname.split("/")[2];
+  const page = pageStr ? parseInt(pageStr) : 1;
 
   const [taskCount, setTaskCount] = useState(0);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<unknown>, page: number) => {
-      dispatch(fetchTasksOnPageN(uid, page, null, null));
+      dispatch(push(`/page/${page}`));
     },
-    [dispatch, uid]
+    [dispatch]
   );
 
-  useEffect(() => {
-    dispatch(fetchTasksOnPageN(uid, 1, null, null));
+  const countTask = useCallback(() => {
     db.collection("users")
       .doc(uid)
       .collection("tasks")
@@ -32,9 +34,21 @@ const TaskList: React.FC = () => {
       .catch((error) => {
         throw new Error(error);
       });
-  }, [dispatch, uid]);
+  }, [uid]);
 
-  return <Tasks taskCount={taskCount} handleChange={handleChange} />;
+  useEffect(() => {
+    if (window.location.pathname.split("/")[1] === "page") {
+      dispatch(fetchTasksOnPageN(uid, page, null, null));
+      countTask();
+    } else {
+      dispatch(fetchTasksOnPageN(uid, 1, null, null));
+      countTask();
+    }
+  }, [dispatch, uid, page, countTask]);
+
+  return (
+    <Tasks page={page} taskCount={taskCount} handleChange={handleChange} />
+  );
 };
 
 export default TaskList;

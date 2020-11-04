@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import { State } from "../re-ducks/store/types";
 import { getUserId } from "../re-ducks/users/selectors";
 import { fetchTasksOnPageN } from "../re-ducks/users/operations";
@@ -10,9 +11,12 @@ const CheckFilteredTaskList: React.FC = () => {
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
   const uid = getUserId(selector);
+  const checkedStr = window.location.pathname.split("/")[3];
+  const pageStr = window.location.pathname.split("/")[5];
   let checked: boolean | undefined = undefined;
+  const page = pageStr ? parseInt(pageStr) : 1;
 
-  switch (window.location.pathname.split("/")[3]) {
+  switch (checkedStr) {
     case "finished":
       checked = true;
       break;
@@ -24,13 +28,12 @@ const CheckFilteredTaskList: React.FC = () => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<unknown>, page: number) => {
-      dispatch(fetchTasksOnPageN(uid, page, checked, null));
+      dispatch(push(`/task/check/${checkedStr}/page/${page}`));
     },
-    [dispatch, uid, checked]
+    [dispatch, checkedStr]
   );
 
-  useEffect(() => {
-    dispatch(fetchTasksOnPageN(uid, 1, checked, null));
+  const countTask = useCallback(() => {
     if (checked !== undefined) {
       db.collection("users")
         .doc(uid)
@@ -55,9 +58,21 @@ const CheckFilteredTaskList: React.FC = () => {
           throw new Error(error);
         });
     }
-  }, [dispatch, uid, checked]);
+  }, [checked, uid]);
 
-  return <Tasks taskCount={taskCount} handleChange={handleChange} />;
+  useEffect(() => {
+    if (window.location.pathname.split("/")[4] === "page") {
+      dispatch(fetchTasksOnPageN(uid, page, checked, null));
+      countTask();
+    } else {
+      dispatch(fetchTasksOnPageN(uid, 1, checked, null));
+      countTask();
+    }
+  }, [dispatch, uid, checked, page, countTask]);
+
+  return (
+    <Tasks page={page} taskCount={taskCount} handleChange={handleChange} />
+  );
 };
 
 export default CheckFilteredTaskList;
