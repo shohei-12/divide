@@ -1,7 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import { getIsSignedIn, getTheme } from "../../re-ducks/users/selectors";
+import {
+  getUserId,
+  getIsSignedIn,
+  getTheme,
+} from "../../re-ducks/users/selectors";
 import { State } from "../../re-ducks/store/types";
 import {
   signOut,
@@ -96,6 +100,7 @@ const DrawerMenu: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const selector = useSelector((state: State) => state);
+  const uid = getUserId(selector);
   const isSignedIn = getIsSignedIn(selector);
   const theme = getTheme(selector);
 
@@ -132,12 +137,16 @@ const DrawerMenu: React.FC = () => {
 
   const dispatchDeleteUser = useCallback(() => {
     if (window.confirm("本当にアカウントを削除しますか？")) {
-      dispatch(deleteUser());
+      if (uid !== "XOuPHCtNr3MdYlVmEuCSlcsmIgG2") {
+        dispatch(deleteUser());
+      } else {
+        alert("ゲストユーザーはアカウントを削除できません！");
+      }
       if (window.innerWidth < 600) {
         handleDrawerToggle();
       }
     }
-  }, [dispatch, handleDrawerToggle]);
+  }, [dispatch, handleDrawerToggle, uid]);
 
   const signInList = [
     {
