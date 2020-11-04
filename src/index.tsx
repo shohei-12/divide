@@ -5,11 +5,11 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { createStore } from "./re-ducks/store/store";
 import { ConnectedRouter } from "connected-react-router";
-import * as History from "history";
+import { createBrowserHistory } from "history";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-const history = History.createBrowserHistory();
+const history = createBrowserHistory();
 const store = createStore(history);
 const persistor = persistStore(store);
 
