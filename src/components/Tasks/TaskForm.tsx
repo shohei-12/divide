@@ -41,7 +41,11 @@ const TaskForm: React.FC<Props> = (props) => {
         name="contents"
         inputRef={props.contentsValidation}
         error={Boolean(props.contentsErrors)}
-        helperText={props.contentsErrors && props.contentsErrors.message}
+        helperText={
+          props.contentsErrors
+            ? props.contentsErrors.message
+            : "50文字以内で入力してください。"
+        }
         disabled={props.task?.demo === true ? true : false}
         onChange={inputContents}
       />

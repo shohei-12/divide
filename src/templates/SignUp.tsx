@@ -5,7 +5,6 @@ import { push } from "connected-react-router";
 import { SecondaryButton, TextInput } from "../components/UIkit";
 import { getTheme } from "../re-ducks/users/selectors";
 import { State } from "../re-ducks/store/types";
-import { EmailAndPasswordInput } from "../components/Users";
 import { auth, db, FirebaseTimestamp } from "../firebase";
 
 type Inputs = {
@@ -30,6 +29,20 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const inputEmail = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEmail(event.target.value);
+    },
+    [setEmail]
+  );
+
+  const inputPassword = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(event.target.value);
+    },
+    [setPassword]
+  );
 
   const inputConfirmPassword = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,19 +91,34 @@ const SignUp: React.FC = () => {
   return (
     <div className="c-mw700">
       <h2>新規ユーザー登録</h2>
-      <EmailAndPasswordInput
-        emailErrors={errors.email}
-        passwordErrors={errors.password}
-        setEmail={setEmail}
-        setPassword={setPassword}
-        emailValidation={register({
+      <TextInput
+        fullWidth={true}
+        label="メールアドレス"
+        multiline={false}
+        required={true}
+        rows="1"
+        type="email"
+        name="email"
+        inputRef={register({
           required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
             message: "メールアドレスの形式が正しくありません。",
           },
         })}
-        passwordValidation={register({
+        error={Boolean(errors.email)}
+        helperText={errors.email && errors.email.message}
+        onChange={inputEmail}
+      />
+      <TextInput
+        fullWidth={true}
+        label="パスワード"
+        multiline={false}
+        required={true}
+        rows="1"
+        type="password"
+        name="password"
+        inputRef={register({
           required: "入力必須です。",
           minLength: {
             value: 6,
@@ -102,6 +130,13 @@ const SignUp: React.FC = () => {
               "半角英数字、ハイフン(-)、アンダーバー(_)のみ利用可能です。",
           },
         })}
+        error={Boolean(errors.password)}
+        helperText={
+          errors.password
+            ? errors.password.message
+            : "6文字以上で入力してください。半角英数字、ハイフン(-)、アンダーバー(_)のみ利用可能です。"
+        }
+        onChange={inputPassword}
       />
       <TextInput
         fullWidth={true}

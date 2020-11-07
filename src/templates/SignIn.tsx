@@ -2,9 +2,8 @@ import React, { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { push } from "connected-react-router";
-import { SecondaryButton } from "../components/UIkit";
+import { SecondaryButton, TextInput } from "../components/UIkit";
 import { signIn } from "../re-ducks/users/operations";
-import { EmailAndPasswordInput } from "../components/Users";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import WarningIcon from "@material-ui/icons/Warning";
 
@@ -40,6 +39,20 @@ const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const inputEmail = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEmail(event.target.value);
+    },
+    [setEmail]
+  );
+
+  const inputPassword = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(event.target.value);
+    },
+    [setPassword]
+  );
+
   const goSignUpPage = useCallback(() => {
     dispatch(push("/signup"));
   }, [dispatch]);
@@ -51,19 +64,34 @@ const SignIn: React.FC = () => {
   return (
     <div className="c-mw700">
       <h2>ログイン</h2>
-      <EmailAndPasswordInput
-        emailErrors={errors.email}
-        passwordErrors={errors.password}
-        setEmail={setEmail}
-        setPassword={setPassword}
-        emailValidation={register({
+      <TextInput
+        fullWidth={true}
+        label="メールアドレス"
+        multiline={false}
+        required={true}
+        rows="1"
+        type="email"
+        name="email"
+        inputRef={register({
           required: "入力必須です。",
           pattern: {
             value: /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
             message: "メールアドレスの形式が正しくありません。",
           },
         })}
-        passwordValidation={register({
+        error={Boolean(errors.email)}
+        helperText={errors.email && errors.email.message}
+        onChange={inputEmail}
+      />
+      <TextInput
+        fullWidth={true}
+        label="パスワード"
+        multiline={false}
+        required={true}
+        rows="1"
+        type="password"
+        name="password"
+        inputRef={register({
           required: "入力必須です。",
           minLength: {
             value: 6,
@@ -75,6 +103,9 @@ const SignIn: React.FC = () => {
               "半角英数字、ハイフン(-)、アンダーバー(_)のみ利用可能です。",
           },
         })}
+        error={Boolean(errors.password)}
+        helperText={errors.password && errors.password.message}
+        onChange={inputPassword}
       />
       <div className="space-m"></div>
       <SecondaryButton
